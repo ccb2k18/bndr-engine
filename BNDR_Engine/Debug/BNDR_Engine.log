@@ -1,0 +1,10 @@
+﻿  dllmain.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(13,18): warning C4251: 'bndr::Clock::start': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(15,16): warning C4251: 'bndr::Clock::end': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+  window.cpp
+  Generating Code...
+     Creating library D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.lib and object D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.exp
+  BNDR_Engine.vcxproj -> D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.dll
+  0 File(s) copied

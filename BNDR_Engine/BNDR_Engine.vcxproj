@@ -180,6 +180,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="include\window_render\window.h" />
     <ClInclude Include="include\window_render\timers.h" />
+    <ClInclude Include="include\data_structures\Queue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

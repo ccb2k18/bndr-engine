@@ -30,6 +30,9 @@
     <ClInclude Include="include\window_render\timers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\data_structures\Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

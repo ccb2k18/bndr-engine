@@ -88,7 +88,7 @@ namespace bndr {
 		// window hints for the window
 
 		// disable double buffering so we have unlimited fps
-		glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
+		//glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
 
 		// create window
 		window = glfwCreateWindow(width, height, title, NULL, NULL);

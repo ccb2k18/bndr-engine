@@ -1,6 +1,7 @@
 #pragma once
 
 #include <pch.h>
+#include "../data_structures/Queue.h"
 
 typedef GLFWwindow* screen;
 typedef unsigned int uint;
@@ -38,7 +39,7 @@ namespace bndr {
 		// state-checking methods
 
 		// flush the display
-		inline void Flush() { glFlush(); }
+		inline void Flush() { glfwSwapBuffers(window); } //glFlush(); }
 		// check for events
 		inline void PollEvents() { glfwPollEvents(); }
 		// check if the window is currently open

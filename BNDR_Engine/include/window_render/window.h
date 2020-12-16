@@ -11,8 +11,8 @@ typedef unsigned char uchar;
 namespace bndr {
 
 	void ErrorCallback(int code, const char* message);
-	DLL_EXPORT void ClearGLErrors();
-	DLL_EXPORT void CheckGLError();
+	BNDR_API void ClearGLErrors();
+	BNDR_API void CheckGLError();
 	// WARNING: this function can cause memory leaks! Make sure you use delete[] on the pointer to free the memory when you are done!
 	std::pair<std::pair<uint, uint>, uchar*> LoadBitMap(const char* filePath);
 	// WARNING: this function can cause memory leaks! Make sure you use delete[] on the pointer to free the memory when you are done!
@@ -24,7 +24,7 @@ namespace bndr {
 		WINDOW_CLOSE = 0x01
 	};
 
-	class DLL_EXPORT Window {
+	class BNDR_API Window {
 	
 		screen window;
 		// the aspect ratio
@@ -39,13 +39,15 @@ namespace bndr {
 		// state-checking methods
 
 		// flush the display
-		inline void Flush() { glfwSwapBuffers(window); } //glFlush(); }
+		inline void Flush() { glfwSwapBuffers(window); }
 		// check for events
 		inline void PollEvents() { glfwPollEvents(); }
 		// check if the window is currently open
 		inline bool IsOpen() { return !glfwWindowShouldClose(window); }
 		// set the close flag to true (useful for user-defined quit scenarios)
 		inline void QuitWindow() { windowFlags = windowFlags | WINDOW_CLOSE; }
+		// get the mouse cursor position
+		std::pair<float, float> GetCursorPos();
 		// updates flags regarding the window and whether or not the user has quit
 		// returns true if the window is still open
 		bool Update();
@@ -58,9 +60,6 @@ namespace bndr {
 		inline void Clear() { glClear(GL_COLOR_BUFFER_BIT); }
 
 		// customization
-
-		// set the image for the window icon
-		void SetIconImage(const char* imageFile);
 
 		// destroy GLFW window and terminate GLFW
 		~Window();

@@ -6,7 +6,7 @@ using duration = std::chrono::duration<float>;
 
 namespace bndr {
 
-	class DLL_EXPORT Clock {
+	class BNDR_API Clock {
 
 	protected:
 		// start of clock
@@ -23,7 +23,7 @@ namespace bndr {
 
 	};
 
-	class DLL_EXPORT Timer : protected Clock {
+	class BNDR_API Timer : protected Clock {
 		
 		// the time interval of the timer
 		float timeInterval;

@@ -27,15 +27,17 @@ namespace bndr {
 
 		};
 
-		// node of queue
+		// first node of queue
 		Node<T>* node;
 		// the size of the queue
 		int size;
+		// pointer to the back of the queue for quick pushes
+		Node<T>* back;
 
 	public:
 
 		// default constructor is the only constructor
-		Queue() : node(nullptr), size(0) {}
+		Queue() : node(nullptr), size(0), back(nullptr) {}
 		// copy constructor is not aloud
 		Queue(const Queue<T>& queue) = delete;
 		// move constructor
@@ -59,10 +61,12 @@ namespace bndr {
 		// move the data from the other queue
 		node = queue.node;
 		size = queue.size;
+		back = queue.back;
 
-		// now to put the other queue in a hollow state simply assign its node to null and its size to 0
+		// now to put the other queue in a hollow state simply assign its node to null, its size to 0, and its back to null
 		queue.node = nullptr;
 		queue.size = 0;
+		queue.back = nullptr;
 
 	}
 
@@ -75,17 +79,13 @@ namespace bndr {
 		if (node == nullptr) {
 
 			node = new Node<T>(element);
+			// now the back of the queue is the first node
+			back = node;
 			return;
 		}
-		// otherwise loop through until we have arrived at an empty node
-		Node<T>* localPtr = node;
-		// while the next pointer is not null keep advancing through the queue until we reach the end
-		while (localPtr->GetNext() != nullptr) {
-
-			localPtr = localPtr->GetNext();
-		}
-		// initialize the first empty node
-		localPtr->SetNext(new Node<T>(element));
+		// otherwise get the end node, add the new node to its next pointer, and update the back pointer
+		back->SetNext(new Node<T>(element));
+		back = back->GetNext();
 	}
 
 	template <class T>
@@ -100,12 +100,13 @@ namespace bndr {
 		size--;
 		// if the queue has at least one element then copy the value of the first node to return
 		T popValue = node->GetElement();
-		// if the queue only has one element then delete
+		// if the queue only has one element then delete it
 		if (node->GetNext() == nullptr) {
 			
 			// deallocate the node and set the pointer to null
 			delete node;
 			node = nullptr;
+			back = nullptr;
 			return popValue;
 		}
 		// now if we have two nodes or more this is what we do

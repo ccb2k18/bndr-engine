@@ -68,12 +68,6 @@ namespace bndr {
 		return { {width, height}, imgData };
 
 	}
-
-	/*uchar* ConvertRGBToRGBA(uchar* imageData, uint width, uint height) {
-
-		uchar* newImageData = new uchar[width * height * 4];
-		uint 
-	}*/
 	Window::Window(int x, int y, int width, int height, const char* title) {
 
 		// initialize glfw
@@ -88,7 +82,7 @@ namespace bndr {
 		// window hints for the window
 
 		// disable double buffering so we have unlimited fps
-		//glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
+		// glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
 
 		// create window
 		window = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -109,6 +103,9 @@ namespace bndr {
 		// maintain aspect ratio
 		glfwSetWindowAspectRatio(window, width, height);
 		aspect = (float)width / (float)height;
+		// make keys sticky and mouse sticky
+		glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
+		glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 		// make context for window
 		glfwMakeContextCurrent(window);
 
@@ -122,21 +119,11 @@ namespace bndr {
 		}
 	}
 
-	void Window::SetIconImage(const char* imageFile) {
-
-		// load the image and get the parameters
-		std::pair<std::pair<uint, uint>, uchar*> imageParameters = LoadBitMap(imageFile);
-		// define the icon
-		GLFWimage icon;
-		icon.width = (int)imageParameters.first.first;
-		icon.height = (int)imageParameters.first.second;
-		icon.pixels = imageParameters.second;
-
-		// hand it over to glfw
-		glfwSetWindowIcon(window, 1, &icon);
-
-		// free the image memory
-		delete[] imageParameters.second;
+	std::pair<float, float> Window::GetCursorPos() {
+		
+		double x, y;
+		glfwGetCursorPos(window, &x, &y);
+		return { (float)x, (float)y };
 	}
 
 	bool Window::Update() {

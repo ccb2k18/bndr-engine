@@ -4,7 +4,7 @@
 namespace bndr {
 
 	// retrieve GLFW key codes to be packaged into the BNDR API
-	enum keyCodes {
+	enum BNDR_API keyCodes {
 
 		KEY_0 = GLFW_KEY_0, KEY_1 = GLFW_KEY_1, KEY_2 = GLFW_KEY_2, KEY_3 = GLFW_KEY_3, KEY_4 = GLFW_KEY_4,
 		KEY_5 = GLFW_KEY_5, KEY_6 = GLFW_KEY_6, KEY_7 = GLFW_KEY_7, KEY_8 = GLFW_KEY_8, KEY_9 = GLFW_KEY_9,
@@ -26,14 +26,14 @@ namespace bndr {
 	};
 
 	// potential states of a key
-	enum keyStates {
+	enum BNDR_API keyStates {
 
 		KEY_PRESS = GLFW_PRESS,
 		KEY_RELEASE = GLFW_RELEASE
 	};
 
 	// retrieve GLFW mouse codes to be packaged into the BNDR API
-	enum mouseCodes {
+	enum BNDR_API mouseCodes {
 
 		MOUSE_LEFT = GLFW_MOUSE_BUTTON_LEFT,
 		MOUSE_RIGHT = GLFW_MOUSE_BUTTON_RIGHT,
@@ -41,20 +41,21 @@ namespace bndr {
 	};
 
 	// potential states of a mouse action
-	enum mouseStates {
+	enum BNDR_API mouseStates {
 
 		MOUSE_PRESS = GLFW_PRESS,
 		MOUSE_RELEASE = GLFW_RELEASE
 	};
 
-	struct KeyEvent {
+	struct BNDR_API KeyEvent {
 
 		int key;
 		int state;
 	};
 
-	struct MouseEvent {
+	struct BNDR_API MouseEvent {
 
+		std::pair<float, float> position;
 		int button;
 		int state;
 	};

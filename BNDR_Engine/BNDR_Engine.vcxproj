@@ -175,8 +175,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\event_objects\events.h" />
     <ClInclude Include="include\BNDR_Engine.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="logger.h" />
     <ClInclude Include="include\window_render\key_and_mouse_events.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="include\window_render\window.h" />

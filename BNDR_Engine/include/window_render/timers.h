@@ -13,13 +13,13 @@ namespace bndr {
 		timePoint start;
 		// end of clock
 		timePoint end;
-		static timePoint Now() { return std::chrono::high_resolution_clock::now(); }
+		static timePoint now() { return std::chrono::high_resolution_clock::now(); }
 
 	public:
 
-		Clock() : start(Clock::Now()), end(Clock::Now()) {}
+		Clock() : start(Clock::now()), end(Clock::now()) {}
 		// returns the time elapsed since last DeltaTime call
-		float DeltaTime();
+		float deltaTime();
 
 	};
 
@@ -34,14 +34,14 @@ namespace bndr {
 
 		Timer(float interval) : Clock(), timeInterval(interval), elapsedTime(interval) {}
 		// continues the timer count (resets it if timer has previously stopped or continues counting)
-		void CountDown(float deltaTime);
+		void countDown(float deltaTime);
 		// returns true if the elapsed time is >= the time interval (i.e if time interval is 5.0f then after 5 seconds this will return true)
 		// if TimesUp returns true it automatically stops the timer (then the timer can reset once Tick is called)
-		bool TimesUp();
+		bool timesUp();
 		// resets the time interval
-		void ResetTimeInterval(float newInterval);
+		void resetTimeInterval(float newInterval);
 		// get the elapsed time
-		float GetElapsedTime() { return elapsedTime; }
+		float getElapsedTime() { return elapsedTime; }
 	};
 }
 

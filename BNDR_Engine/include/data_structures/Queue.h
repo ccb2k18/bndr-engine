@@ -19,11 +19,11 @@ namespace bndr {
 			// constructor with element of type T
 			Node(T newElement) : element(newElement), next(nullptr) {}
 			// getter and setter for element
-			inline T& GetElement() { return element; }
-			inline void SetElement(T newElement) { element = newElement; }
+			inline T& getElement() { return element; }
+			inline void setElement(T newElement) { element = newElement; }
 			// getter and setter for next pointer
-			inline Node<T>* GetNext() { return next; }
-			inline void SetNext(Node<T>* newNext) { next = newNext; }
+			inline Node<T>* getNext() { return next; }
+			inline void setNext(Node<T>* newNext) { next = newNext; }
 
 		};
 
@@ -44,13 +44,15 @@ namespace bndr {
 		Queue(Queue<T>&& queue);
 		// reassignment is not aloud for queues
 		Queue<T> operator=(const Queue<T>& queue) = delete;
-		// push onto queue
-		void Push(T element);
+		// peek at the front of the queue
+		T peek();
+		// add to front of queue
+		void enqueue(T element);
 		// pop an element from the queue
-		T Pop();
+		T dequeue();
 		// output to cout
-		void Print();
-		inline int Size() { return size; }
+		void print();
+		inline int getSize() { return size; }
 		// deallocate all nodes when our queue is destroyed
 		~Queue();
 	};
@@ -71,7 +73,20 @@ namespace bndr {
 	}
 
 	template <class T>
-	void Queue<T>::Push(T element) {
+	T Queue<T>::peek() {
+
+		if (node != nullptr) {
+
+			return node->getElement();
+		}
+		else {
+
+			BNDR_EXCEPTION("Cannot peek at front of empty bndr::Queue instance");
+		}
+	}
+
+	template <class T>
+	void Queue<T>::enqueue(T element) {
 
 		// increase size by 1
 		size++;
@@ -84,24 +99,24 @@ namespace bndr {
 			return;
 		}
 		// otherwise get the end node, add the new node to its next pointer, and update the back pointer
-		back->SetNext(new Node<T>(element));
-		back = back->GetNext();
+		back->setNext(new Node<T>(element));
+		back = back->getNext();
 	}
 
 	template <class T>
-	T Queue<T>::Pop() {
+	T Queue<T>::dequeue() {
 
 		if (node == nullptr) {
 
-			// return a default constructor of T if the queue is empty
-			return T();
+			// throw an exception since the queue is empty
+			BNDR_EXCEPTION("Cannot call method dequeue on an empty bndr::Queue instance");
 		}
 		// decrement size
 		size--;
 		// if the queue has at least one element then copy the value of the first node to return
-		T popValue = node->GetElement();
+		T popValue = node->getElement();
 		// if the queue only has one element then delete it
-		if (node->GetNext() == nullptr) {
+		if (node->getNext() == nullptr) {
 			
 			// deallocate the node and set the pointer to null
 			delete node;
@@ -112,11 +127,11 @@ namespace bndr {
 		// now if we have two nodes or more this is what we do
 
 		// store the pointer to the second node
-		Node<T>* secondNode = node->GetNext();
+		Node<T>* secondNode = node->getNext();
 		// assign the first node element to be the second node's element
-		node->SetElement(secondNode->GetElement());
+		node->SetElement(secondNode->getElement());
 		// assign the first node next to point to the third node or null
-		node->SetNext(secondNode->GetNext());
+		node->SetNext(secondNode->getNext());
 		// finally delete the hollow-state second node so that the copied second node becomes the first node
 		// and the third node becomes the second node
 		delete secondNode;
@@ -126,7 +141,7 @@ namespace bndr {
 	}
 
 	template <class T>
-	void Queue<T>::Print() {
+	void Queue<T>::print() {
 
 		std::cout << "{ ";
 		// if the queue is empty print nothing
@@ -136,13 +151,13 @@ namespace bndr {
 			return;
 		}
 		// print the first node
-		std::cout << node->GetElement() << ' ';
-		Node<T>* localPtr = node->GetNext();
+		std::cout << node->getElement() << ' ';
+		Node<T>* localPtr = node->getNext();
 		// and print all nodes that follow
 		while (localPtr != nullptr) {
 
-			std::cout << localPtr->GetElement() << ' ';
-			localPtr = localPtr->GetNext();
+			std::cout << localPtr->getElement() << ' ';
+			localPtr = localPtr->getNext();
 		}
 		std::cout << '}';
 	}
@@ -154,13 +169,13 @@ namespace bndr {
 		if (node != nullptr) {
 
 			// get the next pointer from the first node
-			Node<T>* localPtr = node->GetNext();
+			Node<T>* localPtr = node->getNext();
 			// now delete the first node
 			delete node;
 			// traverse the queue deleting all the other nodes
 			while (localPtr != nullptr) {
 
-				Node<T>* nextPtr = localPtr->GetNext();
+				Node<T>* nextPtr = localPtr->getNext();
 				delete localPtr;
 				localPtr = nextPtr;
 			}

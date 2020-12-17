@@ -10,17 +10,17 @@
 // add headers that you want to pre-compile here
 #include <iostream>
 #include <vector>
-#include <string>
 #include <queue>
 #include <chrono>
 #include <fstream>
 #include <unordered_map>
 #include <cmath>
 #include <sstream>
-#include <stdexcept>
 #include <thread>
 #include "glew.h"
 #include "glfw3.h"
 #include "framework.h"
+#include "logger.h"
+#include "include/data_structures/Queue.h"
 
 #endif //PCH_H

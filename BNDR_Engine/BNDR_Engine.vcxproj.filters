@@ -36,6 +36,12 @@
     <ClInclude Include="include\window_render\key_and_mouse_events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\event_objects\events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

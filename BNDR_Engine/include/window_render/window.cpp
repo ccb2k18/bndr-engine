@@ -3,81 +3,40 @@
 
 namespace bndr {
 
-	void ErrorCallback(int code, const char* message) {
+	void errorCallback(int code, const char* message) {
 		
-		std::cout << "The Process exited with code " << code << " and message: " << message << "\n";
+		std::cout << "The Process exited with code " << code << " and message: " << message << '\n';
 		throw std::runtime_error("error");
 	}
 
-	void ClearGLErrors() {
+	void clearGLErrors() {
 
 		while (glGetError()) {
 
 		}
 	}
-	void CheckGLError() {
+	void checkGLError() {
 
 		uint errorCode = glGetError();
 		if (errorCode != GL_NO_ERROR) {
 
-			std::cout << "OpenGL reported error code " << errorCode << "\n";
+			std::cout << "OpenGL reported error code " << errorCode << '\n';
 			exit(-1);
 		}
 	}
 
-	std::pair<std::pair<uint, uint>, uchar*> LoadBitMap(const char* filePath) {
-
-		// open the file
-		FILE* imgFile = fopen(filePath, "rb");
-		// check if it is open
-		if (imgFile == NULL) { throw std::runtime_error("failed to open file\n"); }
-		// specify some values for validating the file
-		uchar header[54];
-		uint dataStart;
-		uint width, height, imageSize;
-		uchar* imgData;
-
-		// ensure this is a valid bitmap file
-		if (fread(header, 1, 54, imgFile) != 54) {
-			std::cout << "Invalid file type for LoadBitMap\n";
-			throw std::runtime_error("error");
-		}
-		if (header[0] != 'B' || header[1] != 'M') { 
-			
-			std::cout << "Incorrect Bitmap file for LoadBitMap\n";
-			throw std::runtime_error("error");
-		}
-		// get the data from the header
-		dataStart = *(int*)&(header[0x0A]);
-		imageSize = *(int*)&(header[0x22]);
-		width = *(int*)&(header[0x12]);
-		height = *(int*)&(header[0x16]);
-		// put in missing information if there is info missing
-		if (imageSize == 0) { imageSize = width * height * 3; } // rgb color scheme
-		if (dataStart == 0) { dataStart = 54; } // location of first uchar of data
-
-		// allocate memory on the heap
-		imgData = new uchar[imageSize];
-		// read the contents of the image file into the memory
-		fread(imgData, 1, imageSize, imgFile);
-
-		// close the file stream
-		fclose(imgFile);
-
-		// return the data pointer
-		return { {width, height}, imgData };
-
-	}
 	Window::Window(int x, int y, int width, int height, const char* title) {
 
+		// greet the client
+		BNDR_MESSAGE("Hello from BNDR Engine!");
+
 		// initialize glfw
-		if (!glfwInit()) { 
-			
-			std::cout << "Failed to initialize GLFW\n";
-			throw std::runtime_error("error");
-		
+		if (!glfwInit()) {
+
+			BNDR_EXCEPTION("Failed to initialize GLFW");
+
 		}
-		glfwSetErrorCallback(ErrorCallback);
+		glfwSetErrorCallback(errorCallback);
 
 		// window hints for the window
 
@@ -90,8 +49,7 @@ namespace bndr {
 		if (window == NULL) {
 
 			glfwTerminate();
-			std::cout << "GLFW window creation failed\n";
-			throw std::runtime_error("error");
+			BNDR_EXCEPTION("Failed to create GLFW window");
 		}
 
 		// more window rules
@@ -114,23 +72,22 @@ namespace bndr {
 
 			glfwDestroyWindow(window);
 			glfwTerminate();
-			std::cout << "OpenGL context failed to create\n";
-			throw std::runtime_error("error");
+			BNDR_EXCEPTION("OpenGL context failed to create");
 		}
 	}
 
-	std::pair<float, float> Window::GetCursorPos() {
+	std::pair<float, float> Window::getCursorPos() {
 		
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
 		return { (float)x, (float)y };
 	}
 
-	bool Window::Update() {
+	bool Window::update() {
 
-		PollEvents();
+		pollEvents();
 
-		if (!IsOpen() || (windowFlags & WINDOW_CLOSE)) {
+		if (!isOpen() || (windowFlags & WINDOW_CLOSE)) {
 		
 			return false;
 		}

@@ -1,12 +1,39 @@
+/*MIT License
+
+Copyright (c) 2020 Caleb Christopher Bender
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.*/
+
 #include <pch.h>
 #pragma once
 
 namespace bndr {
 
-	// This Queue class has a custom iterator built for it so
-	// a range-based for-loop is possible
+	// forward declare
+	/*template <class T>
+	class Queue;*/
+
+	// This Queue class can be used for a variety of purposes
 	template <class T>
 	class Queue {
+
+	protected:
 
 		// node class to chain objects in a queue
 		template <class T>
@@ -31,13 +58,15 @@ namespace bndr {
 		Node<T>* node;
 		// the size of the queue
 		int size;
-		// pointer to the back of the queue for quick pushes
+		// pointer to the back of the queue for O(1) enqueue calls
 		Node<T>* back;
 
 	public:
 
 		// default constructor is the only constructor
 		Queue() : node(nullptr), size(0), back(nullptr) {}
+		// construct the queue with an initializer list
+		Queue(std::initializer_list<T>&& list);
 		// copy constructor is not aloud
 		Queue(const Queue<T>& queue) = delete;
 		// move constructor
@@ -46,9 +75,9 @@ namespace bndr {
 		Queue<T> operator=(const Queue<T>& queue) = delete;
 		// peek at the front of the queue
 		T peek();
-		// add to front of queue
-		void enqueue(T element);
-		// pop an element from the queue
+		// add to back of queue
+		void enqueue(const T& element);
+		// remove element from the front of queue
 		T dequeue();
 		// output to cout
 		void print();
@@ -56,6 +85,16 @@ namespace bndr {
 		// deallocate all nodes when our queue is destroyed
 		~Queue();
 	};
+
+	template <class T>
+	Queue<T>::Queue(std::initializer_list<T>&& list) {
+
+		// add each value in the initializer list to the Queue
+		for (const T& value : list) {
+
+			enqueue(value);
+		}
+	}
 
 	template <class T>
 	Queue<T>::Queue(Queue<T>&& queue) {
@@ -86,7 +125,7 @@ namespace bndr {
 	}
 
 	template <class T>
-	void Queue<T>::enqueue(T element) {
+	void Queue<T>::enqueue(const T& element) {
 
 		// increase size by 1
 		size++;
@@ -126,15 +165,11 @@ namespace bndr {
 		}
 		// now if we have two nodes or more this is what we do
 
-		// store the pointer to the second node
-		Node<T>* secondNode = node->getNext();
-		// assign the first node element to be the second node's element
-		node->SetElement(secondNode->getElement());
-		// assign the first node next to point to the third node or null
-		node->SetNext(secondNode->getNext());
-		// finally delete the hollow-state second node so that the copied second node becomes the first node
-		// and the third node becomes the second node
-		delete secondNode;
+		Node<T>* nodeToDelete = node;
+		node = node->getNext();
+		nodeToDelete->setNext(nullptr);
+		delete nodeToDelete;
+
 		// return the popValue
 		return popValue;
 

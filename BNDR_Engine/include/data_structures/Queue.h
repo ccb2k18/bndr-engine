@@ -26,10 +26,77 @@ SOFTWARE.*/
 namespace bndr {
 
 	// forward declare
-	/*template <class T>
-	class Queue;*/
+	template <class T>
+	class Queue;
+
+	// bndr::Queue Iterator class that when used automatically empties the queue
+	// when using a range-based for loop, you will get all of the contents from the queue until it is empty
+	template <class T>
+	class QueueIterator {
+
+	public:
+		// make code more readable with these using declarations
+		using ElementType = typename Queue<T>::ElementType;
+		using NodeType = typename Queue<T>::NodeType;
+		using Iterator = typename QueueIterator<T>;
+
+	private:
+
+		ElementType* element;
+		NodeType* node;
+		Queue<T>* queue;
+
+	public:
+
+		// constructor takes in an element pointer, node pointer, and pointer to the queue instance
+		QueueIterator(ElementType* e, NodeType* n, Queue<T>* q) : element(e), node(n), queue(q) {}
+		// left increment (++i)
+		Iterator& operator++() {
+
+			// remove element from front of queue
+			queue->dequeue();
+			// update the element pointer
+			// if the node isn't null then assign the element to the new front element in the Queue
+			if (queue->node != nullptr) {
+
+				element = &(queue->node->getElement());
+			}
+			// otherwise set it to null as well
+			else {
+
+				element = nullptr;
+			}
+			// update the node pointer
+			node = queue->node;
+			// return the modified instance
+			return *this;
+		}
+		// right increment (i++)
+		Iterator operator++(int) {
+
+			Iterator iterator = Iterator(element, node, queue);
+			++(*this);
+			return iterator;
+		}
+		// dereference the iterator
+		ElementType& operator*() {
+
+			return *(element);
+		}
+		// check if two iterators are equal
+		bool operator==(const Iterator& iterator) {
+
+			return (iterator.node == node);
+		}
+		// check if two iterators are not equal
+		bool operator!=(const Iterator& iterator) {
+
+			return !((*this) == iterator);
+		}
+	};
 
 	// This Queue class can be used for a variety of purposes
+	// It is preferred as a better alternative than std::queue because its custom iterator automatically empties the queue
 	template <class T>
 	class Queue {
 
@@ -63,6 +130,11 @@ namespace bndr {
 
 	public:
 
+		// using-declarations for making code more readable
+		using Iterator = typename QueueIterator<T>;
+		using ElementType = typename T;
+		using NodeType = typename Node<T>;
+
 		// default constructor is the only constructor
 		Queue() : node(nullptr), size(0), back(nullptr) {}
 		// construct the queue with an initializer list
@@ -81,7 +153,14 @@ namespace bndr {
 		T dequeue();
 		// output to cout
 		void print();
+		// get the size of the queue
 		inline int getSize() { return size; }
+		// make Iterator a friend class
+		friend class Iterator;
+		// get iterator to front of queue
+		inline Iterator begin() { return Iterator(&(node->getElement()), node, this); }
+		// get iterator to back of queue
+		inline Iterator end() { return Iterator(nullptr, nullptr, this); }
 		// deallocate all nodes when our queue is destroyed
 		~Queue();
 	};

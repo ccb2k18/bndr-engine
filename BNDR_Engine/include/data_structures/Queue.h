@@ -111,7 +111,9 @@ namespace bndr {
 		public:
 
 			// constructor with element of type T
-			Node(T newElement) : element(newElement), next(nullptr) {}
+			Node(const T& newElement) : element(newElement), next(nullptr) {}
+			// move constructor with element of type T (useful if T is quite large)
+			Node(T&& newElement) : element((T&&)newElement), next(nullptr) {}
 			// getter and setter for element
 			inline T& getElement() { return element; }
 			inline void setElement(T newElement) { element = newElement; }
@@ -149,6 +151,8 @@ namespace bndr {
 		T peek();
 		// add to back of queue
 		void enqueue(const T& element);
+		// move enqueue overload
+		void enqueue(T&& element);
 		// remove element from the front of queue
 		T dequeue();
 		// output to cout
@@ -218,6 +222,24 @@ namespace bndr {
 		}
 		// otherwise get the end node, add the new node to its next pointer, and update the back pointer
 		back->setNext(new Node<T>(element));
+		back = back->getNext();
+	}
+
+	template <class T>
+	void Queue<T>::enqueue(T&& element) {
+
+		// increase size by 1
+		size++;
+		// if the queue doesn't have any nodes add the element to the first node
+		if (node == nullptr) {
+
+			node = new Node<T>((T&&)element);
+			// now the back of the queue is the first node
+			back = node;
+			return;
+		}
+		// otherwise get the end node, add the new node to its next pointer, and update the back pointer
+		back->setNext(new Node<T>((T&&)element));
 		back = back->getNext();
 	}
 

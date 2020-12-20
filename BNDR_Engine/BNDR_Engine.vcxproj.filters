@@ -33,13 +33,13 @@
     <ClInclude Include="include\data_structures\Queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\window_render\key_and_mouse_events.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\event_objects\events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\event_objects\keyboard_mouse_events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -54,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\window_render\timers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\event_objects\keyboard_mouse_events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

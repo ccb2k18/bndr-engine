@@ -31,24 +31,13 @@ namespace bndr {
 
 	protected:
 
-		int state;
+		// on or off
+		bool state;
 	public:
 
-		Event(int newState) : state(newState) {}
-		Event() : state(0) {}
-		inline int getState() { return state; }
-	};
-
-	template <class E>
-	class EventQueue : public Queue<E> {
-
-	public:
-
-		EventQueue() : Queue<E>() {}
-		EventQueue(E eventObj) : Queue<E>() {
-
-			enqueue(eventObj);
-		}
+		Event(uint newState) : state((bool)newState) {}
+		Event() : state(false) {}
+		inline bool getState() { return state; }
 	};
 }
 

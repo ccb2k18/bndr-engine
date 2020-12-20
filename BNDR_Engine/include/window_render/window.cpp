@@ -47,6 +47,13 @@ namespace bndr {
 		}
 	}
 
+	// define event queue for keyboard
+	Queue<KeyEvent> Window::keyEvents;
+	// define event queue for mouse buttons
+	Queue<MouseEvent> Window::mouseEvents;
+	// define queue for scroll events
+	Queue<ScrollEvent> Window::scrollEvents;
+
 	Window::Window(int x, int y, int width, int height, const char* title) {
 
 		// greet the client
@@ -88,6 +95,11 @@ namespace bndr {
 		glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 		// make context for window
 		glfwMakeContextCurrent(window);
+
+		// callback functions
+		glfwSetKeyCallback(window, Window::keyEventCallback);
+		glfwSetMouseButtonCallback(window, Window::mouseEventCallback);
+		glfwSetScrollCallback(window, Window::scrollEventCallback);
 
 		// create opengl context
 		if (glewInit() != GLEW_OK) {

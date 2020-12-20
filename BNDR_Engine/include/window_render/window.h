@@ -23,11 +23,9 @@ SOFTWARE.*/
 #pragma once
 
 #include <pch.h>
+#include "../event_objects/keyboard_mouse_events.h"
 
 typedef GLFWwindow* screen;
-typedef unsigned int uint;
-typedef unsigned long ulong;
-typedef unsigned char uchar;
 
 namespace bndr {
 
@@ -45,7 +43,14 @@ namespace bndr {
 		screen window;
 		// the aspect ratio
 		float aspect;
+		// various flags
 		uint windowFlags = 0x0;
+		// event queue for keyboard
+		static Queue<KeyEvent> keyEvents;
+		// event queue for mouse buttons
+		static Queue<MouseEvent> mouseEvents;
+		// event queue for scroll events
+		static Queue<ScrollEvent> scrollEvents;
 
 	public:
 
@@ -75,10 +80,42 @@ namespace bndr {
 		// clear the screen
 		inline void clear() { glClear(GL_COLOR_BUFFER_BIT); }
 
-		// customization
+		// event queues and event callbacks
+
+		// returns a reference to the key event queue
+		static inline Queue<KeyEvent>& getKeyEvents() { return keyEvents; }
+		// returns a reference to the mouse event queue
+		static inline Queue<MouseEvent>& getMouseEvents() { return mouseEvents; }
+		// returns a reference to the scroll event queue
+		static inline Queue<ScrollEvent>& getScrollEvents() { return scrollEvents; }
 
 		// destroy GLFW window and terminate GLFW
 		~Window();
+
+	private:
+
+		// key callback
+		static void keyEventCallback(screen window, int key, int scancode, int action, int mods) {
+
+			uint theKey = (uint)key;
+			Window::keyEvents.enqueue(std::move(KeyEvent(action, theKey)));
+		}
+		// mouse callback
+		static void mouseEventCallback(screen window, int button, int action, int mods) {
+
+			uint theButton = (uint)button;
+			double x, y;
+			glfwGetCursorPos(window, &x, &y);
+			Window::mouseEvents.enqueue(MouseEvent(action, theButton, (float)x, (float)y));
+		}
+		// scroll callback
+		static void scrollEventCallback(screen window, double xOff, double yOff) {
+
+			double x, y;
+			glfwGetCursorPos(window, &x, &y);
+			Window::scrollEvents.enqueue(ScrollEvent((float)x, (float)y, (float)yOff));
+		}
+		// customization
 
 	};
 }

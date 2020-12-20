@@ -15,6 +15,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <cmath>
+#include <utility>
 #include <sstream>
 #include <thread>
 #include "glew.h"
@@ -22,5 +23,7 @@
 #include "framework.h"
 #include "logger.h"
 #include "include/data_structures/Queue.h"
-
+typedef unsigned int uint;
+typedef unsigned long ulong;
+typedef unsigned char uchar;
 #endif //PCH_H

@@ -184,6 +184,7 @@
     <ClInclude Include="include\window_render\window.h" />
     <ClInclude Include="include\window_render\timers.h" />
     <ClInclude Include="include\data_structures\Queue.h" />
+    <ClInclude Include="VertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -196,6 +197,7 @@
     </ClCompile>
     <ClCompile Include="include\window_render\window.cpp" />
     <ClCompile Include="include\window_render\timers.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

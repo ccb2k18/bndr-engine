@@ -80,11 +80,11 @@ namespace bndr {
 
 	public:
 
-		KeyEvent(int keyState, uint keyValue) : Event(keyState), key(keyValue) { std::cout << "Constructed KeyEvent!\n"; }
+		KeyEvent(int keyState, uint keyValue) : Event(keyState), key(keyValue) {}
 		KeyEvent(const KeyEvent& keyEvent);
 		KeyEvent(KeyEvent&& keyEvent) noexcept;
 		inline uint getKey() { return key; }
-		~KeyEvent() { std::cout << "Deleted KeyEvent!\n"; }
+		~KeyEvent() {}
 	};
 
 	// This MouseEvent class inherits from the Event class

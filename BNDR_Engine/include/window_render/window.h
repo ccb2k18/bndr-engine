@@ -106,14 +106,14 @@ namespace bndr {
 			uint theButton = (uint)button;
 			double x, y;
 			glfwGetCursorPos(window, &x, &y);
-			Window::mouseEvents.enqueue(MouseEvent(action, theButton, (float)x, (float)y));
+			Window::mouseEvents.enqueue(std::move(MouseEvent(action, theButton, (float)x, (float)y)));
 		}
 		// scroll callback
 		static void scrollEventCallback(screen window, double xOff, double yOff) {
 
 			double x, y;
 			glfwGetCursorPos(window, &x, &y);
-			Window::scrollEvents.enqueue(ScrollEvent((float)x, (float)y, (float)yOff));
+			Window::scrollEvents.enqueue(std::move(ScrollEvent((float)x, (float)y, (float)yOff)));
 		}
 		// customization
 

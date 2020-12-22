@@ -6,7 +6,6 @@ namespace bndr {
 
 	KeyEvent::KeyEvent(const KeyEvent& keyEvent) {
 
-		std::cout << "Copied KeyEvent!\n";
 		state = keyEvent.state;
 		key = keyEvent.key;
 	}
@@ -32,7 +31,6 @@ namespace bndr {
 
 	KeyEvent::KeyEvent(KeyEvent&& keyEvent) noexcept {
 
-		std::cout << "Moved KeyEvent!\n";
 		state = keyEvent.state;
 		key = keyEvent.key;
 	}

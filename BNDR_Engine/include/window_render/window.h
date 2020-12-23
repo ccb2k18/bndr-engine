@@ -33,9 +33,16 @@ namespace bndr {
 	BNDR_API void clearGLErrors();
 	BNDR_API void checkGLError();
 
-	enum WindowStates {
+	enum WindowFlags {
 
-		WINDOW_CLOSE = 0x01
+		WINDOW_CLOSE = 0x01,
+		FULLSCREEN_RESIZABLE = 0x0,
+		MAINTAIN_ASPECT_RATIO = 0x04,
+		STICKY_KEYS = 0x08,
+		STICKY_MOUSE = 0x10,
+		NOT_RESIZEABLE = 0x20,
+		FULLSCREEN_ONLY = 0x40
+
 	};
 
 	class BNDR_API Window {
@@ -43,7 +50,7 @@ namespace bndr {
 		screen window;
 		// the aspect ratio
 		float aspect;
-		// various flags
+		// various flags for customizing the window
 		uint windowFlags = 0x0;
 		// event queue for keyboard
 		static Queue<KeyEvent> keyEvents;
@@ -54,7 +61,7 @@ namespace bndr {
 
 	public:
 
-		Window(int x, int y, int width, int height, const char* title);
+		Window(int x, int y, int width, int height, const char* title, uint flags);
 		// inline functions meant to abstract glfw functionality from the bndr namespace
 
 		// state-checking methods
@@ -67,6 +74,8 @@ namespace bndr {
 		inline bool isOpen() { return !glfwWindowShouldClose(window); }
 		// set the close flag to true (useful for user-defined quit scenarios)
 		inline void quitWindow() { windowFlags = windowFlags | WINDOW_CLOSE; }
+		// get the width and height of the window
+		inline std::pair<int, int> getSize() { int w, h; glfwGetWindowSize(window, &w, &h); return std::make_pair(w, h); }
 		// get the mouse cursor position
 		std::pair<float, float> getCursorPos();
 		// updates flags regarding the window and whether or not the user has quit
@@ -114,6 +123,12 @@ namespace bndr {
 			double x, y;
 			glfwGetCursorPos(window, &x, &y);
 			Window::scrollEvents.enqueue(std::move(ScrollEvent((float)x, (float)y, (float)yOff)));
+		}
+		// resize callback
+		static void windowResizeCallback(screen window, int width, int height) {
+
+			// respecify the state of the viewport
+			glViewport(0, 0, width, height);
 		}
 		// customization
 

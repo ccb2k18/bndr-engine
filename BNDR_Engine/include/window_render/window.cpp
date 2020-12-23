@@ -54,7 +54,7 @@ namespace bndr {
 	// define queue for scroll events
 	Queue<ScrollEvent> Window::scrollEvents;
 
-	Window::Window(int x, int y, int width, int height, const char* title) {
+	Window::Window(int x, int y, int width, int height, const char* title, uint flags) {
 
 		// greet the client
 		BNDR_MESSAGE("Hello from BNDR Engine!");
@@ -67,13 +67,40 @@ namespace bndr {
 		}
 		glfwSetErrorCallback(errorCallback);
 
-		// window hints for the window
+		// window hints/flags for the window
 
-		// disable double buffering so we have unlimited fps
-		// glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
+		windowFlags = flags;
+
+		if (windowFlags & NOT_RESIZEABLE) {
+
+			glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		}
 
 		// create window
-		window = glfwCreateWindow(width, height, title, NULL, NULL);
+
+		if (windowFlags & FULLSCREEN_ONLY) {
+
+			// if we only want to have the window be fullscreen
+			// get the primary monitor and its video mode
+			GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+			const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
+
+			// now add some more hints
+			glfwWindowHint(GLFW_RED_BITS, videoMode->redBits);
+			glfwWindowHint(GLFW_GREEN_BITS, videoMode->greenBits);
+			glfwWindowHint(GLFW_BLUE_BITS, videoMode->blueBits);
+			glfwWindowHint(GLFW_REFRESH_RATE, videoMode->refreshRate);
+
+			window = glfwCreateWindow(videoMode->width, videoMode->height, title, monitor, NULL);
+			// for obvious reasons the window is not going to be resizable
+			windowFlags = windowFlags | NOT_RESIZEABLE;
+		}
+		else {
+
+			// we don't care about the refresh rate being explicit
+			glfwWindowHint(GLFW_REFRESH_RATE, GLFW_DONT_CARE);
+			window = glfwCreateWindow(width, height, title, NULL, NULL);
+		}
 		// make sure it created successfully
 		if (window == NULL) {
 
@@ -85,14 +112,28 @@ namespace bndr {
 
 		// position of the window
 		glfwSetWindowPos(window, x, y);
-		// resizing constraints are half the size specified up to the size specified
-		glfwSetWindowSizeLimits(window, width / 2, height / 2, width, height);
+		// if the window is resizable
+		if (!(windowFlags & NOT_RESIZEABLE)) {
+
+			// resizing constraints are half the size specified up to fullscreen
+			glfwSetWindowSizeLimits(window, width / 2, height / 2, GLFW_DONT_CARE, GLFW_DONT_CARE);
+		}
 		// maintain aspect ratio
-		glfwSetWindowAspectRatio(window, width, height);
+		if (windowFlags & MAINTAIN_ASPECT_RATIO) {
+
+			glfwSetWindowAspectRatio(window, width, height);
+		}
 		aspect = (float)width / (float)height;
-		// make keys sticky and mouse sticky
-		glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
-		glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+		// make keys sticky if the flag is set
+		if (windowFlags & STICKY_KEYS) {
+
+			glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
+		}
+		// make mouse buttons sticky if the flag is set
+		if (windowFlags & STICKY_MOUSE) {
+
+			glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+		}
 		// make context for window
 		glfwMakeContextCurrent(window);
 
@@ -100,6 +141,7 @@ namespace bndr {
 		glfwSetKeyCallback(window, Window::keyEventCallback);
 		glfwSetMouseButtonCallback(window, Window::mouseEventCallback);
 		glfwSetScrollCallback(window, Window::scrollEventCallback);
+		glfwSetFramebufferSizeCallback(window, Window::windowResizeCallback);
 
 		// create opengl context
 		if (glewInit() != GLEW_OK) {
@@ -108,13 +150,16 @@ namespace bndr {
 			glfwTerminate();
 			BNDR_EXCEPTION("OpenGL context failed to create");
 		}
+
+		// set viewport size
+		glViewport(0, 0, width, height);
 	}
 
 	std::pair<float, float> Window::getCursorPos() {
 		
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
-		return { (float)x, (float)y };
+		return std::make_pair((float)x, (float)y);
 	}
 
 	bool Window::update() {

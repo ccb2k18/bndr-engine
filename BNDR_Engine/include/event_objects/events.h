@@ -25,8 +25,9 @@ SOFTWARE.*/
 
 namespace bndr {
 
-	// base class for all event objects in the engine
-	// every event instance will have some kind of state associated with it
+	// bndr::Event
+	// Description: This is the base class for all event objects in the engine. Every event instance will have
+	// some kind of on-off state associated with it
 	class Event {
 
 	protected:

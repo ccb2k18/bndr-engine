@@ -25,6 +25,7 @@ SOFTWARE.*/
 #include <pch.h>
 #include "../event_objects/keyboard_mouse_events.h"
 
+// typedef to hide glfw functionality in the BNDR API
 typedef GLFWwindow* screen;
 
 namespace bndr {
@@ -33,7 +34,9 @@ namespace bndr {
 	BNDR_API void clearGLErrors();
 	BNDR_API void checkGLError();
 
-	enum WindowFlags {
+	// bndr::windowFlags
+	// Description: Flags to use so that the bndr::Window can be customized to the programmer's content
+	enum windowFlags {
 
 		WINDOW_CLOSE = 0x01,
 		FULLSCREEN_RESIZABLE = 0x0,
@@ -45,6 +48,10 @@ namespace bndr {
 
 	};
 
+	// bndr::Window
+	// Description: This class is meant to be a customizeable window that allows for keyboard and mouse event queue
+	// traversals. There are a few rendering methods, but the BNDR rendering API is meant to be used for more complicated
+	// operations.
 	class BNDR_API Window {
 	
 		screen window;
@@ -61,6 +68,15 @@ namespace bndr {
 
 	public:
 
+		// bndr::Window::Window
+		// Arguments:
+		//        x = The position of the top left corner x coord of the window on the monitor (irrelevant for FULLSCREEN_ONLY)
+		//        y = The position of the top left corner y coord of the window on the monitor (irrelevant for FULLSCREEN_ONLY)
+		//        width = The width of the window in pixels
+		//        height = The height of the window in pixels
+		//        title = A c-string that will specify the title of the window
+		//        flags = Various flags to customize the window
+		// Description: Constructs a BNDR window based on the programmer specifications and creates an OpenGL context for that window
 		Window(int x, int y, int width, int height, const char* title, uint flags);
 		// inline functions meant to abstract glfw functionality from the bndr namespace
 
@@ -72,7 +88,7 @@ namespace bndr {
 		inline void pollEvents() { glfwPollEvents(); }
 		// check if the window is currently open
 		inline bool isOpen() { return !glfwWindowShouldClose(window); }
-		// set the close flag to true (useful for user-defined quit scenarios)
+		// set the close flag to true (useful for custom quit scenarios)
 		inline void quitWindow() { windowFlags = windowFlags | WINDOW_CLOSE; }
 		// get the width and height of the window
 		inline std::pair<int, int> getSize() { int w, h; glfwGetWindowSize(window, &w, &h); return std::make_pair(w, h); }
@@ -97,8 +113,8 @@ namespace bndr {
 		static inline Queue<MouseEvent>& getMouseEvents() { return mouseEvents; }
 		// returns a reference to the scroll event queue
 		static inline Queue<ScrollEvent>& getScrollEvents() { return scrollEvents; }
-
-		// destroy GLFW window and terminate GLFW
+		// bndr::Window::~Window
+		// Description: This destructor calls glfw functions to clean up the window and memory associated with it
 		~Window();
 
 	private:

@@ -23,6 +23,7 @@ SOFTWARE.*/
 #pragma once
 
 #include <pch.h>
+#include "GLDebug.h"
 
 namespace bndr {
 
@@ -60,9 +61,11 @@ namespace bndr {
 		// the move constructor is not allowed
 		VertexBuffer(VertexBuffer&&) = delete;
 		// bind the buffer
-		inline void bind() { glBindBuffer(GL_ARRAY_BUFFER, bufferID); }
+		inline void bind() { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, bufferID)); }
 		// unbind the buffer
-		inline void unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+		inline void unbind() { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, 0)); }
+		// returns the number of vertices
+		inline int getNumVertices() { return verticesNumber; }
 		// render the vertices
 		void render(uint drawMode);
 		// bndr::VertexBuffer::~VertexBuffer()

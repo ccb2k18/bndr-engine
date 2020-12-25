@@ -29,9 +29,9 @@ namespace bndr {
 	VertexBuffer::VertexBuffer(std::vector<float>&& vertexData, int dataBlockBytes, uint flags) {
 
 		// generate and bind the buffer
-		glGenBuffers(1, &bufferID);
+		GL_DEBUG_FUNC(glGenBuffers(1, &bufferID));
 		bind();
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexData.size(), &vertexData[0], GL_DYNAMIC_DRAW);
+		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexData.size(), &vertexData[0], GL_DYNAMIC_DRAW));
 
 		// the vertices number is equal to the size of the entire data divided by the size of each data block
 		verticesNumber = (sizeof(float) * vertexData.size()) / dataBlockBytes;
@@ -41,40 +41,40 @@ namespace bndr {
 
 
 		// at bare minimum we have a single vertex attribute pointer for the positions
-		glEnableVertexAttribArray(attribIndex);
-		glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset);
+		GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
+		GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
 		// increment the attrib index
 		attribIndex++;
 		// if the color attrib flag is set
 		if (flags & RGBA_COLOR_ATTRIB) {
 
-			glEnableVertexAttribArray(attribIndex);
+			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
 			offset += 4;
-			glVertexAttribPointer(attribIndex, 4, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset);
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 4, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
 			attribIndex++;
 		}
 		// if the normals attrib flag is set
 		if (flags & VERTEX_NORMALS_ATTRIB) {
 
-			glEnableVertexAttribArray(attribIndex);
+			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
 			offset += 3;
-			glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset);
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
 			attribIndex++;
 		}
 		// if texture coordinates are specified
 		if (flags & TEXTURE_COORDS_ATTRIB) {
 
-			glEnableVertexAttribArray(attribIndex);
+			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
 			offset += 2;
-			glVertexAttribPointer(attribIndex, 2, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset);
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 2, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
 			attribIndex++;
 		}
 		// if there is more than one texture a texture index will be specified
 		if (flags & TEXTURE_INDEX_ATTRIB) {
 
-			glEnableVertexAttribArray(attribIndex);
+			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
 			offset += 1;
-			glVertexAttribPointer(attribIndex, 1, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset);
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 1, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
 		}
 		unbind();
 	}
@@ -82,7 +82,7 @@ namespace bndr {
 	void VertexBuffer::render(uint drawMode) {
 
 		bind();
-		glDrawArrays(drawMode, 0, verticesNumber);
+		GL_DEBUG_FUNC(glDrawArrays(drawMode, 0, verticesNumber));
 		unbind();
 	}
 }

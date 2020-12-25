@@ -6,11 +6,6 @@
 namespace bndr {
 
 	// various flags to set for the VertexArray class for customization
-	enum vertexArrayFlgs {
-		// render with the index buffer
-		// this flag is set automatically
-		RENDER_WITH_INDICES = 0x01
-	};
 
 	// One can draw triangles, lines, or quadrilaterals
 	enum vertexDrawingModes {
@@ -20,7 +15,7 @@ namespace bndr {
 		QUADS = GL_QUADS
 	};
 
-	class VertexArray {
+	class BNDR_API VertexArray {
 	
 		// unique id for OpenGL
 		uint arrayID;
@@ -31,9 +26,9 @@ namespace bndr {
 		uint vertexArrayFlags;
 
 		// VertexBuffer allocated on the heap
-		VertexBuffer* vBuffer;
+		VertexBuffer* vBuffer = nullptr;
 		// IndexBuffer allocated on the heap
-		IndexBuffer* iBuffer;
+		IndexBuffer* iBuffer = nullptr;
 
 	public:
 		// bndr::VertexArray::VertexArray

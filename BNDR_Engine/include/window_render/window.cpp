@@ -31,22 +31,6 @@ namespace bndr {
 		throw std::runtime_error("error");
 	}
 
-	void clearGLErrors() {
-
-		while (glGetError()) {
-
-		}
-	}
-	void checkGLError() {
-
-		uint errorCode = glGetError();
-		if (errorCode != GL_NO_ERROR) {
-
-			std::cout << "OpenGL reported error code " << errorCode << '\n';
-			exit(-1);
-		}
-	}
-
 	// define event queue for keyboard
 	Queue<KeyEvent> Window::keyEvents;
 	// define event queue for mouse buttons
@@ -70,6 +54,13 @@ namespace bndr {
 		// window hints/flags for the window
 
 		windowFlags = flags;
+
+		// specify version of OpenGL
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+		// use the OpenGL core profile
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		if (windowFlags & NOT_RESIZEABLE) {
 
@@ -153,6 +144,10 @@ namespace bndr {
 
 		// set viewport size
 		glViewport(0, 0, width, height);
+
+		// create a default vertex array so OpenGL doesn't complain
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
 	}
 
 	std::pair<float, float> Window::getCursorPos() {
@@ -175,6 +170,8 @@ namespace bndr {
 
 	Window::~Window() {
 
+		// delete window vertex array
+		glDeleteVertexArrays(1, &vao);
 		// destruct window
 		glfwDestroyWindow(window);
 		glfwTerminate();

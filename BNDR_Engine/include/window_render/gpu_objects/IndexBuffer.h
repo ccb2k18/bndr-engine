@@ -3,7 +3,7 @@
 
 namespace bndr {
 
-	class IndexBuffer {
+	class BNDR_API IndexBuffer {
 
 		uint bufferID;
 		uint size;
@@ -19,6 +19,8 @@ namespace bndr {
 		inline void bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID); }
 		// unbind the buffer
 		inline void unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+		// returns the number of indices
+		inline uint getSize() { return size; }
 		// render the vertices using indices
 		void render(uint drawMode);
 		// bndr::IndexBuffer::~IndexBuffer()

@@ -31,8 +31,6 @@ typedef GLFWwindow* screen;
 namespace bndr {
 
 	void errorCallback(int code, const char* message);
-	BNDR_API void clearGLErrors();
-	BNDR_API void checkGLError();
 
 	// bndr::windowFlags
 	// Description: Flags to use so that the bndr::Window can be customized to the programmer's content
@@ -65,6 +63,8 @@ namespace bndr {
 		static Queue<MouseEvent> mouseEvents;
 		// event queue for scroll events
 		static Queue<ScrollEvent> scrollEvents;
+		// vao so OpenGL doesn't complain
+		uint vao;
 
 	public:
 

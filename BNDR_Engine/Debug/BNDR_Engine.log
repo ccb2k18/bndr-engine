@@ -25,6 +25,7 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_e
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92,43): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::MouseEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92): message : see declaration of 'bndr::MouseEvent'
+  IndexBuffer.cpp
   window.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
@@ -44,6 +45,7 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.2
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(37,16): warning C4251: 'bndr::Clock::end': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
   VertexBuffer.cpp
+  VertexArray.cpp
   Generating Code...
      Creating library D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.lib and object D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.exp
   BNDR_Engine.vcxproj -> D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.dll

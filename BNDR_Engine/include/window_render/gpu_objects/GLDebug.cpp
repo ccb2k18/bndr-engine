@@ -10,7 +10,7 @@ void checkGLError() {
 	uint errorCode = glGetError();
 	if (errorCode != GL_NO_ERROR) {
 
-		std::string message = "OpenGL reported error code " + std::to_string(round((long double)errorCode));
+		std::string message = "OpenGL reported error code " + std::to_string(errorCode);
 		BNDR_EXCEPTION(message.c_str());
 	}
 }

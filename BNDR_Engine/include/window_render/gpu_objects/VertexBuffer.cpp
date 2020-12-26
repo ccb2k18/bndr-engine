@@ -42,7 +42,7 @@ namespace bndr {
 
 		// at bare minimum we have a single vertex attribute pointer for the positions
 		GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-		GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
+		GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
 		// increment the attrib index
 		attribIndex++;
 		// if the color attrib flag is set
@@ -50,7 +50,7 @@ namespace bndr {
 
 			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
 			offset += 4;
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 4, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 4, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
 			attribIndex++;
 		}
 		// if the normals attrib flag is set
@@ -58,7 +58,7 @@ namespace bndr {
 
 			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
 			offset += 3;
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
 			attribIndex++;
 		}
 		// if texture coordinates are specified
@@ -66,7 +66,7 @@ namespace bndr {
 
 			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
 			offset += 2;
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 2, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 2, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
 			attribIndex++;
 		}
 		// if there is more than one texture a texture index will be specified
@@ -74,7 +74,7 @@ namespace bndr {
 
 			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
 			offset += 1;
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 1, GL_FLOAT, GL_FALSE, dataBlockBytes, (const void*)offset));
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 1, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
 		}
 		unbind();
 	}

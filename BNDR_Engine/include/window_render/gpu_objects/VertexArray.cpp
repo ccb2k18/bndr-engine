@@ -3,37 +3,34 @@
 
 namespace bndr {
 
-	VertexArray::VertexArray(uint drawingMode, VertexBuffer* vertices, IndexBuffer* indices) {
+	VertexArray::VertexArray(uint drawingMode, std::vector<float>&& vertexData, int dataBlockBytes, uint vertexBufferFlags, std::vector<uint>&& indexData) {
 
 		drawMode = drawingMode;
 		glGenVertexArrays(1, &arrayID);
 		bind();
 
-		// assign the pointers
-		vBuffer = vertices;
-		iBuffer = indices;
-
-		// bind them to the vertex array
-		vBuffer->bind();
-		iBuffer->bind();
+		// assign the pointers to new instances of VertexBuffer and IndexBuffer
+		vBuffer = new VertexBuffer(std::move(vertexData), dataBlockBytes, vertexBufferFlags);
+		iBuffer = new IndexBuffer(std::move(indexData));
 
 		unbind();
 	}
 
-	VertexArray::VertexArray(uint drawingMode, VertexBuffer* vertices) {
+	VertexArray::VertexArray(uint drawingMode, std::vector<float>&& vertexData, int dataBlockBytes, uint vertexBufferFlags) {
 
 		drawMode = drawingMode;
 		GL_DEBUG_FUNC(glGenVertexArrays(1, &arrayID));
 		bind();
 
-		vBuffer = vertices;
-		vBuffer->bind();
+		// only create an instance of a VertexBuffer
+		vBuffer = new VertexBuffer(std::move(vertexData), dataBlockBytes, vertexBufferFlags);
 
 		unbind();
 	}
 
 	void VertexArray::render() {
 
+		bind();
 		// if the wants to use an IndexBuffer then render using the IndexBuffer
 		if (iBuffer != nullptr) {
 
@@ -44,6 +41,7 @@ namespace bndr {
 
 			vBuffer->render(drawMode);
 		}
+		unbind();
 	}
 
 	VertexArray::~VertexArray() {

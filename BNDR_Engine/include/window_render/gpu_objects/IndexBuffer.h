@@ -10,7 +10,7 @@ namespace bndr {
 
 	public:
 
-		IndexBuffer(std::vector<uint>&& indexData, uint flags);
+		IndexBuffer(std::vector<uint>&& indexData);
 		// the copy constructor is not allowed
 		IndexBuffer(const IndexBuffer&) = delete;
 		// the move constructor is not allowed

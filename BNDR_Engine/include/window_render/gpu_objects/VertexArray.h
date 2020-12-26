@@ -12,7 +12,6 @@ namespace bndr {
 
 		TRIANGLES = GL_TRIANGLES,
 		LINES = GL_LINES,
-		QUADS = GL_QUADS
 	};
 
 	class BNDR_API VertexArray {
@@ -23,7 +22,7 @@ namespace bndr {
 		uint drawMode;
 
 		// flags for the VertexArray
-		uint vertexArrayFlags;
+		// uint vertexArrayFlags;
 
 		// VertexBuffer allocated on the heap
 		VertexBuffer* vBuffer = nullptr;
@@ -31,12 +30,13 @@ namespace bndr {
 		IndexBuffer* iBuffer = nullptr;
 
 	public:
+
 		// bndr::VertexArray::VertexArray
 		// Description: render the vertex array using the indices to the vertices
-		VertexArray(uint drawingMode, VertexBuffer* vertices, IndexBuffer* indices);
+		VertexArray(uint drawingMode, std::vector<float>&& vertexData, int dataBlockBytes, uint vertexBufferFlags, std::vector<uint>&& indexData);
 		// bndr::VertexArray::VertexArray
 		// Description: render the vertex array using just the vertices
-		VertexArray(uint drawingMode, VertexBuffer* vertices);
+		VertexArray(uint drawingMode, std::vector<float>&& vertexData, int dataBlockBytes, uint vertexBufferFlags);
 		// the copy constructor is not allowed
 		VertexArray(const VertexArray&) = delete;
 		// the move constructor is not allowed

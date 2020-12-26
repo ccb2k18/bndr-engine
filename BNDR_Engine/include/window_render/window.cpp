@@ -146,8 +146,9 @@ namespace bndr {
 		glViewport(0, 0, width, height);
 
 		// create a default vertex array so OpenGL doesn't complain
-		glGenVertexArrays(1, &vao);
+		/*glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
+		glBindVertexArray(0);*/
 	}
 
 	std::pair<float, float> Window::getCursorPos() {
@@ -171,7 +172,7 @@ namespace bndr {
 	Window::~Window() {
 
 		// delete window vertex array
-		glDeleteVertexArrays(1, &vao);
+		//glDeleteVertexArrays(1, &vao);
 		// destruct window
 		glfwDestroyWindow(window);
 		glfwTerminate();

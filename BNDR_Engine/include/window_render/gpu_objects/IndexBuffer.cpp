@@ -3,7 +3,7 @@
 
 namespace bndr {
 
-	IndexBuffer::IndexBuffer(std::vector<uint>&& indexData, uint flags) {
+	IndexBuffer::IndexBuffer(std::vector<uint>&& indexData) {
 
 		glGenBuffers(1, &bufferID);
 		bind();

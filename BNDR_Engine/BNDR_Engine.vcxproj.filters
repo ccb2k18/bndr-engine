@@ -54,6 +54,9 @@
     <ClInclude Include="include\window_render\gpu_objects\GLDebug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\window_render\gpu_objects\shaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\window_render\gpu_objects\GLDebug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\window_render\gpu_objects\shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

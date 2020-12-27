@@ -48,7 +48,6 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.2
   VertexBuffer.cpp
   VertexArray.cpp
   shaders.cpp
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.cpp(20,19): warning C4244: 'initializing': conversion from 'std::streamoff' to 'int', possible loss of data
   Generating Code...
      Creating library D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.lib and object D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.exp
   BNDR_Engine.vcxproj -> D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.dll

@@ -49,9 +49,24 @@ namespace bndr {
 		//        fromFile = Indicates whether the Shader class should compile from file or from source code data
 		// Description: This constructor creates and compiles an OpenGL shader to be used in a program
 		Shader(uint shaderType, const char* shaderSource, bool fromFile = false);
+		// copy constructor is not allowed
+		Shader(const Shader&) = delete;
+		// move constructor
+		Shader(Shader&& shader) noexcept;
 		// get the shaderID (read-only)
 		inline uint getShaderID() { return shaderID; }
 		~Shader();
+	};
+
+	enum uniformDataTypes {
+
+		FLOAT = 1,
+		VEC2 = 2,
+		VEC3 = 3,
+		VEC4 = 4,
+		MAT2X2 = 5,
+		MAT3X3 = 6,
+		MAT4x4 = 7
 	};
 
 	// bndr::Program
@@ -74,6 +89,12 @@ namespace bndr {
 		inline void use() { glUseProgram(programID); }
 		// stop using the program
 		inline void unuse() { glUseProgram(0); }
+		// modify a uniform value that whose primitive attribute(s) is/are of type float
+		void setFloatUniformValue(const char* uniformName, float* data, uint dataType);
+		// modify a uniform value that is an array of type float
+		void setFloatArrayUniformValue(const char* uniformName, float* data, int arraySize);
+		// modify a uniform value that is an array of type float
+		void setIntUniformValue(const char* uniformName, int* data, int arraySize);
 		// deletes the OpenGL program
 		~Program();
 	};

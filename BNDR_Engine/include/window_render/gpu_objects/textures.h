@@ -21,52 +21,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
 #pragma once
-#include <ctime>
-#include <cstdio>
-#include <stdexcept>
-#include <string>
+#include <pch.h>
 
 namespace bndr {
 
-	// Static Logger class used for logging exceptions or various messages
-	class Logger {
-	
+	enum textureEnumFlags {
+
+		TEXTURE_REPEAT = GL_REPEAT,
+		TEXTURE_MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
+		TEXTURE_LINEAR = GL_LINEAR,
+		TEXTURE_NEAREST = GL_NEAREST
+	};
+
+
+	class Texture {
+
+		uint textureID;
+		// store all the texture ids so we do not have any duplicate textures in video memory
+		static std::unordered_map<const char*, uint> textureIDs;
 	public:
 
-		// get the current time stamp
-		static std::string getTimeStamp() {
-
-			time_t rawTime;
-			struct tm* info;
-
-			time(&rawTime);
-			info = localtime(&rawTime);
-			char* stamp = asctime(info);
-			std::string timeStamp;
-			if (stamp != NULL) {
-
-				timeStamp = stamp;
-				timeStamp[timeStamp.size() - 1] = '\0';
-			}
-			return timeStamp;
-		}
-
-		// throws an exception
-		static void throwException(const char* errorMessage) {
-
-			printf("\nBNDR Exception [%s]: %s\n", Logger::getTimeStamp().c_str(), errorMessage);
-			throw std::runtime_error("");
-		}
-
-		// displays a message
-		static void displayMessage(const char* message) {
-
-			printf("\nBNDR Message [%s]: %s\n", Logger::getTimeStamp().c_str(), message);
-		}
+		Texture(const char* bitMapFile, uint textureSWrapping = TEXTURE_REPEAT,
+			uint textureTWrapping = TEXTURE_REPEAT, uint textureMinFiltering = TEXTURE_NEAREST,
+			uint textureMagFiltering = TEXTURE_NEAREST);
+		// bind the texture
+		inline void bind() { glBindTexture(GL_TEXTURE_2D, textureID); }
+		// unbind the texture
+		inline void unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
 	};
 }
-
-
-#define BNDR_EXCEPTION(e) ::bndr::Logger::throwException(e)
-#define BNDR_MESSAGE(m) ::bndr::Logger::displayMessage(m)
 

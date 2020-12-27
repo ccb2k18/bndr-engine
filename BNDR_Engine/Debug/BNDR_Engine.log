@@ -48,6 +48,7 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.2
   VertexBuffer.cpp
   VertexArray.cpp
   shaders.cpp
+  textures.cpp
   Generating Code...
      Creating library D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.lib and object D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.exp
   BNDR_Engine.vcxproj -> D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.dll

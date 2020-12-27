@@ -20,53 +20,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
-#pragma once
-#include <ctime>
-#include <cstdio>
-#include <stdexcept>
-#include <string>
+#include <pch.h>
+#include "textures.h"
 
 namespace bndr {
 
-	// Static Logger class used for logging exceptions or various messages
-	class Logger {
+	// define the static map
+	std::unordered_map<const char*, uint> Texture::textureIDs;
+
+	Texture::Texture(const char* bitMapFile, uint textureSWrapping, uint textureTWrapping, uint textureMinFiltering,
+		uint textureMagFiltering) {
 	
-	public:
+		// if the texture already exists
+		if (Texture::textureIDs.find(bitMapFile) != Texture::textureIDs.end()) {
 
-		// get the current time stamp
-		static std::string getTimeStamp() {
-
-			time_t rawTime;
-			struct tm* info;
-
-			time(&rawTime);
-			info = localtime(&rawTime);
-			char* stamp = asctime(info);
-			std::string timeStamp;
-			if (stamp != NULL) {
-
-				timeStamp = stamp;
-				timeStamp[timeStamp.size() - 1] = '\0';
-			}
-			return timeStamp;
+			// assign the id to the already existing texture and return
+			textureID = Texture::textureIDs[bitMapFile];
+			return;
 		}
+		// otherwise generate it and get the bitmap data
+		glGenTextures(1, &textureID);
+		bind();
 
-		// throws an exception
-		static void throwException(const char* errorMessage) {
-
-			printf("\nBNDR Exception [%s]: %s\n", Logger::getTimeStamp().c_str(), errorMessage);
-			throw std::runtime_error("");
-		}
-
-		// displays a message
-		static void displayMessage(const char* message) {
-
-			printf("\nBNDR Message [%s]: %s\n", Logger::getTimeStamp().c_str(), message);
-		}
-	};
+		// how the texture is wrapped on the surface
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureSWrapping);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureTWrapping);
+		// are the texture pixels smooth (TEXTURE_LINEAR) or are they sharp (TEXTURE_NEAREST)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureMinFiltering);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureMagFiltering);
+	}
 }
-
-
-#define BNDR_EXCEPTION(e) ::bndr::Logger::throwException(e)
-#define BNDR_MESSAGE(m) ::bndr::Logger::displayMessage(m)
-

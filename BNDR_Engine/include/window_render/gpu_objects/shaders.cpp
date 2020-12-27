@@ -40,19 +40,6 @@ namespace bndr {
 			std::stringstream shaderSourceStream;
 			shaderSourceStream << shaderFileBuffer.rdbuf();
 			shaderData = shaderSourceStream.str();
-			/*
-			// get the end of the file
-			shaderFileBuffer.seekg(0, shaderFileBuffer.end);
-			int fileLength = shaderFileBuffer.tellg();
-			// go back to the beginning
-			shaderFileBuffer.seekg(0, shaderFileBuffer.beg);
-			// reallocate the memory block for the string
-			shaderData.reserve(fileLength);
-			// read the data from the file
-			shaderFileBuffer.read(&shaderData[0], fileLength);
-			// close the file
-			shaderFileBuffer.close();
-			*/
 
 		}
 		// if we aren't reading from a file, then the const char pointer is the actual source code
@@ -78,6 +65,12 @@ namespace bndr {
 			// raise an exception with the shader compilation error
 			BNDR_EXCEPTION(infoLogBuffer);
 		}
+	}
+
+	Shader::Shader(Shader&& shader) noexcept {
+
+		shaderID = shader.shaderID;
+		shaderID = 0;
 	}
 
 	Shader::~Shader() {
@@ -114,6 +107,93 @@ namespace bndr {
 		glDetachShader(programID, fragmentShader.getShaderID());
 
 		// the shaders have reached the end of their scope and will be deleted automatically once the function ends
+	}
+
+	void Program::setFloatUniformValue(const char* uniformName, float* data, uint dataType) {
+
+		use();
+		try {
+
+			int uniformLocation = glGetUniformLocation(programID, uniformName);
+			if (uniformLocation == -1) {
+				std::string data = "Cannot locate uniform '" + std::string(uniformName) + "' in shader program";
+				BNDR_EXCEPTION(data.c_str());
+			}
+			switch (dataType) {
+
+			case FLOAT:
+
+				GL_DEBUG_FUNC(glUniform1f(uniformLocation, *data));
+				break;
+			case VEC2:
+
+				GL_DEBUG_FUNC(glUniform2f(uniformLocation, data[0], data[1]));
+				break;
+			case VEC3:
+
+				GL_DEBUG_FUNC(glUniform3f(uniformLocation, data[0], data[1], data[2]));
+				break;
+			case VEC4:
+
+				GL_DEBUG_FUNC(glUniform4f(uniformLocation, data[0], data[1], data[2], data[3]));
+				break;
+			case MAT2X2:
+
+				GL_DEBUG_FUNC(glUniformMatrix2fv(uniformLocation, 1, GL_TRUE, data));
+				break;
+			case MAT3X3:
+
+				GL_DEBUG_FUNC(glUniformMatrix3fv(uniformLocation, 1, GL_TRUE, data));
+				break;
+			case MAT4x4:
+
+				GL_DEBUG_FUNC(glUniformMatrix4fv(uniformLocation, 1, GL_TRUE, data));
+				break;
+			}
+		}
+		catch (std::runtime_error& e) {
+
+			std::cout << e.what() << "\n";
+		}
+		unuse();
+	}
+
+	void Program::setFloatArrayUniformValue(const char* uniformName, float* data, int arraySize) {
+
+		use();
+		try {
+
+			int uniformLocation = glGetUniformLocation(programID, uniformName);
+			if (uniformLocation == -1) {
+				std::string data = "Cannot locate uniform '" + std::string(uniformName) + "' in shader program";
+				BNDR_EXCEPTION(data.c_str());
+			}
+			GL_DEBUG_FUNC(glUniform1fv(uniformLocation, arraySize, data));
+		}
+		catch (std::runtime_error& e) {
+
+			std::cout << e.what();
+		}
+		unuse();
+	}
+
+	void Program::setIntUniformValue(const char* uniformName, int* data, int arraySize) {
+
+		use();
+		try {
+
+			int uniformLocation = glGetUniformLocation(programID, uniformName);
+			if (uniformLocation == -1) {
+				std::string data = "Cannot locate uniform '" + std::string(uniformName) + "' in shader program";
+				BNDR_EXCEPTION(data.c_str());
+			}
+			GL_DEBUG_FUNC(glUniform1iv(uniformLocation, arraySize, data));
+		}
+		catch (std::runtime_error& e) {
+
+			std::cout << e.what();
+		}
+		unuse();
 	}
 
 	Program::~Program() {

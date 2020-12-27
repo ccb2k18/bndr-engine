@@ -189,6 +189,7 @@
     <ClInclude Include="include\window_render\gpu_objects\VertexBuffer.h" />
     <ClInclude Include="include\window_render\gpu_objects\VertexArray.h" />
     <ClInclude Include="include\window_render\gpu_objects\shaders.h" />
+    <ClInclude Include="include\window_render\gpu_objects\textures.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -206,6 +207,7 @@
     <ClCompile Include="include\window_render\gpu_objects\VertexBuffer.cpp" />
     <ClCompile Include="include\window_render\gpu_objects\VertexArray.cpp" />
     <ClCompile Include="include\window_render\gpu_objects\shaders.cpp" />
+    <ClCompile Include="include\window_render\gpu_objects\textures.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

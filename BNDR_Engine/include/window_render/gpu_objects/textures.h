@@ -33,12 +33,25 @@ namespace bndr {
 		TEXTURE_NEAREST = GL_NEAREST
 	};
 
+	struct BitMapData {
+
+		std::unique_ptr<uchar> ptr;
+		uint width;
+		uint height;
+	};
+
+	// forward declare texture array
+	class TextureArray;
 
 	class Texture {
 
+		// the slot the texture goes in (default is 0 but is set automatically when using a TextureArray)
+		uint textureSlot = 0x84C0;
 		uint textureID;
 		// store all the texture ids so we do not have any duplicate textures in video memory
 		static std::unordered_map<const char*, uint> textureIDs;
+
+		constexpr void updateTextureSlot(uint slot) { textureSlot = slot; }
 	public:
 
 		Texture(const char* bitMapFile, uint textureSWrapping = TEXTURE_REPEAT,
@@ -48,6 +61,54 @@ namespace bndr {
 		inline void bind() { glBindTexture(GL_TEXTURE_2D, textureID); }
 		// unbind the texture
 		inline void unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
+		// load a bitmap file into memory
+		static BitMapData loadbitMap(const char* bitMapFile) {
+
+			std::ifstream bitMapBuffer(bitMapFile, std::ios::in);
+			// check if the file opened successfully
+			if (!bitMapBuffer.is_open()) {
+
+				std::string message = "Failed to open bit map file " + std::string("'") + std::string(bitMapFile) + std::string("'");
+				BNDR_EXCEPTION(message.c_str());
+			}
+			// read the header of the bitmap
+			uchar header[54];
+			bitMapBuffer.readsome(static_cast<char*>(static_cast<void*>(&header[0])), 54);
+
+			// check if the bitmap file starts with B and M
+			if (header[0] != 'B' || header[1] != 'M') {
+
+				std::string message = "The bitmap file " + std::string("'") + std::string(bitMapFile) + std::string("'") + "has an invalid file format";
+				BNDR_EXCEPTION(message.c_str());
+			}
+			// load the data offset, size, width, and height;
+			uint dataOffset = (uint)header[0x0A];
+			uint size = (uint)header[0x0E];
+			uint width = (uint)header[0x12];
+			uint height = (uint)header[0x16];
+
+			// if there is missing information then guess what it is
+			if (dataOffset == 0) { dataOffset = 54; }
+			if (size == 0) { size = width * height * 3; }
+			// if either the width or height is 0 raise an error
+			if (width == 0 || height == 0) { BNDR_EXCEPTION("Cannot read from a bitmap with a dimension of 0 pixels"); }
+
+			// create buffer for the image data
+			std::unique_ptr<uchar> imageData(new uchar[size]);
+			// now read the remaining image data
+			bitMapBuffer.read(static_cast<char*>(static_cast<void*>(imageData.get())), size);
+			bitMapBuffer.close();
+			return { std::move(imageData), width, height };
+
+		}
 	};
+
+	class TextureArray {
+
+		Texture* textures;
+		int size;
+		static int maxTextureSlots;
+	};
+
 }
 

@@ -34,6 +34,7 @@ namespace bndr {
 		// if the texture already exists
 		if (Texture::textureIDs.find(bitMapFile) != Texture::textureIDs.end()) {
 
+			std::cout << "already exists!\n";
 			// assign the id to the already existing texture and return
 			textureID = Texture::textureIDs[bitMapFile];
 			return;
@@ -48,5 +49,19 @@ namespace bndr {
 		// are the texture pixels smooth (TEXTURE_LINEAR) or are they sharp (TEXTURE_NEAREST)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureMinFiltering);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureMagFiltering);
+
+		// load the bitmap image bits and the width and height
+		BitMapData imageData = Texture::loadbitMap(bitMapFile);
+		// create the 2D image and its respective mipmaps
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageData.width, imageData.height,
+			0, GL_BGR, GL_UNSIGNED_BYTE, imageData.ptr.get());
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		// finally add the texture id to the unordered map so we don't load it again next time
+		std::cout << "added new texture!\n";
+		Texture::textureIDs.insert(std::make_pair(bitMapFile, textureID));
+
+		// unbind the texture before returning
+		unbind();
 	}
 }

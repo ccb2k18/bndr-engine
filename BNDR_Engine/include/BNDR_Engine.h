@@ -24,5 +24,5 @@ SOFTWARE.*/
 
 #include "window_render/timers.h"
 #include "window_render/window.h"
-#include "window_render/gpu_objects/VertexArray.h"
 #include "window_render/gpu_objects/shaders.h"
+#include "window_render/gpu_objects/textures.h"

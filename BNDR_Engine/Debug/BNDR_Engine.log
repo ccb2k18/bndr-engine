@@ -18,6 +18,8 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63,39):
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63): message : see declaration of 'bndr::Queue<bndr::MouseEvent>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65,41): warning C4251: 'bndr::Window::scrollEvents': class 'bndr::Queue<bndr::ScrollEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): message : see declaration of 'bndr::Queue<bndr::ScrollEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
   keyboard_mouse_events.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
@@ -49,6 +51,8 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.2
   VertexArray.cpp
   shaders.cpp
   textures.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
   Generating Code...
      Creating library D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.lib and object D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.exp
   BNDR_Engine.vcxproj -> D:\Senior Project\BNDR_Engine\Debug\BNDR_Engine.dll

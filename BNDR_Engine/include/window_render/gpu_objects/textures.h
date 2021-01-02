@@ -22,6 +22,7 @@ SOFTWARE.*/
 
 #pragma once
 #include <pch.h>
+#include "VertexArray.h"
 
 namespace bndr {
 
@@ -43,7 +44,7 @@ namespace bndr {
 	// forward declare texture array
 	class TextureArray;
 
-	class Texture {
+	class BNDR_API Texture {
 
 		// the slot the texture goes in (default is 0 but is set automatically when using a TextureArray)
 		uint textureSlot = 0x84C0;
@@ -64,7 +65,7 @@ namespace bndr {
 		// load a bitmap file into memory
 		static BitMapData loadbitMap(const char* bitMapFile) {
 
-			std::ifstream bitMapBuffer(bitMapFile, std::ios::in);
+			std::ifstream bitMapBuffer(bitMapFile, std::ios::in | std::ios::binary);
 			// check if the file opened successfully
 			if (!bitMapBuffer.is_open()) {
 
@@ -73,12 +74,12 @@ namespace bndr {
 			}
 			// read the header of the bitmap
 			uchar header[54];
-			bitMapBuffer.readsome(static_cast<char*>(static_cast<void*>(&header[0])), 54);
+			bitMapBuffer.read(static_cast<char*>(static_cast<void*>(&header[0])), 54);
 
 			// check if the bitmap file starts with B and M
-			if (header[0] != 'B' || header[1] != 'M') {
+			if (header[0] != (uchar)'B' || header[1] != (uchar)'M') {
 
-				std::string message = "The bitmap file " + std::string("'") + std::string(bitMapFile) + std::string("'") + "has an invalid file format";
+				std::string message = "The bitmap file " + std::string("'") + std::string(bitMapFile) + std::string("'") + " has an invalid file format";
 				BNDR_EXCEPTION(message.c_str());
 			}
 			// load the data offset, size, width, and height;

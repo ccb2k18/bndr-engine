@@ -144,11 +144,16 @@ namespace bndr {
 
 		// set viewport size
 		glViewport(0, 0, width, height);
+	}
 
-		// create a default vertex array so OpenGL doesn't complain
-		/*glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-		glBindVertexArray(0);*/
+	void Window::setIcon(const char* bitMapFile) {
+
+		GLFWimage imageData = Window::loadIcon(bitMapFile);
+
+		glfwSetWindowIcon(window, 1, &imageData);
+
+		// delete the image from memory
+		delete[] imageData.pixels;
 	}
 
 	std::pair<float, float> Window::getCursorPos() {

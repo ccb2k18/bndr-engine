@@ -37,8 +37,8 @@ namespace bndr {
 	struct BitMapData {
 
 		std::unique_ptr<uchar> ptr;
-		uint width;
-		uint height;
+		int width;
+		int height;
 	};
 
 	// forward declare texture array
@@ -65,7 +65,7 @@ namespace bndr {
 		// load a bitmap file into memory
 		static BitMapData loadbitMap(const char* bitMapFile) {
 
-			std::ifstream bitMapBuffer(bitMapFile, std::ios::in | std::ios::binary);
+			std::ifstream bitMapBuffer(bitMapFile, std::ios::in);
 			// check if the file opened successfully
 			if (!bitMapBuffer.is_open()) {
 
@@ -82,14 +82,12 @@ namespace bndr {
 				std::string message = "The bitmap file " + std::string("'") + std::string(bitMapFile) + std::string("'") + " has an invalid file format";
 				BNDR_EXCEPTION(message.c_str());
 			}
-			// load the data offset, size, width, and height;
-			uint dataOffset = (uint)header[0x0A];
-			uint size = (uint)header[0x0E];
-			uint width = (uint)header[0x12];
-			uint height = (uint)header[0x16];
+			// get the image size, width, and height
+			int size = *(int*)&header[0x22];
+			int width = *(int*)&header[0x12];
+			int height = *(int*)&header[0x16];
 
-			// if there is missing information then guess what it is
-			if (dataOffset == 0) { dataOffset = 54; }
+			// if the size is missing then fill it in
 			if (size == 0) { size = width * height * 3; }
 			// if either the width or height is 0 raise an error
 			if (width == 0 || height == 0) { BNDR_EXCEPTION("Cannot read from a bitmap with a dimension of 0 pixels"); }

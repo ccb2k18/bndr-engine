@@ -104,6 +104,9 @@ namespace bndr {
 		inline void setClearColor(float red, float green, float blue, float alpha) { glClearColor(red, green, blue, alpha); }
 		// clear the screen
 		inline void clear() { glClear(GL_COLOR_BUFFER_BIT); }
+		// sets the icon of the window
+		// the method expects a 24-bit bitmap image in Blue-Green-Red format
+		void setIcon(const char* bitMapFile);
 
 		// event queues and event callbacks
 
@@ -118,6 +121,76 @@ namespace bndr {
 		~Window();
 
 	private:
+
+		// load an icon image
+		static GLFWimage loadIcon(const char* bitMapFile) {
+
+			std::ifstream bitMapBuffer(bitMapFile, std::ios::in);
+			// check if the file opened successfully
+			if (!bitMapBuffer.is_open()) {
+
+				std::string message = "Failed to open bit map file " + std::string("'") + std::string(bitMapFile) + std::string("'");
+				BNDR_EXCEPTION(message.c_str());
+			}
+			// read the header of the bitmap
+			uchar header[54];
+			bitMapBuffer.read(static_cast<char*>(static_cast<void*>(&header[0])), 54);
+
+			// check if the bitmap file starts with B and M
+			if (header[0] != (uchar)'B' || header[1] != (uchar)'M') {
+
+				std::string message = "The bitmap file " + std::string("'") + std::string(bitMapFile) + std::string("'") + " has an invalid file format";
+				BNDR_EXCEPTION(message.c_str());
+			}
+			// get the image size, width, and height
+			//int size = *(int*)&header[0x22];
+			int width = *(int*)&header[0x12];
+			int height = *(int*)&header[0x16];
+
+			// if the size is missing then fill it in
+			int size = width * height * 3;
+			// if either the width or height is 0 raise an error
+			if (width == 0 || height == 0) { BNDR_EXCEPTION("Cannot read from a bitmap with a dimension of 0 pixels"); }
+
+			// create buffer for the image data
+			uchar* imageData = new uchar[size];
+			// now read the remaining image data
+			bitMapBuffer.read(static_cast<char*>(static_cast<void*>(imageData)), size);
+			bitMapBuffer.close();
+
+			// convert the image to rgba format
+			int rgbaSize = width * height * 4;
+			uchar* rgbaImage = new uchar[rgbaSize];
+			int j = 0;
+			for (int i = 0; i < size; i+=3) {
+
+				rgbaImage[j] = *(uchar*)&imageData[i + 2];
+				rgbaImage[j + 1] = *(uchar*)&imageData[i + 1];
+				rgbaImage[j + 2] = *(uchar*)&imageData[i];
+				rgbaImage[j + 3] = (uchar)255;
+				j += 4;
+			}
+			// delete the old image data
+			delete[] imageData;
+
+			// reverse the image data so it is right-side up
+			j = --rgbaSize;
+			int i = 0;
+			while (true) {
+
+				uchar temp = rgbaImage[i];
+				rgbaImage[i] = rgbaImage[j];
+				rgbaImage[j] = temp;
+
+				i++;
+				j--;
+
+				if (i == j || abs(i-j) == 1) { break; }
+			}
+
+			return { width, height, rgbaImage };
+			
+		}
 
 		// key callback
 		static void keyEventCallback(screen window, int key, int scancode, int action, int mods) {

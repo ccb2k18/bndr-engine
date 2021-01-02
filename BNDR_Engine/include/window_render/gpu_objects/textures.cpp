@@ -52,10 +52,14 @@ namespace bndr {
 
 		// load the bitmap image bits and the width and height
 		BitMapData imageData = Texture::loadbitMap(bitMapFile);
+		uchar* pixelPtr = imageData.ptr.release();
 		// create the 2D image and its respective mipmaps
 		GL_DEBUG_FUNC(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageData.width, imageData.height,
-			0, GL_RGB, GL_UNSIGNED_BYTE, imageData.ptr.get()));
+			0, GL_BGR, GL_UNSIGNED_BYTE, pixelPtr));
 		glGenerateMipmap(GL_TEXTURE_2D);
+
+		// delete the data
+		delete[] pixelPtr;
 
 		// finally add the texture id to the unordered map so we don't load it again next time
 		BNDR_MESSAGE("added new texture!");

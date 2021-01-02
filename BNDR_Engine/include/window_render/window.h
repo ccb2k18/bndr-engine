@@ -174,18 +174,35 @@ namespace bndr {
 			delete[] imageData;
 
 			// reverse the image data so it is right-side up
-			j = --rgbaSize;
+			j = rgbaSize-4;
 			int i = 0;
 			while (true) {
 
+				// red
 				uchar temp = rgbaImage[i];
 				rgbaImage[i] = rgbaImage[j];
 				rgbaImage[j] = temp;
 
-				i++;
-				j--;
+				// green
+				temp = rgbaImage[i + 1];
+				rgbaImage[i + 1] = rgbaImage[j + 1];
+				rgbaImage[j + 1] = temp;
 
-				if (i == j || abs(i-j) == 1) { break; }
+				// blue
+				temp = rgbaImage[i + 2];
+				rgbaImage[i + 2] = rgbaImage[j + 2];
+				rgbaImage[j + 2] = temp;
+
+				// alpha
+				temp = rgbaImage[i + 3];
+				rgbaImage[i + 3] = rgbaImage[j + 3];
+				rgbaImage[j + 3] = temp;
+
+
+				i+=4;
+				j-=4;
+
+				if (i == j || abs(i-j) == 4) { break; }
 			}
 
 			return { width, height, rgbaImage };

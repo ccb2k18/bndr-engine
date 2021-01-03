@@ -65,7 +65,7 @@ namespace bndr {
 		// load a bitmap file into memory
 		static BitMapData loadbitMap(const char* bitMapFile) {
 
-			std::ifstream bitMapBuffer(bitMapFile, std::ios::in);
+			std::ifstream bitMapBuffer(bitMapFile, std::ios::in | std::ios::binary);
 			// check if the file opened successfully
 			if (!bitMapBuffer.is_open()) {
 

@@ -83,7 +83,7 @@ namespace bndr {
 		// state-checking methods
 
 		// flush the display
-		inline void flush() { glfwSwapBuffers(window); }
+		inline void flush() { glFinish(); }
 		// check for events
 		inline void pollEvents() { glfwPollEvents(); }
 		// check if the window is currently open
@@ -143,11 +143,10 @@ namespace bndr {
 				BNDR_EXCEPTION(message.c_str());
 			}
 			// get the image size, width, and height
-			//int size = *(int*)&header[0x22];
 			int width = *(int*)&header[0x12];
 			int height = *(int*)&header[0x16];
 
-			// if the size is missing then fill it in
+			// define the appropriate size
 			int size = width * height * 3;
 			// if either the width or height is 0 raise an error
 			if (width == 0 || height == 0) { BNDR_EXCEPTION("Cannot read from a bitmap with a dimension of 0 pixels"); }

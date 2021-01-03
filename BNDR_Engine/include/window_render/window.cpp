@@ -55,12 +55,16 @@ namespace bndr {
 
 		windowFlags = flags;
 
+		// single buffering for max fps
+		glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
+
 		// specify version of OpenGL
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
 		// use the OpenGL core profile
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 
 		if (windowFlags & NOT_RESIZEABLE) {
 

@@ -102,7 +102,7 @@ namespace bndr {
 		}
 	};
 
-	class TextureArray {
+	class BNDR_API TextureArray {
 
 		Texture* textures;
 		int size;

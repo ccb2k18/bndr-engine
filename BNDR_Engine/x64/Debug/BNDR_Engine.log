@@ -1,0 +1,66 @@
+﻿  pch.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+D:\Senior Project\GLFWx64\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY'
+  dllmain.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(35,18): warning C4251: 'bndr::Clock::start': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(37,16): warning C4251: 'bndr::Clock::end': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75): message : see declaration of 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92,43): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92): message : see declaration of 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(61,35): warning C4251: 'bndr::Window::keyEvents': class 'bndr::Queue<bndr::KeyEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(61): message : see declaration of 'bndr::Queue<bndr::KeyEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63,39): warning C4251: 'bndr::Window::mouseEvents': class 'bndr::Queue<bndr::MouseEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63): message : see declaration of 'bndr::Queue<bndr::MouseEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65,41): warning C4251: 'bndr::Window::scrollEvents': class 'bndr::Queue<bndr::ScrollEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): message : see declaration of 'bndr::Queue<bndr::ScrollEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
+  keyboard_mouse_events.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75): message : see declaration of 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92,43): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92): message : see declaration of 'bndr::MouseEvent'
+  GLDebug.cpp
+  IndexBuffer.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\IndexBuffer.cpp(32,26): warning C4267: '=': conversion from 'size_t' to 'uint', possible loss of data
+  window.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75): message : see declaration of 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92,43): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92): message : see declaration of 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(61,35): warning C4251: 'bndr::Window::keyEvents': class 'bndr::Queue<bndr::KeyEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(61): message : see declaration of 'bndr::Queue<bndr::KeyEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63,39): warning C4251: 'bndr::Window::mouseEvents': class 'bndr::Queue<bndr::MouseEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63): message : see declaration of 'bndr::Queue<bndr::MouseEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65,41): warning C4251: 'bndr::Window::scrollEvents': class 'bndr::Queue<bndr::ScrollEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): message : see declaration of 'bndr::Queue<bndr::ScrollEvent>'
+  timers.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(35,18): warning C4251: 'bndr::Clock::start': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(37,16): warning C4251: 'bndr::Clock::end': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+  VertexBuffer.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(37,72): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(45,3): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(54,4): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(62,4): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(70,4): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(78,4): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+  VertexArray.cpp
+  shaders.cpp
+  textures.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
+  Generating Code...
+     Creating library D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.lib and object D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.exp
+  BNDR_Engine.vcxproj -> D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.dll
+  0 File(s) copied

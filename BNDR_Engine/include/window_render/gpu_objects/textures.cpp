@@ -27,6 +27,8 @@ namespace bndr {
 
 	// define the static map
 	std::unordered_map<const char*, uint> Texture::textureIDs;
+	// define max texture slots
+	int TextureArray::maxTextureSlots = 0;
 
 	Texture::Texture(const char* bitMapFile, uint textureSWrapping, uint textureTWrapping, uint textureMinFiltering,
 		uint textureMagFiltering) {
@@ -67,5 +69,46 @@ namespace bndr {
 
 		// unbind the texture before returning
 		unbind();
+	}
+
+	TextureArray::TextureArray(std::initializer_list<Texture>&& textureList) {
+
+		// check if the max number of texture slots has been queried
+		if (maxTextureSlots == 0) { 
+			
+			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureSlots);
+			std::string message = "This machine's gpu supports " + std::to_string(maxTextureSlots) + " texture slots";
+			BNDR_MESSAGE(message.c_str());
+		
+		}
+		// start at the first slot
+		uint slot = GL_TEXTURE0;
+		size = textureList.size();
+		textures = new Texture[size];
+
+		// overwrite each of the texture ids in our array with the values in the initializer list
+		for (int i = 0; i < size; i++) {
+
+			// notice that each texture slot will always be within the max number of slots by using the modulus operator
+			textures[i].overwriteData((textureList.begin() + i)->textureID, slot + (i % maxTextureSlots));
+		}
+	}
+
+	void TextureArray::bindAll() {
+	
+		for (int i = 0; i < size; i++) {
+
+			textures[i].bind();
+		}
+	}
+
+	TextureArray::~TextureArray() {
+
+		// you'll notice that when we destroy a texture object, the OpenGL texture never gets destroyed. This may seem like
+		// it will cause memory leaks but it won't. With the texture class we ensure that the same texture never gets loaded
+		// into video memory more than once. If we actually deleted the texture from graphics memory every time we destroy
+		// a texture object, then we would have to reload it all over again instead of just getting the texture id insanely
+		// fast. All in all it makes sense to keep the texture in video memory until the program terminates
+		delete[] textures;
 	}
 }

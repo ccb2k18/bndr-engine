@@ -198,10 +198,49 @@ namespace bndr {
 				rgbaImage[j + 3] = temp;
 
 
-				i+=4;
-				j-=4;
+				i += 4;
+				j -= 4;
 
 				if (i == j || abs(i-j) == 4) { break; }
+			}
+
+			// the image is right-side up but it's mirrored so fix it once more
+			for (int i = 0; i < rgbaSize; i += (width*4)) {
+
+				int k = i + (width*4) - 4;
+				int j = i;
+				while (true) {
+
+					uchar* firstBlock = &rgbaImage[j];
+					uchar* lastBlock = &rgbaImage[k];
+
+					// one by one swap each of the rgba components out
+					
+					// red
+					uchar tmp = firstBlock[0];
+					firstBlock[0] = lastBlock[0];
+					lastBlock[0] = tmp;
+
+					// green
+					tmp = firstBlock[1];
+					firstBlock[1] = lastBlock[1];
+					lastBlock[1] = tmp;
+
+					// blue
+					tmp = firstBlock[2];
+					firstBlock[2] = lastBlock[2];
+					lastBlock[2] = tmp;
+
+					// alpha
+					tmp = firstBlock[3];
+					firstBlock[3] = lastBlock[3];
+					lastBlock[3] = tmp;
+
+					j += 4;
+					k -= 4;
+
+					if (j == k || abs(j - k) == 4) { break; }
+				}
 			}
 
 			return { width, height, rgbaImage };

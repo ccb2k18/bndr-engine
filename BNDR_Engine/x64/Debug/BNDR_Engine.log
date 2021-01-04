@@ -60,6 +60,7 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\Vert
   textures.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.cpp(86,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   Generating Code...
      Creating library D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.lib and object D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.exp
   BNDR_Engine.vcxproj -> D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.dll

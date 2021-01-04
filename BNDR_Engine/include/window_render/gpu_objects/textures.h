@@ -47,21 +47,31 @@ namespace bndr {
 	class BNDR_API Texture {
 
 		// the slot the texture goes in (default is 0 but is set automatically when using a TextureArray)
-		uint textureSlot = 0x84C0;
+		uint textureSlot = GL_TEXTURE0;
 		uint textureID;
 		// store all the texture ids so we do not have any duplicate textures in video memory
 		static std::unordered_map<const char*, uint> textureIDs;
 
 		constexpr void updateTextureSlot(uint slot) { textureSlot = slot; }
+
+		// only the texture array class can use this method (this method takes a temporary Texture object that is about
+		// to go out of scope and transfers its data over to this one)
+		constexpr void overwriteData(uint preexistingID, uint slot) { textureID = preexistingID; textureSlot = slot; }
+
 	public:
+
+		// default constructor
+		Texture() : textureSlot(GL_TEXTURE0), textureID((uint)0) {}
 
 		Texture(const char* bitMapFile, uint textureSWrapping = TEXTURE_REPEAT,
 			uint textureTWrapping = TEXTURE_REPEAT, uint textureMinFiltering = TEXTURE_NEAREST,
 			uint textureMagFiltering = TEXTURE_NEAREST);
 		// bind the texture
-		inline void bind() { glBindTexture(GL_TEXTURE_2D, textureID); }
+		inline void bind() { glActiveTexture(textureSlot); glBindTexture(GL_TEXTURE_2D, textureID); }
 		// unbind the texture
 		inline void unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
+		// get the id of the texture
+		inline int getID() { return (int)textureID; }
 		// load a bitmap file into memory
 		static BitMapData loadbitMap(const char* bitMapFile) {
 
@@ -100,13 +110,34 @@ namespace bndr {
 			return { std::move(imageData), width, height };
 
 		}
+		// texture array has access to the private method updateTextureSlot
+		friend class TextureArray;
 	};
 
+	// bndr::TextureArray
+	// Description: This class is a system dependent texture container. It is system dependent because depending on your
+	// gpu, you have x number of textures that can be bound at one time. The advantage of using a texture array is that it
+	// is much faster that a regular texture. This is because each instance of the texture class always uses the same texture
+	// slot, while texture array can have 8, 16, or even 32 textures bound at once depending on your gpu.
 	class BNDR_API TextureArray {
 
-		Texture* textures;
+		// texture array
+		Texture* textures = nullptr;
+		// size of the array
 		int size;
+		// gpu-dependent (some gpus have more texture slots than others)
 		static int maxTextureSlots;
+
+	public:
+
+		TextureArray(std::initializer_list<Texture>&& textureList);
+		// bind all textures
+		void bindAll();
+		// unbind all textures
+		inline void unbindAll() { glBindTexture(GL_TEXTURE_2D, 0); }
+		// get the id at a specific index
+		inline int getIDAt(int index) { return textures[index].getID(); }
+		~TextureArray();
 	};
 
 }

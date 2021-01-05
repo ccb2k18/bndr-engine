@@ -177,7 +177,7 @@ namespace bndr {
 		unuse();
 	}
 
-	void Program::setIntUniformValue(const char* uniformName, int* data, int arraySize) {
+	void Program::setIntArrayUniformValue(const char* uniformName, int* data, int arraySize) {
 
 		use();
 		try {
@@ -194,6 +194,26 @@ namespace bndr {
 			std::cout << e.what();
 		}
 		unuse();
+	}
+
+	void Program::setIntUniformValue(const char* uniformName, int value) {
+
+		use();
+		try {
+
+			int uniformLocation = glGetUniformLocation(programID, uniformName);
+			if (uniformLocation == -1) {
+				std::string data = "Cannot locate uniform '" + std::string(uniformName) + "' in shader program";
+				BNDR_EXCEPTION(data.c_str());
+			}
+			GL_DEBUG_FUNC(glUniform1i(uniformLocation, value));
+		}
+		catch (std::runtime_error& e) {
+
+			std::cout << e.what();
+		}
+		unuse();
+
 	}
 
 	Program::~Program() {

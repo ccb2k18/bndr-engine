@@ -93,8 +93,10 @@ namespace bndr {
 		void setFloatUniformValue(const char* uniformName, float* data, uint dataType);
 		// modify a uniform value that is an array of type float
 		void setFloatArrayUniformValue(const char* uniformName, float* data, int arraySize);
-		// modify a uniform value that is an array of type float
-		void setIntUniformValue(const char* uniformName, int* data, int arraySize);
+		// modify a uniform value that is an array of type int
+		void setIntArrayUniformValue(const char* uniformName, int* data, int arraySize);
+		// modify a uniform value that is a single int
+		void setIntUniformValue(const char* uniformName, int value);
 		// deletes the OpenGL program
 		~Program();
 	};

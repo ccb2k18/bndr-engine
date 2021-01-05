@@ -72,6 +72,8 @@ namespace bndr {
 		inline void unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
 		// get the id of the texture
 		inline int getID() { return (int)textureID; }
+		// get the slot of the texture
+		inline int getSlot() { return (int)textureSlot; }
 		// load a bitmap file into memory
 		static BitMapData loadbitMap(const char* bitMapFile) {
 
@@ -135,8 +137,12 @@ namespace bndr {
 		void bindAll();
 		// unbind all textures
 		inline void unbindAll() { glBindTexture(GL_TEXTURE_2D, 0); }
+		// bind a specific texture
+		inline void bindAt(int index) { textures[index].bind(); }
 		// get the id at a specific index
 		inline int getIDAt(int index) { return textures[index].getID(); }
+		// get the slot at a specific index
+		inline int getSlotAt(int index) { return textures[index].getSlot(); }
 		~TextureArray();
 	};
 

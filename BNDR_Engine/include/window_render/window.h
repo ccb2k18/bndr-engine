@@ -125,7 +125,7 @@ namespace bndr {
 		// load an icon image
 		static GLFWimage loadIcon(const char* bitMapFile) {
 
-			std::ifstream bitMapBuffer(bitMapFile, std::ios::in);
+			std::ifstream bitMapBuffer(bitMapFile, std::ios::in | std::ios::binary);
 			// check if the file opened successfully
 			if (!bitMapBuffer.is_open()) {
 

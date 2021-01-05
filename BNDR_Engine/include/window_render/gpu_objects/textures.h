@@ -75,7 +75,7 @@ namespace bndr {
 		// get the slot of the texture
 		inline int getSlot() { return (int)textureSlot; }
 		// load a bitmap file into memory
-		static BitMapData loadbitMap(const char* bitMapFile) {
+		static BitMapData loadBitMap(const char* bitMapFile) {
 
 			std::ifstream bitMapBuffer(bitMapFile, std::ios::in | std::ios::binary);
 			// check if the file opened successfully

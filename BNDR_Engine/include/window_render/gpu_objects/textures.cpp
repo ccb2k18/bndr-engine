@@ -53,7 +53,7 @@ namespace bndr {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureMagFiltering);
 
 		// load the bitmap image bits and the width and height
-		BitMapData imageData = Texture::loadbitMap(bitMapFile);
+		BitMapData imageData = Texture::loadBitMap(bitMapFile);
 		uchar* pixelPtr = imageData.ptr.release();
 		// create the 2D image and its respective mipmaps
 		GL_DEBUG_FUNC(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageData.width, imageData.height,

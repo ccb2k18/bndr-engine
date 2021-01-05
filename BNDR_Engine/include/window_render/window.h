@@ -161,7 +161,7 @@ namespace bndr {
 			int rgbaSize = width * height * 4;
 			uchar* rgbaImage = new uchar[rgbaSize];
 			int j = 0;
-			for (int i = 0; i < size; i+=3) {
+			for (int i = size - 3; i > -1; i -= 3) {
 
 				rgbaImage[j] = *(uchar*)&imageData[i + 2];
 				rgbaImage[j + 1] = *(uchar*)&imageData[i + 1];
@@ -171,38 +171,6 @@ namespace bndr {
 			}
 			// delete the old image data
 			delete[] imageData;
-
-			// reverse the image data so it is right-side up
-			j = rgbaSize-4;
-			int i = 0;
-			while (true) {
-
-				// red
-				uchar temp = rgbaImage[i];
-				rgbaImage[i] = rgbaImage[j];
-				rgbaImage[j] = temp;
-
-				// green
-				temp = rgbaImage[i + 1];
-				rgbaImage[i + 1] = rgbaImage[j + 1];
-				rgbaImage[j + 1] = temp;
-
-				// blue
-				temp = rgbaImage[i + 2];
-				rgbaImage[i + 2] = rgbaImage[j + 2];
-				rgbaImage[j + 2] = temp;
-
-				// alpha
-				temp = rgbaImage[i + 3];
-				rgbaImage[i + 3] = rgbaImage[j + 3];
-				rgbaImage[j + 3] = temp;
-
-
-				i += 4;
-				j -= 4;
-
-				if (i == j || abs(i-j) == 4) { break; }
-			}
 
 			// the image is right-side up but it's mirrored so fix it once more
 			for (int i = 0; i < rgbaSize; i += (width*4)) {
@@ -215,36 +183,19 @@ namespace bndr {
 					uchar* lastBlock = &rgbaImage[k];
 
 					// one by one swap each of the rgba components out
-					
-					// red
-					uchar tmp = firstBlock[0];
-					firstBlock[0] = lastBlock[0];
-					lastBlock[0] = tmp;
+					for (int n = 0; n < 4; n++) {
 
-					// green
-					tmp = firstBlock[1];
-					firstBlock[1] = lastBlock[1];
-					lastBlock[1] = tmp;
-
-					// blue
-					tmp = firstBlock[2];
-					firstBlock[2] = lastBlock[2];
-					lastBlock[2] = tmp;
-
-					// alpha
-					tmp = firstBlock[3];
-					firstBlock[3] = lastBlock[3];
-					lastBlock[3] = tmp;
-
+						uchar tmp = firstBlock[n];
+						firstBlock[n] = lastBlock[n];
+						lastBlock[n] = tmp;
+					}
 					j += 4;
 					k -= 4;
-
 					if (j == k || abs(j - k) == 4) { break; }
 				}
 			}
 
-			return { width, height, rgbaImage };
-			
+			return { width, height, rgbaImage };	
 		}
 
 		// key callback

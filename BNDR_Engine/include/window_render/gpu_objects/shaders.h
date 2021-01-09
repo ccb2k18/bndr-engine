@@ -39,6 +39,10 @@ namespace bndr {
 	class BNDR_API Shader {
 
 		uint shaderID;
+		// shader source code
+		std::string shaderData;
+		// true if the shader code was loaded from a file
+		bool loadedFromFile;
 	public:
 
 		// bndr::Shader::Shader
@@ -55,6 +59,13 @@ namespace bndr {
 		Shader(Shader&& shader) noexcept;
 		// get the shaderID (read-only)
 		inline uint getShaderID() { return shaderID; }
+		// get the shader source code c string
+		inline const char* getShaderSource() { return shaderData.c_str(); }
+		// get length of shader source code
+		inline int getShaderLength() { return shaderData.size(); }
+		// was the shader data loaded from file?
+		inline bool wasLoadedFromFile() { return loadedFromFile; }
+
 		~Shader();
 	};
 
@@ -74,6 +85,8 @@ namespace bndr {
 	class BNDR_API Program {
 
 		uint programID;
+		// make sure we do not have duplicate programs as well as store static template programs in the map
+		static std::unordered_map<const char*, uint> programMap;
 	public:
 
 		// bndr::Program::Program
@@ -99,6 +112,36 @@ namespace bndr {
 		void setIntUniformValue(const char* uniformName, int value);
 		// deletes the OpenGL program
 		~Program();
+	private:
+
+		// generates a map key for a given vertex and fragment shader
+		static std::string generateMapKey(Shader& vertexShader, Shader& fragmentShader) {
+
+			// we strategically pick a key that is almost certainly guaranteed to be unique
+			// in order to avoid overwritting issues
+
+			// first we create the string for the map key
+			char key[11];
+			key[10] = '\0';
+			std::string mapKey(key);
+
+			// then for each shader pick five characters from it
+			int vShaderIncrement = (vertexShader.getShaderLength()) / 5;
+			int fShaderIncrement = (fragmentShader.getShaderLength()) / 5;
+
+			const char* vShaderSource = vertexShader.getShaderSource();
+			const char* fShaderSource = fragmentShader.getShaderSource();
+
+			for (int i = 0; i < 5; i++) {
+
+				mapKey[i] = (char)(((int)vShaderSource[((i + 1) * vShaderIncrement)] + (i * 10)) % 127);
+			}
+			for (int i = 6; i < 11; i++) {
+
+				mapKey[i - 1] = (char)(((int)fShaderSource[((i - 5) * fShaderIncrement)] + (i * 10)) % 127);
+			}
+			return mapKey;
+		}
 	};
 }
 

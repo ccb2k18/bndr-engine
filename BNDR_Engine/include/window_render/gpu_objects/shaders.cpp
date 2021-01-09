@@ -25,10 +25,14 @@ SOFTWARE.*/
 
 namespace bndr {
 
+	// define the shader map
+	std::unordered_map<const char*, uint> Program::programMap;
+
 	Shader::Shader(uint shaderType, const char* shaderSource, bool fromFile) {
 
+		loadedFromFile = fromFile;
+
 		shaderID = glCreateShader(shaderType);
-		std::string shaderData;
 		// if we need to load the data from a file
 		if (fromFile) {
 
@@ -82,6 +86,18 @@ namespace bndr {
 
 	Program::Program(Shader&& vertexShader, Shader&& fragmentShader) {
 
+		std::string mapKey = Program::generateMapKey(vertexShader, fragmentShader);
+
+		// check if program already exists
+		if (Program::programMap.find(mapKey.c_str()) != Program::programMap.end()) {
+
+			programID = Program::programMap[mapKey.c_str()];
+			std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
+			BNDR_MESSAGE(message.c_str());
+			return;
+		}
+
+
 		// create the program and attach the shaders
 		programID = glCreateProgram();
 		glAttachShader(programID, vertexShader.getShaderID());
@@ -106,7 +122,12 @@ namespace bndr {
 		glDetachShader(programID, vertexShader.getShaderID());
 		glDetachShader(programID, fragmentShader.getShaderID());
 
-		// the shaders have reached the end of their scope and will be deleted automatically once the function ends
+		// the shaders have reached the end of their scope and will be deleted automatically in
+		// the Shader class destructor once the function ends
+
+		// now we must not forget to add the program to the map
+		Program::programMap.insert(std::make_pair(mapKey.c_str(), programID));
+		BNDR_MESSAGE("added new program!\n");
 	}
 
 	void Program::setFloatUniformValue(const char* uniformName, float* data, uint dataType) {
@@ -218,6 +239,6 @@ namespace bndr {
 
 	Program::~Program() {
 
-		glDeleteProgram(programID);
+		//glDeleteProgram(programID);
 	}
 }

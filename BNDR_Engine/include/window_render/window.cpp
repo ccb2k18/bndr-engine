@@ -137,6 +137,7 @@ namespace bndr {
 		glfwSetMouseButtonCallback(window, Window::mouseEventCallback);
 		glfwSetScrollCallback(window, Window::scrollEventCallback);
 		glfwSetFramebufferSizeCallback(window, Window::windowResizeCallback);
+		//glfwSetWindowSizeCallback(window, Window::windowResizeCallback);
 
 		// create opengl context
 		if (glewInit() != GLEW_OK) {
@@ -148,6 +149,12 @@ namespace bndr {
 
 		// set viewport size
 		glViewport(0, 0, width, height);
+
+		// enable blending
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		// equation by default is add the two alpha values
+		glBlendEquation(GL_FUNC_ADD);
 	}
 
 	void Window::setIcon(const char* bitMapFile) {
@@ -180,8 +187,6 @@ namespace bndr {
 
 	Window::~Window() {
 
-		// delete window vertex array
-		//glDeleteVertexArrays(1, &vao);
 		// destruct window
 		glfwDestroyWindow(window);
 		glfwTerminate();

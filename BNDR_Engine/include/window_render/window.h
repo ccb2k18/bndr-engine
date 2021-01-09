@@ -49,7 +49,7 @@ namespace bndr {
 	// bndr::Window
 	// Description: This class is meant to be a customizeable window that allows for keyboard and mouse event queue
 	// traversals. There are a few rendering methods, but the BNDR rendering API is meant to be used for more complicated
-	// operations.
+	// operations. This class is meant to be a singleton.
 	class BNDR_API Window {
 	
 		screen window;
@@ -63,8 +63,6 @@ namespace bndr {
 		static Queue<MouseEvent> mouseEvents;
 		// event queue for scroll events
 		static Queue<ScrollEvent> scrollEvents;
-		// vao so OpenGL doesn't complain
-		uint vao;
 
 	public:
 

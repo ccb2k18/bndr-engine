@@ -94,10 +94,7 @@ namespace bndr {
 		//        vertexShader = The compiled vertex shader to link with the program
 		//        fragmentShader = The compiled fragment shader to link with the program
 		Program(Shader&& vertexShader, Shader&& fragmentShader);
-		// copy constructor is not allowed
-		Program(const Program&) = delete;
-		// move constructor is not allowed
-		Program(Program&&) = delete;
+		Program(const Program& program);
 		// use the program
 		inline void use() { glUseProgram(programID); }
 		// stop using the program
@@ -112,10 +109,33 @@ namespace bndr {
 		void setIntUniformValue(const char* uniformName, int value);
 		// deletes the OpenGL program
 		~Program();
+
+		// program templates
+
+		// this template is meant to be used for polygons of one single color
+		static Program defaultPolygonProgram() {
+
+			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform vec4 shaderColor;\nout vec4 fragColor;\nvoid main() {\ngl_Position = vec4(position, 1.0);\nfragColor = shaderColor;\n}\0";
+			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
+			return Program::generateProgramFromSource(vert, frag);
+		}
 	private:
+
+		// retrieve existing program with program map key
+		// this constructor is private because it is only allowed to be called when the key is valid (see generateFromProgramSource(...))
+		Program(const char* programMapKey);
 
 		// generates a map key for a given vertex and fragment shader
 		static std::string generateMapKey(Shader& vertexShader, Shader& fragmentShader) {
+
+			const char* vShaderSource = vertexShader.getShaderSource();
+			const char* fShaderSource = fragmentShader.getShaderSource();
+
+			return generateMapKey(vShaderSource, fShaderSource, vertexShader.getShaderLength(), fragmentShader.getShaderLength());
+		}
+
+		// generates a map key for a given vertex and fragment shader source and char lengths
+		static std::string generateMapKey(const char* vertexShader, const char* fragmentShader, int vertexShaderLen, int fragmentShaderLen) {
 
 			// we strategically pick a key that is almost certainly guaranteed to be unique
 			// in order to avoid overwritting issues
@@ -126,21 +146,42 @@ namespace bndr {
 			std::string mapKey(key);
 
 			// then for each shader pick five characters from it
-			int vShaderIncrement = (vertexShader.getShaderLength()) / 5;
-			int fShaderIncrement = (fragmentShader.getShaderLength()) / 5;
+			int vShaderIncrement = (vertexShaderLen) / 5;
+			int fShaderIncrement = (fragmentShaderLen) / 5;
 
-			const char* vShaderSource = vertexShader.getShaderSource();
-			const char* fShaderSource = fragmentShader.getShaderSource();
+			const char* vShaderSource = vertexShader;
+			const char* fShaderSource = fragmentShader;
 
 			for (int i = 0; i < 5; i++) {
 
-				mapKey[i] = (char)(((int)vShaderSource[((i + 1) * vShaderIncrement)] + (i * 10)) % 127);
+				// skip the first 32 ascii characters to avoid overwriting buffer
+				mapKey[i] = (char)((((int)vShaderSource[((i + 1) * vShaderIncrement)] + (int)vShaderSource[i * vShaderIncrement]) % 95) + 32);
 			}
 			for (int i = 6; i < 11; i++) {
 
-				mapKey[i - 1] = (char)(((int)fShaderSource[((i - 5) * fShaderIncrement)] + (i * 10)) % 127);
+				mapKey[i - 1] = (char)(((int)fShaderSource[((i - 5) * fShaderIncrement)] + (int)fShaderSource[(i - 6) * fShaderIncrement]) % 95) + 32;
 			}
 			return mapKey;
+		}
+
+		static bool programExists(const char* mapKey) {
+
+			// check if program already exists
+			if (Program::programMap.find(mapKey) != Program::programMap.end()) {
+
+				return true;
+			}
+			return false;
+		}
+
+		static Program generateProgramFromSource(std::string& vShaderSource, std::string& fShaderSource) {
+
+			std::string programKey = Program::generateMapKey(vShaderSource.c_str(), vShaderSource.c_str(), fShaderSource.size(), fShaderSource.size());
+			if (Program::programExists(programKey.c_str())) {
+
+				return Program(programKey.c_str());
+			}
+			return Program(Shader(VERTEX_SHADER, vShaderSource.c_str()), Shader(FRAGMENT_SHADER, fShaderSource.c_str()));
 		}
 	};
 }

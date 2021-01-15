@@ -40,6 +40,7 @@ SOFTWARE.*/
 #include <utility>
 #include <sstream>
 #include <thread>
+#include <algorithm>
 #include "glew.h"
 #include "glfw3.h"
 #include "framework.h"

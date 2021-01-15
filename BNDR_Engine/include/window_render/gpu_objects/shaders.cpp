@@ -89,7 +89,7 @@ namespace bndr {
 		std::string mapKey = Program::generateMapKey(vertexShader, fragmentShader);
 
 		// check if program already exists
-		if (Program::programMap.find(mapKey.c_str()) != Program::programMap.end()) {
+		if (Program::programExists(mapKey.c_str())) {
 
 			programID = Program::programMap[mapKey.c_str()];
 			std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
@@ -128,6 +128,19 @@ namespace bndr {
 		// now we must not forget to add the program to the map
 		Program::programMap.insert(std::make_pair(mapKey.c_str(), programID));
 		BNDR_MESSAGE("added new program!\n");
+	}
+
+	Program::Program(const Program& program) {
+
+		programID = program.programID;
+	}
+
+	Program::Program(const char* mapKey) {
+
+		programID = Program::programMap[mapKey];
+		std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
+		BNDR_MESSAGE(message.c_str());
+		return;
 	}
 
 	void Program::setFloatUniformValue(const char* uniformName, float* data, uint dataType) {

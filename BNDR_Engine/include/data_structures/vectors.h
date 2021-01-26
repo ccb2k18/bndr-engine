@@ -61,9 +61,9 @@ namespace bndr {
 		// array of coordinates
 		T* data;
 
-		inline T& operator[](int index) { return data[index]; }
 	public:
 
+		inline T operator[](int index) const { return data[index]; }
 		// default constructor sets each of the values to their default constructor
 		BaseVector() : data(new T[2]) {}
 		// assign the objects in the array to the new objects
@@ -99,7 +99,7 @@ namespace bndr {
 		// subtract two Vec2s and return their difference
 		inline Vec2<T> operator-(const Vec2<T>& vec) { return Vec2<T>(BaseVector<T>::data[0] - vec[0], BaseVector<T>::data[1] - vec[1]); }
 		// return a vector with the components incremented by a scalar
-		inline Vec2<T> operator+(const T& scalar) { return Vec2<T>(BaseVector<T>::data[0] + scalar, BaseVector<T>::data[0] + scalar); }
+		inline Vec2<T> operator+(const T& scalar) { return Vec2<T>(BaseVector<T>::data[0] + scalar, BaseVector<T>::data[1] + scalar); }
 		// return a vector with the components decremented by a scalar
 		inline Vec2<T> operator-(const T& scalar) { return (*this) + (-scalar); }
 		// compute the dot product of two Vec2s
@@ -109,7 +109,7 @@ namespace bndr {
 		// scale a Vec2 up
 		inline Vec2<T> operator*(const T& scalar) { return Vec2<T>(scalar * BaseVector<T>::data[0], scalar * BaseVector<T>::data[1]); }
 		// scale a Vec2 down
-		inline Vec2<T> operator/(const T& scalar) { return (*this) * static_cast<T>(1.0)/scalar; }
+		inline Vec2<T> operator/(const T& scalar) { return Vec2<T>(BaseVector<T>::data[0] / scalar, BaseVector<T>::data[1] / scalar); }
 		// increment this vector by a scalar
 		inline void operator+=(const T& scalar) { BaseVector<T>::data[0] += scalar; BaseVector<T>::data[1] += scalar; }
 		// decrement this vector by a scalar
@@ -117,7 +117,7 @@ namespace bndr {
 		// multiply this vector by a scalar
 		inline void operator*=(const T& scalar) { BaseVector<T>::data[0] *= scalar; BaseVector<T>::data[1] *= scalar; }
 		// divide this vector by a scalar
-		inline void operator/=(const T& scalar) { (*this) *= static_cast<T>(1.0)/scalar; }
+		inline void operator/=(const T& scalar) { BaseVector<T>::data[0] /= scalar; BaseVector<T>::data[1] /= scalar; }
 		// add Vec2 to this
 		inline void operator+=(const Vec2<T>& vec) { BaseVector<T>::data[0] += vec[0]; BaseVector<T>::data[1] += vec[1]; }
 		// subtract Vec2 from this
@@ -141,17 +141,24 @@ namespace bndr {
 			crossProd /= mag;
 			return crossProd;
 		}
-		// output the Vec2 to cout or an ostream instance
-		friend std::ostream& operator<<(std::ostream& out, const Vec2<T>& vec);
 
 	};
 
 	template <class T>
-	std::ostream& operator<<(std::ostream& out, const Vec2<T>& vec) {
+	class Vec3 : public Vec2<T> {
 
-		// out << "{ " << vec[0] << ' ' << vec[1] << " }";
-		out << "Hello World!\n";
-		return out;
-	}
+	public:
+
+		Vec3() : BaseVector<T>::data(new T[3]) {}
+		Vec3(const T& x, const T& y, const T& z) : Vec2<T>(x, y) { BaseVector<T>::data[2] = z; }
+
+	};
+}
+
+template <class T>
+std::ostream& operator<<(std::ostream& out, const bndr::Vec2<T>& vec) {
+
+	out << "{ " << vec[0] << ' ' << vec[1] << " }";
+	return out;
 }
 

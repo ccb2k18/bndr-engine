@@ -28,8 +28,7 @@ namespace bndr {
 	float Clock::deltaTime() {
 
 		end = Clock::now();
-		// time is in nanoseconds so we must multiply by 10^-9 to get seconds
-		float deltaTime = ((end - start).count())*0.000000001f;
+		float deltaTime = ((end - start).count())*0.000001f;
 		start = end;
 		return deltaTime;
 	}

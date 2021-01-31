@@ -70,7 +70,7 @@ namespace bndr {
 		// used to pass into a bndr::Program uniform
 		inline T* getData() { return data; }
 		// used to get a copied value from the vector
-		virtual inline T getValue(int index) const { return data[index]; }
+		virtual inline T getValue(int index) const { return BaseVector<T>::data[index]; }
 		// default constructor sets each of the values to their default constructor
 		BaseVector() : data(new T[2]) {}
 		// assign the objects in the array to the new objects
@@ -118,17 +118,17 @@ namespace bndr {
 		// vector operations
 
 		// used to get a copied value from the vector
-		inline T getValue(int index) const { return base::getValue(index); }
+		inline T getValue(int index) const override { return base::getValue(index); }
 		// add two Vec2s together and return their sum
-		inline Vec2<T> operator+(const Vec2<T>& vec) { return Vec2<T>((*this)[0] + vec[0], (*this)[1] + vec[1]); }
+		inline Vec2<T> operator+(const Vec2<T>& vec) { return Vec2<T>((*this)[0] + vec.getValue(0), (*this)[1] + vec.getValue(1)); }
 		// subtract two Vec2s and return their difference
-		inline Vec2<T> operator-(const Vec2<T>& vec) { return Vec2<T>((*this)[0] - vec[0], (*this)[1] - vec[1]); }
+		inline Vec2<T> operator-(const Vec2<T>& vec) { return Vec2<T>((*this)[0] - vec.getValue(0), (*this)[1] - vec.getValue(1)); }
 		// return a vector with the components incremented by a scalar
 		inline Vec2<T> operator+(const T& scalar) { return Vec2<T>((*this)[0] + scalar, (*this)[1] + scalar); }
 		// return a vector with the components decremented by a scalar
 		inline Vec2<T> operator-(const T& scalar) { return (*this) + (-scalar); }
 		// compute the dot product of two Vec2s
-		inline T operator*(const Vec2<T>& vec) { return T((*this)[0]*vec[0] + (*this)[1]*vec[1]); }
+		inline T operator*(const Vec2<T>& vec) { return T((*this)[0]*vec.getValue(0) + (*this)[1]*vec.getValue(1)); }
 		// scale a Vec2 up
 		inline Vec2<T> operator*(const T& scalar) { return Vec2<T>(scalar * (*this)[0], scalar * (*this)[1]); }
 		// scale a Vec2 down
@@ -142,13 +142,13 @@ namespace bndr {
 		// divide this vector by a scalar
 		inline void operator/=(const T& scalar) { (*this)[0] /= scalar; (*this)[1] /= scalar; }
 		// add Vec2 to this
-		inline void operator+=(const Vec2<T>& vec) { (*this)[0] += vec[0]; (*this)[1] += vec[1]; }
+		inline void operator+=(const Vec2<T>& vec) { (*this)[0] += vec.getValue(0); (*this)[1] += vec.getValue(1); }
 		// subtract Vec2 from this
-		inline void operator-=(const Vec2<T>& vec) { (*this)[0] -= vec[0]; (*this)[1] -= vec[1]; }
+		inline void operator-=(const Vec2<T>& vec) { (*this)[0] -= vec.getValue(0); (*this)[1] -= vec.getValue(1); }
 		// get the square of the distance of a Vec2
 		static T distanceSquared(const Vec2<T>& vec) {
 
-			return (vec[0] * vec[0] + vec[1] * vec[1]);
+			return (vec.getValue(0) * vec.getValue(0) + vec.getValue(1) * vec.getValue(1));
 		}
 		// get the distance itself
 		static T distance(const Vec2<T>& vec) {
@@ -156,32 +156,35 @@ namespace bndr {
 			return static_cast<T>(sqrtf(distanceSquared(vec)));
 		}
 		// get the unit vector
-		static Vec2<T> unit(const Vec2<T>& vec) {
-
-			T mag = distance(vec);
-			if (mag == static_cast<T>(0)) {
-
-				BNDR_EXCEPTION("Computing the unit vector resulted in a divide by zero error");
-			}
-			return vec / mag;
-		}
+		Vec2<T> unit();
 
 	};
+
+	template <class T>
+	Vec2<T> Vec2<T>::unit() {
+
+		T mag = distance((*this));
+		if (mag == static_cast<T>(0)) {
+
+			BNDR_EXCEPTION("Computing the unit vector resulted in a divide by zero error");
+		}
+		return (*this) / mag;
+	}
 
 	template <class T>
 	Vec2<T>::Vec2(const Vec2<T>& vec) {
 
 		base::data = new T[2];
-		(*this)[0] = vec[0];
-		(*this)[1] = vec[1];
+		(*this)[0] = vec.getValue(0);
+		(*this)[1] = vec.getValue(1);
 	}
 
 	template <class T>
 	Vec2<T>::Vec2(Vec2<T>&& vec) {
 
 		base::data = new T[2];
-		(*this)[0] = vec[0];
-		(*this)[1] = vec[1];
+		(*this)[0] = vec.getValue(0);
+		(*this)[1] = vec.getValue(1);
 		// make sure the Vec2<T> instance is deleted in this scope
 		std::unique_ptr<Vec2<T>> ptr(&vec);
 	}
@@ -189,8 +192,8 @@ namespace bndr {
 	template <class T>
 	void Vec2<T>::operator=(const Vec2<T>& vec) {
 
-		(*this)[0] = vec[0];
-		(*this)[1] = vec[1];
+		(*this)[0] = vec.getValue(0);
+		(*this)[1] = vec.getValue(1);
 	}
 
 	// bndr::Vec3
@@ -215,19 +218,19 @@ namespace bndr {
 		// vector operations
 
 		// used to get a copied value from the vector
-		inline T getValue(int index) const { return base::getValue(index); }
+		inline T getValue(int index) const override { return base::getValue(index); }
 		// add two Vec3s together and return their sum
-		inline Vec3<T> operator+(const Vec3<T>& vec) { return Vec3<T>((*this)[0] + vec[0], (*this)[1] + vec[1], (*this)[2] + vec[2]); }
+		inline Vec3<T> operator+(const Vec3<T>& vec) { return Vec3<T>((*this)[0] + vec.getValue(0), (*this)[1] + vec.getValue(1), (*this)[2] + vec.getValue(2)); }
 		// subtract two Vec3s and return their difference
-		inline Vec3<T> operator-(const Vec3<T>& vec) { return Vec3<T>((*this)[0] - vec[0], (*this)[1] - vec[1], (*this)[2] - vec[2]); }
+		inline Vec3<T> operator-(const Vec3<T>& vec) { return Vec3<T>((*this)[0] - vec.getValue(0), (*this)[1] - vec.getValue(1), (*this)[2] - vec.getValue(2)); }
 		// return a vector with the components incremented by a scalar
 		inline Vec3<T> operator+(const T& scalar) { return Vec3<T>((*this)[0] + scalar, (*this)[1] + scalar, (*this)[2] + scalar); }
 		// return a vector with the components decremented by a scalar
 		inline Vec3<T> operator-(const T& scalar) { return (*this) + (-scalar); }
 		// compute the dot product of two Vec3s
-		inline T operator*(const Vec3<T>& vec) { return T((*this)[0] * vec[0] + (*this)[1] * vec[1] + (*this)[2] * vec[2]); }
+		inline T operator*(const Vec3<T>& vec) { return T((*this)[0] * vec.getValue(0) + (*this)[1] * vec.getValue(1) + (*this)[2] * vec.getValue(2)); }
 		// compute the cross product of two Vec3s
-		inline Vec3<T> operator%(const Vec3<T>& vec) { return Vec3<T>((*this)[1] * vec[2] - (*this)[2] * vec[1], (*this)[2] * vec[0] - (*this)[0] * vec[2], (*this)[0] * vec[1] - (*this)[1] * vec[0]); }
+		inline Vec3<T> operator%(const Vec3<T>& vec) { return Vec3<T>((*this)[1] * vec.getValue(2) - (*this)[2] * vec.getValue(1), (*this)[2] * vec.getValue(0) - (*this)[0] * vec.getValue(2), (*this)[0] * vec.getValue(1) - (*this)[1] * vec.getValue(0)); }
 		// scale a Vec3 up
 		inline Vec3<T> operator*(const T& scalar) { return Vec3<T>(scalar * (*this)[0], scalar * (*this)[1], scalar * (*this)[2]); }
 		// scale a Vec3 down
@@ -241,15 +244,15 @@ namespace bndr {
 		// divide this vector by a scalar
 		inline void operator/=(const T& scalar) { (*this)[0] /= scalar; (*this)[1] /= scalar; (*this)[2] /= scalar; }
 		// add Vec3 to this
-		inline void operator+=(const Vec3<T>& vec) { (*this)[0] += vec[0]; (*this)[1] += vec[1]; (*this)[2] += vec[2]; }
+		inline void operator+=(const Vec3<T>& vec) { (*this)[0] += vec.getValue(0); (*this)[1] += vec.getValue(1); (*this)[2] += vec.getValue(2); }
 		// subtract Vec3 from this
-		inline void operator-=(const Vec3<T>& vec) { (*this)[0] -= vec[0]; (*this)[1] -= vec[1]; (*this)[2] -= vec[2]; }
+		inline void operator-=(const Vec3<T>& vec) { (*this)[0] -= vec.getValue(0); (*this)[1] -= vec.getValue(1); (*this)[2] -= vec.getValue(2); }
 		// compute the cross product in place
 		void operator%=(const Vec3<T>& vec);
 		// get the square of the distance of a Vec3
 		static T distanceSquared(const Vec3<T>& vec) {
 
-			return (vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
+			return (vec.getValue(0) * vec.getValue(0) + vec.getValue(1) * vec.getValue(1) + vec.getValue(2) * vec.getValue(2));
 		}
 		// get the distance itself
 		static T distance(const Vec3<T>& vec) {
@@ -257,15 +260,7 @@ namespace bndr {
 			return static_cast<T>(sqrtf(distanceSquared(vec)));
 		}
 		// get the unit vector
-		static Vec3<T> unit(const Vec3<T>& vec) {
-
-			T mag = distance(vec);
-			if (mag == static_cast<T>(0)) {
-
-				BNDR_EXCEPTION("Computing the unit vector resulted in a divide by zero error.");
-			}
-			return vec / mag;
-		}
+		Vec3<T> unit();
 		// returns the unit normal of the two vectors
 		static Vec3<T> normal(const Vec3<T>& vecA, const Vec3<T>& vecB) {
 
@@ -294,27 +289,27 @@ namespace bndr {
 	template <class T>
 	void Vec3<T>::operator%=(const Vec3<T>& vec) {
 
-		(*this)[0] = (*this)[1] * vec[2] - (*this)[2] * vec[1];
-		(*this)[1] = (*this)[2] * vec[0] - (*this)[0] * vec[2];
-		(*this)[2] = (*this)[0] * vec[1] - (*this)[1] * vec[0];
+		(*this)[0] = (*this)[1] * vec.getValue(2) - (*this)[2] * vec.getValue(1);
+		(*this)[1] = (*this)[2] * vec.getValue(0) - (*this)[0] * vec.getValue(2);
+		(*this)[2] = (*this)[0] * vec.getValue(1) - (*this)[1] * vec.getValue(0);
 	}
 
 	template <class T>
 	Vec3<T>::Vec3(const Vec3<T>& vec) {
 
 		base::data = new T[3];
-		(*this)[0] = vec[0];
-		(*this)[1] = vec[1];
-		(*this)[2] = vec[2];
+		(*this)[0] = vec.getValue(0);
+		(*this)[1] = vec.getValue(1);
+		(*this)[2] = vec.getValue(2);
 	}
 
 	template <class T>
 	Vec3<T>::Vec3(Vec3<T>&& vec) {
 
 		base::data = new T[3];
-		(*this)[0] = vec[0];
-		(*this)[1] = vec[1];
-		(*this)[2] = vec[2];
+		(*this)[0] = vec.getValue(0);
+		(*this)[1] = vec.getValue(1);
+		(*this)[2] = vec.getValue(2);
 		// make sure the Vec3<T> instance is deleted in this scope
 		std::unique_ptr<Vec3<T>> ptr(&vec);
 	}
@@ -322,9 +317,20 @@ namespace bndr {
 	template <class T>
 	void Vec3<T>::operator=(const Vec3<T>& vec) {
 
-		(*this)[0] = vec[0];
-		(*this)[1] = vec[1];
-		(*this)[2] = vec[2];
+		(*this)[0] = vec.getValue(0);
+		(*this)[1] = vec.getValue(1);
+		(*this)[2] = vec.getValue(2);
+	}
+
+	template <class T>
+	Vec3<T> Vec3<T>::unit() {
+
+		T mag = distance((*this));
+		if (mag == static_cast<T>(0)) {
+
+			BNDR_EXCEPTION("Computing the unit vector resulted in a divide by zero error");
+		}
+		return (*this) / mag;
 	}
 }
 

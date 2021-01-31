@@ -37,10 +37,10 @@ namespace bndr {
 		T* data;
 		int nRows;
 		int nCols;
-		inline T& operator[](int index) { return data[index]; }
+		inline const T& operator[](int index) const { return BaseMatrix<T>::data[index]; }
 	public:
 
-		virtual inline T getAt(int row, int col) { return data[row * nRows + col]; }
+		inline T getAt(int row, int col) const { return BaseMatrix<T>::data[row * nRows + col]; }
 		inline T* getData() { return data; }
 		~BaseMatrix();
 	};
@@ -56,11 +56,11 @@ namespace bndr {
 	class Mat3x3 : public BaseMatrix<T> {
 
 		using base = typename BaseMatrix<T>;
+		
 	public:
 
 		// constructors/assignment
-
-		Mat3x3() : base(), base::nRow(3), base::nCol(3) {}
+		Mat3x3() : base(), base::nRows(3), base::nCols(3) {}
 		// take in arguments from a vector
 		Mat3x3(std::initializer_list<T>&& matData);
 		// copy constructor
@@ -86,8 +86,6 @@ namespace bndr {
 		void operator-=(const Mat3x3<T>& mat);
 		// multiply in place
 		void operator*=(const Mat3x3<T>& mat);
-		// get a cell at a specific row and col
-		inline T getAt(int row, int col) override { return base::getAt(row,col); }
 
 		// matrix templates
 
@@ -108,11 +106,11 @@ namespace bndr {
 		static Mat3x3<T> RotMat(const T& theta) {
 
 			// convert to radians
-			theta *= static_cast<T>(BNDR_PI / 180.0f);
+			T rad = theta * static_cast<T>(BNDR_PI / 180.0f);
 			return {
 
-				(T)cosf((float)theta), (T)-sinf((float)theta), (T)0.0f,
-				(T)sinf((float)theta), (T)cosf((float)theta), (T)0.0f,
+				(T)cosf((float)rad), (T)-sinf((float)rad), (T)0.0f,
+				(T)sinf((float)rad), (T)cosf((float)rad), (T)0.0f,
 				(T)0.0f, (T)0.0f, (T)1.0f
 			};
 		}
@@ -140,11 +138,11 @@ namespace bndr {
 			BNDR_EXCEPTION("std::vector<T> has incorrect size to initialize bndr::Mat3x3<T> instance");
 		}
 		base::data = new T[9];
-		base::nRow = 3;
-		base::nCol = 3;
+		base::nRows = 3;
+		base::nCols = 3;
 		for (int i = 0; i < 9; i++) {
 
-			(*this)[i] = matData[i];
+			base::data[i] = *(matData.begin() + i);
 		}
 	}
 
@@ -152,12 +150,12 @@ namespace bndr {
 	Mat3x3<T>::Mat3x3(const Mat3x3<T>& mat) {
 
 		base::data = new T[9];
-		base::nRow = 3;
-		base::nCol = 3;
+		base::nRows = 3;
+		base::nCols = 3;
 		// copy the new data and overwrite the existing data
 		for (int i = 0; i < 9; i++) {
 
-			(*this)[i] = mat[i];
+			base::data[i] = mat[i];
 		}
 	}
 
@@ -165,12 +163,12 @@ namespace bndr {
 	Mat3x3<T>::Mat3x3(Mat3x3<T>&& mat) {
 
 		base::data = new T[9];
-		base::nRow = 3;
-		base::nCol = 3;
+		base::nRows = 3;
+		base::nCols = 3;
 		// copy the new data and overwrite the existing data
 		for (int i = 0; i < 9; i++) {
 
-			(*this)[i] = mat[i];
+			base::data[i] = mat[i];
 		}
 		// make sure the Mat3x3<T> instance is deleted in this scope
 		std::unique_ptr<Mat3x3<T>> ptr(&mat);
@@ -182,7 +180,7 @@ namespace bndr {
 		// overwrite the existing data with the new data
 		for (int i = 0; i < 9; i++) {
 
-			(*this)[i] = mat[i];
+			base::data[i] = mat[i];
 		}
 	}
 	
@@ -223,9 +221,10 @@ namespace bndr {
 	Vec3<T> Mat3x3<T>::operator*(const Vec3<T>& vec) {
 
 		return Vec3<T>(
-			(*this)[0] * vec[0] + (*this)[1] * vec[1] + (*this)[2] * vec[2],
-			(*this)[3] * vec[0] + (*this)[4] * vec[1] + (*this)[5] * vec[2],
-			(*this)[6] * vec[0] + (*this)[7] * vec[1] + (*this)[8] * vec[2]
+			(*this)[0] * vec.getValue(0) + (*this)[1] * vec.getValue(1) + (*this)[2] * vec.getValue(2),
+			(*this)[3] * vec.getValue(0) + (*this)[4] * vec.getValue(1) + (*this)[5] * vec.getValue(2),
+			(*this)[6] * vec.getValue(0) + (*this)[7] * vec.getValue(1) + (*this)[8] * vec.getValue(2)
+			
 			);
 	}
 
@@ -234,7 +233,7 @@ namespace bndr {
 
 		for (int i = 0; i < 9; i++) {
 
-			(*this)[i] += mat[i];
+			base::data[i] += mat[i];
 		}
 	}
 	
@@ -243,22 +242,27 @@ namespace bndr {
 
 		for (int i = 0; i < 9; i++) {
 
-			(*this)[i] -= mat[i];
+			base::data[i] -= mat[i];
 		}
 	}
 
 	template <class T>
 	void Mat3x3<T>::operator*=(const Mat3x3<T>& mat) {
 
-		(*this)[0] = (*this)[0] * mat[0] + (*this)[1] * mat[3] + (*this)[2] * mat[6];
-		(*this)[1] = (*this)[0] * mat[1] + (*this)[1] * mat[4] + (*this)[2] * mat[7];
-		(*this)[2] = (*this)[0] * mat[2] + (*this)[1] * mat[5] + (*this)[2] * mat[8];
-		(*this)[3] = (*this)[3] * mat[0] + (*this)[4] * mat[3] + (*this)[5] * mat[6];
-		(*this)[4] = (*this)[3] * mat[1] + (*this)[4] * mat[4] + (*this)[5] * mat[7];
-		(*this)[5] = (*this)[3] * mat[2] + (*this)[4] * mat[5] + (*this)[5] * mat[8];
-		(*this)[6] = (*this)[6] * mat[0] + (*this)[7] * mat[3] + (*this)[8] * mat[6];
-		(*this)[7] = (*this)[6] * mat[1] + (*this)[7] * mat[4] + (*this)[8] * mat[7];
-		(*this)[8] = (*this)[6] * mat[2] + (*this)[7] * mat[5] + (*this)[8] * mat[8];
+		std::vector<T> copy(9);
+		copy[0] = (*this)[0] * mat[0] + (*this)[1] * mat[3] + (*this)[2] * mat[6];
+		copy[1] = (*this)[0] * mat[1] + (*this)[1] * mat[4] + (*this)[2] * mat[7];
+		copy[2] = (*this)[0] * mat[2] + (*this)[1] * mat[5] + (*this)[2] * mat[8];
+		copy[3] = (*this)[3] * mat[0] + (*this)[4] * mat[3] + (*this)[5] * mat[6];
+		copy[4] = (*this)[3] * mat[1] + (*this)[4] * mat[4] + (*this)[5] * mat[7];
+		copy[5] = (*this)[3] * mat[2] + (*this)[4] * mat[5] + (*this)[5] * mat[8];
+		copy[6] = (*this)[6] * mat[0] + (*this)[7] * mat[3] + (*this)[8] * mat[6];
+		copy[7] = (*this)[6] * mat[1] + (*this)[7] * mat[4] + (*this)[8] * mat[7];
+		copy[8] = (*this)[6] * mat[2] + (*this)[7] * mat[5] + (*this)[8] * mat[8];
+		for (int i = 0; i < copy.size(); i++) {
+
+			base::data[i] = copy[i];
+		}
 	}
 }
 

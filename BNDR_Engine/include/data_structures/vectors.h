@@ -1,5 +1,6 @@
 #pragma once
 #include <pch.h>
+#define BNDR_PI 3.1415927f
 
 /*MIT License
 
@@ -62,10 +63,14 @@ namespace bndr {
 	protected:
 		// array of coordinates
 		T* data;
+		inline T& operator[](int index) { return data[index]; }
 
 	public:
 
-		inline T operator[](int index) const { return data[index]; }
+		// used to pass into a bndr::Program uniform
+		inline T* getData() { return data; }
+		// used to get a copied value from the vector
+		virtual inline T getValue(int index) const { return data[index]; }
 		// default constructor sets each of the values to their default constructor
 		BaseVector() : data(new T[2]) {}
 		// assign the objects in the array to the new objects
@@ -102,7 +107,7 @@ namespace bndr {
 		// default constructor
 		Vec2() : BaseVector<T>() {}
 		// constructor
-		Vec2(const T& x, const T& y, int numCoords = 2) : BaseVector<T>(x, y, numCoords) {}
+		Vec2(const T& x, const T& y, int numCoords = 2) : base(x, y, numCoords) {}
 		// copy constructor
 		Vec2(const Vec2<T>& vec);
 		// move constructor
@@ -112,32 +117,34 @@ namespace bndr {
 
 		// vector operations
 
+		// used to get a copied value from the vector
+		inline T getValue(int index) const { return base::getValue(index); }
 		// add two Vec2s together and return their sum
-		inline Vec2<T> operator+(const Vec2<T>& vec) { return Vec2<T>(base::data[0] + vec[0], base::data[1] + vec[1]); }
+		inline Vec2<T> operator+(const Vec2<T>& vec) { return Vec2<T>((*this)[0] + vec[0], (*this)[1] + vec[1]); }
 		// subtract two Vec2s and return their difference
-		inline Vec2<T> operator-(const Vec2<T>& vec) { return Vec2<T>(base::data[0] - vec[0], base::data[1] - vec[1]); }
+		inline Vec2<T> operator-(const Vec2<T>& vec) { return Vec2<T>((*this)[0] - vec[0], (*this)[1] - vec[1]); }
 		// return a vector with the components incremented by a scalar
-		inline Vec2<T> operator+(const T& scalar) { return Vec2<T>(base::data[0] + scalar, base::data[1] + scalar); }
+		inline Vec2<T> operator+(const T& scalar) { return Vec2<T>((*this)[0] + scalar, (*this)[1] + scalar); }
 		// return a vector with the components decremented by a scalar
 		inline Vec2<T> operator-(const T& scalar) { return (*this) + (-scalar); }
 		// compute the dot product of two Vec2s
-		inline T operator*(const Vec2<T>& vec) { return T(base::data[0]*vec[0] + base::data[1]*vec[1]); }
+		inline T operator*(const Vec2<T>& vec) { return T((*this)[0]*vec[0] + (*this)[1]*vec[1]); }
 		// scale a Vec2 up
-		inline Vec2<T> operator*(const T& scalar) { return Vec2<T>(scalar * base::data[0], scalar * base::data[1]); }
+		inline Vec2<T> operator*(const T& scalar) { return Vec2<T>(scalar * (*this)[0], scalar * (*this)[1]); }
 		// scale a Vec2 down
-		inline Vec2<T> operator/(const T& scalar) { return Vec2<T>(base::data[0] / scalar, base::data[1] / scalar); }
+		inline Vec2<T> operator/(const T& scalar) { return Vec2<T>((*this)[0] / scalar, (*this)[1] / scalar); }
 		// increment this vector by a scalar
-		inline void operator+=(const T& scalar) { base::data[0] += scalar; base::data[1] += scalar; }
+		inline void operator+=(const T& scalar) { (*this)[0] += scalar; (*this)[1] += scalar; }
 		// decrement this vector by a scalar
 		inline void operator-=(const T& scalar) { (*this) += -scalar; }
 		// multiply this vector by a scalar
-		inline void operator*=(const T& scalar) { base::data[0] *= scalar; base::data[1] *= scalar; }
+		inline void operator*=(const T& scalar) { (*this)[0] *= scalar; (*this)[1] *= scalar; }
 		// divide this vector by a scalar
-		inline void operator/=(const T& scalar) { base::data[0] /= scalar; base::data[1] /= scalar; }
+		inline void operator/=(const T& scalar) { (*this)[0] /= scalar; (*this)[1] /= scalar; }
 		// add Vec2 to this
-		inline void operator+=(const Vec2<T>& vec) { base::data[0] += vec[0]; base::data[1] += vec[1]; }
+		inline void operator+=(const Vec2<T>& vec) { (*this)[0] += vec[0]; (*this)[1] += vec[1]; }
 		// subtract Vec2 from this
-		inline void operator-=(const Vec2<T>& vec) { base::data[0] -= vec[0]; base::data[1] -= vec[1]; }
+		inline void operator-=(const Vec2<T>& vec) { (*this)[0] -= vec[0]; (*this)[1] -= vec[1]; }
 		// get the square of the distance of a Vec2
 		static T distanceSquared(const Vec2<T>& vec) {
 
@@ -146,7 +153,7 @@ namespace bndr {
 		// get the distance itself
 		static T distance(const Vec2<T>& vec) {
 
-			return static_cast<T>(squareRoot(distanceSquared(vec)));
+			return static_cast<T>(sqrtf(distanceSquared(vec)));
 		}
 		// get the unit vector
 		static Vec2<T> unit(const Vec2<T>& vec) {
@@ -154,7 +161,7 @@ namespace bndr {
 			T mag = distance(vec);
 			if (mag == static_cast<T>(0)) {
 
-				BNDR_EXCEPTION("Computing the unit vector resulted in a divide by zero error.");
+				BNDR_EXCEPTION("Computing the unit vector resulted in a divide by zero error");
 			}
 			return vec / mag;
 		}
@@ -165,23 +172,25 @@ namespace bndr {
 	Vec2<T>::Vec2(const Vec2<T>& vec) {
 
 		base::data = new T[2];
-		base::data[0] = vec[0];
-		base::data[1] = vec[1];
+		(*this)[0] = vec[0];
+		(*this)[1] = vec[1];
 	}
 
 	template <class T>
 	Vec2<T>::Vec2(Vec2<T>&& vec) {
 
 		base::data = new T[2];
-		base::data[0] = vec[0];
-		base::data[1] = vec[1];
+		(*this)[0] = vec[0];
+		(*this)[1] = vec[1];
+		// make sure the Vec2<T> instance is deleted in this scope
+		std::unique_ptr<Vec2<T>> ptr(&vec);
 	}
 
 	template <class T>
 	void Vec2<T>::operator=(const Vec2<T>& vec) {
 
-		base::data[0] = vec[0];
-		base::data[1] = vec[1];
+		(*this)[0] = vec[0];
+		(*this)[1] = vec[1];
 	}
 
 	// bndr::Vec3
@@ -205,34 +214,36 @@ namespace bndr {
 
 		// vector operations
 
+		// used to get a copied value from the vector
+		inline T getValue(int index) const { return base::getValue(index); }
 		// add two Vec3s together and return their sum
-		inline Vec3<T> operator+(const Vec3<T>& vec) { return Vec3<T>(base::data[0] + vec[0], base::data[1] + vec[1], base::data[2] + vec[2]); }
+		inline Vec3<T> operator+(const Vec3<T>& vec) { return Vec3<T>((*this)[0] + vec[0], (*this)[1] + vec[1], (*this)[2] + vec[2]); }
 		// subtract two Vec3s and return their difference
-		inline Vec3<T> operator-(const Vec3<T>& vec) { return Vec3<T>(base::data[0] - vec[0], base::data[1] - vec[1], base::data[2] - vec[2]); }
+		inline Vec3<T> operator-(const Vec3<T>& vec) { return Vec3<T>((*this)[0] - vec[0], (*this)[1] - vec[1], (*this)[2] - vec[2]); }
 		// return a vector with the components incremented by a scalar
-		inline Vec3<T> operator+(const T& scalar) { return Vec3<T>(base::data[0] + scalar, base::data[1] + scalar, base::data[2] + scalar); }
+		inline Vec3<T> operator+(const T& scalar) { return Vec3<T>((*this)[0] + scalar, (*this)[1] + scalar, (*this)[2] + scalar); }
 		// return a vector with the components decremented by a scalar
 		inline Vec3<T> operator-(const T& scalar) { return (*this) + (-scalar); }
 		// compute the dot product of two Vec3s
-		inline T operator*(const Vec3<T>& vec) { return T(base::data[0] * vec[0] + base::data[1] * vec[1] + base::data[2] * vec[2]); }
+		inline T operator*(const Vec3<T>& vec) { return T((*this)[0] * vec[0] + (*this)[1] * vec[1] + (*this)[2] * vec[2]); }
 		// compute the cross product of two Vec3s
-		inline Vec3<T> operator%(const Vec3<T>& vec) { return Vec3<T>(base::data[1] * vec[2] - base::data[2] * vec[1], base::data[2] * vec[0] - base::data[0] * vec[2], base::data[0] * vec[1] - base::data[1] * vec[0]); }
+		inline Vec3<T> operator%(const Vec3<T>& vec) { return Vec3<T>((*this)[1] * vec[2] - (*this)[2] * vec[1], (*this)[2] * vec[0] - (*this)[0] * vec[2], (*this)[0] * vec[1] - (*this)[1] * vec[0]); }
 		// scale a Vec3 up
-		inline Vec3<T> operator*(const T& scalar) { return Vec3<T>(scalar * base::data[0], scalar * base::data[1], scalar * base::data[2]); }
+		inline Vec3<T> operator*(const T& scalar) { return Vec3<T>(scalar * (*this)[0], scalar * (*this)[1], scalar * (*this)[2]); }
 		// scale a Vec3 down
-		inline Vec3<T> operator/(const T& scalar) { return Vec3<T>(base::data[0] / scalar, base::data[1] / scalar, base::data[2] / scalar); }
+		inline Vec3<T> operator/(const T& scalar) { return Vec3<T>((*this)[0] / scalar, (*this)[1] / scalar, (*this)[2] / scalar); }
 		// increment this vector by a scalar
-		inline void operator+=(const T& scalar) { base::data[0] += scalar; base::data[1] += scalar; base::data[2] += scalar; }
+		inline void operator+=(const T& scalar) { (*this)[0] += scalar; (*this)[1] += scalar; (*this)[2] += scalar; }
 		// decrement this vector by a scalar
 		inline void operator-=(const T& scalar) { (*this) += -scalar; }
 		// multiply this vector by a scalar
-		inline void operator*=(const T& scalar) { base::data[0] *= scalar; base::data[1] *= scalar; base::data[2] *= scalar; }
+		inline void operator*=(const T& scalar) { (*this)[0] *= scalar; (*this)[1] *= scalar; (*this)[2] *= scalar; }
 		// divide this vector by a scalar
-		inline void operator/=(const T& scalar) { base::data[0] /= scalar; base::data[1] /= scalar; base::data[2] /= scalar; }
+		inline void operator/=(const T& scalar) { (*this)[0] /= scalar; (*this)[1] /= scalar; (*this)[2] /= scalar; }
 		// add Vec3 to this
-		inline void operator+=(const Vec3<T>& vec) { base::data[0] += vec[0]; base::data[1] += vec[1]; base::data[2] += vec[2]; }
+		inline void operator+=(const Vec3<T>& vec) { (*this)[0] += vec[0]; (*this)[1] += vec[1]; (*this)[2] += vec[2]; }
 		// subtract Vec3 from this
-		inline void operator-=(const Vec3<T>& vec) { base::data[0] -= vec[0]; base::data[1] -= vec[1]; base::data[2] -= vec[2]; }
+		inline void operator-=(const Vec3<T>& vec) { (*this)[0] -= vec[0]; (*this)[1] -= vec[1]; (*this)[2] -= vec[2]; }
 		// compute the cross product in place
 		void operator%=(const Vec3<T>& vec);
 		// get the square of the distance of a Vec3
@@ -243,7 +254,7 @@ namespace bndr {
 		// get the distance itself
 		static T distance(const Vec3<T>& vec) {
 
-			return static_cast<T>(squareRoot(distanceSquared(vec)));
+			return static_cast<T>(sqrtf(distanceSquared(vec)));
 		}
 		// get the unit vector
 		static Vec3<T> unit(const Vec3<T>& vec) {
@@ -275,43 +286,45 @@ namespace bndr {
 	Vec3<T>::Vec3(const T& x, const T& y, const T& z) {
 
 		base::data = new T[3];
-		base::data[0] = x;
-		base::data[1] = y;
-		base::data[2] = z;
+		(*this)[0] = x;
+		(*this)[1] = y;
+		(*this)[2] = z;
 	}
 
 	template <class T>
 	void Vec3<T>::operator%=(const Vec3<T>& vec) {
 
-		base::data[0] = base::data[1] * vec[2] - base::data[2] * vec[1];
-		base::data[1] = base::data[2] * vec[0] - base::data[0] * vec[2];
-		base::data[2] = base::data[0] * vec[1] - base::data[1] * vec[0];
+		(*this)[0] = (*this)[1] * vec[2] - (*this)[2] * vec[1];
+		(*this)[1] = (*this)[2] * vec[0] - (*this)[0] * vec[2];
+		(*this)[2] = (*this)[0] * vec[1] - (*this)[1] * vec[0];
 	}
 
 	template <class T>
 	Vec3<T>::Vec3(const Vec3<T>& vec) {
 
-		base::data = new T[2];
-		base::data[0] = vec[0];
-		base::data[1] = vec[1];
-		base::data[2] = vec[2];
+		base::data = new T[3];
+		(*this)[0] = vec[0];
+		(*this)[1] = vec[1];
+		(*this)[2] = vec[2];
 	}
 
 	template <class T>
 	Vec3<T>::Vec3(Vec3<T>&& vec) {
 
-		base::data = new T[2];
-		base::data[0] = vec[0];
-		base::data[1] = vec[1];
-		base::data[2] = vec[2];
+		base::data = new T[3];
+		(*this)[0] = vec[0];
+		(*this)[1] = vec[1];
+		(*this)[2] = vec[2];
+		// make sure the Vec3<T> instance is deleted in this scope
+		std::unique_ptr<Vec3<T>> ptr(&vec);
 	}
 
 	template <class T>
 	void Vec3<T>::operator=(const Vec3<T>& vec) {
 
-		base::data[0] = vec[0];
-		base::data[1] = vec[1];
-		base::data[2] = vec[2];
+		(*this)[0] = vec[0];
+		(*this)[1] = vec[1];
+		(*this)[2] = vec[2];
 	}
 }
 
@@ -319,7 +332,7 @@ namespace bndr {
 template <class T>
 std::ostream& operator<<(std::ostream& out, const bndr::Vec2<T>& vec) {
 
-	out << "{ " << vec[0] << ' ' << vec[1] << " }";
+	out << "{ " << vec.getValue(0) << ' ' << vec.getValue(1) << " }";
 	return out;
 }
 
@@ -327,7 +340,7 @@ std::ostream& operator<<(std::ostream& out, const bndr::Vec2<T>& vec) {
 template <class T>
 std::ostream& operator<<(std::ostream& out, const bndr::Vec3<T>& vec) {
 
-	out << "{ " << vec[0] << ' ' << vec[1] << ' ' << vec[2] << " }";
+	out << "{ " << vec.getValue(0) << ' ' << vec.getValue(1) << ' ' << vec.getValue(2) << " }";
 	return out;
 }
 

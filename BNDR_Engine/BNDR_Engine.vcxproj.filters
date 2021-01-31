@@ -63,6 +63,9 @@
     <ClInclude Include="include\data_structures\vectors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\data_structures\matrices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -96,9 +99,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="include\window_render\gpu_objects\textures.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\data_structures\vectors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

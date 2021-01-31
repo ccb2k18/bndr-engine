@@ -182,6 +182,7 @@
     <ClInclude Include="include\window_render\gpu_objects\GLDebug.h" />
     <ClInclude Include="include\window_render\gpu_objects\IndexBuffer.h" />
     <ClInclude Include="logger.h" />
+    <ClInclude Include="include\data_structures\matrices.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="include\window_render\window.h" />
     <ClInclude Include="include\window_render\timers.h" />
@@ -209,7 +210,6 @@
     <ClCompile Include="include\window_render\gpu_objects\VertexArray.cpp" />
     <ClCompile Include="include\window_render\gpu_objects\shaders.cpp" />
     <ClCompile Include="include\window_render\gpu_objects\textures.cpp" />
-    <ClCompile Include="include\data_structures\vectors.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

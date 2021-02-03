@@ -21,7 +21,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
 #pragma once
+#include <pch.h>
+#include "../window_render/gpu_objects/textures.h"
+#include "../window_render/gpu_objects/shaders.h"
 
-#include "window_render/timers.h"
-#include "window_render/window.h"
-#include "graphics_surfaces/graphical_bedrocks.h"
+namespace bndr {
+
+	// bndr::Surface
+	// Description: The fundamental abstract class for all graphical elements from shapes to images to character sprites
+	class Surface {
+
+		VertexArray* va;
+		Program* program;
+		Vec3<float>* pos;
+		Mat3x3<float>* translation;
+		Mat3x3<float>* rotation;
+		Mat3x3<float>* scale;
+
+	public:
+
+		virtual void render() = 0;
+		~Surface();
+	};
+}
+

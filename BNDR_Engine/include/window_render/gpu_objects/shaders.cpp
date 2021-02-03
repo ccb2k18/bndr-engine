@@ -30,8 +30,6 @@ namespace bndr {
 
 	Shader::Shader(uint shaderType, const char* shaderSource, bool fromFile) {
 
-		loadedFromFile = fromFile;
-
 		shaderID = glCreateShader(shaderType);
 		// if we need to load the data from a file
 		if (fromFile) {

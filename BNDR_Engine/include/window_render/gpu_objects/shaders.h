@@ -42,8 +42,6 @@ namespace bndr {
 		uint shaderID;
 		// shader source code
 		std::string shaderData;
-		// true if the shader code was loaded from a file
-		bool loadedFromFile;
 	public:
 
 		// bndr::Shader::Shader
@@ -64,8 +62,6 @@ namespace bndr {
 		inline const char* getShaderSource() { return shaderData.c_str(); }
 		// get length of shader source code
 		inline int getShaderLength() { return shaderData.size(); }
-		// was the shader data loaded from file?
-		inline bool wasLoadedFromFile() { return loadedFromFile; }
 
 		~Shader();
 	};
@@ -116,7 +112,15 @@ namespace bndr {
 		// this template is meant to be used for polygons of one single color
 		static Program defaultPolygonProgram() {
 
-			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform vec4 shaderColor;\nout vec4 fragColor;\nvoid main() {\ngl_Position = vec4(position, 1.0);\nfragColor = shaderColor;\n}\0";
+			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nuniform vec4 color;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
+			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
+			return Program::generateProgramFromSource(vert, frag);
+		}
+
+		// this template is for drawing polygons with multiple blended colors for each vertex
+		static Program multiColorPolygonProgram() {
+
+			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
 			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
 			return Program::generateProgramFromSource(vert, frag);
 		}
@@ -177,7 +181,7 @@ namespace bndr {
 
 		static Program generateProgramFromSource(std::string& vShaderSource, std::string& fShaderSource) {
 
-			std::string programKey = Program::generateMapKey(vShaderSource.c_str(), vShaderSource.c_str(), fShaderSource.size(), fShaderSource.size());
+			std::string programKey = Program::generateMapKey(vShaderSource.c_str(), fShaderSource.c_str(), vShaderSource.size(), fShaderSource.size());
 			if (Program::programExists(programKey.c_str())) {
 
 				return Program(programKey.c_str());

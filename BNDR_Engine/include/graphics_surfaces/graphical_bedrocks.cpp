@@ -22,3 +22,19 @@ SOFTWARE.*/
 
 #include <pch.h>
 #include "graphical_bedrocks.h"
+
+namespace bndr {
+
+	// define static member variables
+	Window* PixelSurface::windowInstance = nullptr;
+	Program* Shape::defaultPoly;
+
+
+	PixelSurface::~PixelSurface() {
+
+		delete va;
+		delete translation;
+		delete rotation;
+		delete scale;
+	}
+}

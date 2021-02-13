@@ -1,11 +1,11 @@
 ﻿  pch.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
 D:\Senior Project\GLFWx64\include\GLFW\glfw3.h(123): message : see previous definition of 'APIENTRY'
   dllmain.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(35,18): warning C4251: 'bndr::Clock::start': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(37,16): warning C4251: 'bndr::Clock::end': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75): message : see declaration of 'bndr::KeyEvent'
@@ -21,16 +21,28 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): me
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(44,25): warning C4251: 'bndr::Shader::shaderData': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'bndr::Shader'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\xstring(4564): message : see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\xstring(4648): message : see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(64,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(86,58): warning C4251: 'bndr::Program::programMap': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Program'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(184,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   graphical_bedrocks.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75): message : see declaration of 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92,43): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92): message : see declaration of 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(61,35): warning C4251: 'bndr::Window::keyEvents': class 'bndr::Queue<bndr::KeyEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(61): message : see declaration of 'bndr::Queue<bndr::KeyEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63,39): warning C4251: 'bndr::Window::mouseEvents': class 'bndr::Queue<bndr::MouseEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63): message : see declaration of 'bndr::Queue<bndr::MouseEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65,41): warning C4251: 'bndr::Window::scrollEvents': class 'bndr::Queue<bndr::ScrollEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): message : see declaration of 'bndr::Queue<bndr::ScrollEvent>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(44,25): warning C4251: 'bndr::Shader::shaderData': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'bndr::Shader'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\xstring(4564): message : see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\xstring(4648): message : see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(64,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(86,58): warning C4251: 'bndr::Program::programMap': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Program'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
@@ -60,9 +72,9 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65,41):
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): message : see declaration of 'bndr::Queue<bndr::ScrollEvent>'
   timers.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(35,18): warning C4251: 'bndr::Clock::start': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(37,16): warning C4251: 'bndr::Clock::end': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
   VertexBuffer.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(37,72): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(45,3): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
@@ -73,7 +85,7 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\Vert
   VertexArray.cpp
   shaders.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(44,25): warning C4251: 'bndr::Shader::shaderData': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'bndr::Shader'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include\xstring(4564): message : see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\xstring(4648): message : see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(64,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(86,58): warning C4251: 'bndr::Program::programMap': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Program'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(86): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'

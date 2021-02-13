@@ -45,6 +45,52 @@ namespace bndr {
 		uint bufferID;
 		// the number of vertices we want to draw
 		int verticesNumber;
+		// floats per vertex block
+		int floatsPerBlock;
+		// store the flags for copying or moving
+		uint vbFlags;
+
+		static void loadVertexAttribs(uint attribIndex, int offset, int dataBlockBytes, uint flags) {
+
+			// at bare minimum we have a single vertex attribute pointer for the positions
+			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
+			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
+			// add to offset
+			offset += 3 * sizeof(float);
+			// increment the attrib index
+			attribIndex++;
+			// if the color attrib flag is set
+			if (flags & RGBA_COLOR_ATTRIB) {
+
+				GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
+				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 4, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
+				offset += 4 * sizeof(float);
+				attribIndex++;
+			}
+			// if the normals attrib flag is set
+			if (flags & VERTEX_NORMALS_ATTRIB) {
+
+				GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
+				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
+				offset += 3 * sizeof(float);
+				attribIndex++;
+			}
+			// if texture coordinates are specified
+			if (flags & TEXTURE_COORDS_ATTRIB) {
+
+				GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
+				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 2, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
+				offset += 2 * sizeof(float);
+				attribIndex++;
+			}
+			// if there is more than one texture a texture index will be specified
+			if (flags & TEXTURE_INDEX_ATTRIB) {
+
+				GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
+				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 1, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
+				offset += sizeof(float);
+			}
+		}
 
 	public:
 
@@ -57,13 +103,15 @@ namespace bndr {
 		// attribs, this constructor will create an OpenGL vertex buffer in video memory that can be used in shaders
 		VertexBuffer(std::vector<float>&& vertexData, int dataBlockBytes, uint flags);
 		// the copy constructor is not allowed
-		VertexBuffer(const VertexBuffer&) = delete;
+		VertexBuffer(const VertexBuffer&);
 		// the move constructor is not allowed
 		VertexBuffer(VertexBuffer&&) = delete;
+		// read the data from the buffer so we can copy it if we so desire
+		float* readData() const;
 		// bind the buffer
-		inline void bind() { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, bufferID)); }
+		inline void bind() const { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, bufferID)); }
 		// unbind the buffer
-		inline void unbind() { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, 0)); }
+		inline void unbind() const { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, 0)); }
 		// returns the number of vertices
 		inline int getNumVertices() { return verticesNumber; }
 		// render the vertices

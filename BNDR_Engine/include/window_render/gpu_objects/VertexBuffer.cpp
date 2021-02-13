@@ -35,50 +35,38 @@ namespace bndr {
 
 		// the vertices number is equal to the size of the entire data divided by the size of each data block
 		verticesNumber = (sizeof(float) * vertexData.size()) / dataBlockBytes;
+		floatsPerBlock = dataBlockBytes / 4;
+		vbFlags = flags;
 
-		uint attribIndex = 0;
-		int offset = 0;
-
-
-		// at bare minimum we have a single vertex attribute pointer for the positions
-		GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-		GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-		// add to offset
-		offset += 3 * sizeof(float);
-		// increment the attrib index
-		attribIndex++;
-		// if the color attrib flag is set
-		if (flags & RGBA_COLOR_ATTRIB) {
-
-			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 4, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-			offset += 4 * sizeof(float);
-			attribIndex++;
-		}
-		// if the normals attrib flag is set
-		if (flags & VERTEX_NORMALS_ATTRIB) {
-
-			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-			offset += 3 * sizeof(float);
-			attribIndex++;
-		}
-		// if texture coordinates are specified
-		if (flags & TEXTURE_COORDS_ATTRIB) {
-
-			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 2, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-			offset += 2 * sizeof(float);
-			attribIndex++;
-		}
-		// if there is more than one texture a texture index will be specified
-		if (flags & TEXTURE_INDEX_ATTRIB) {
-
-			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 1, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-			offset += sizeof(float);
-		}
+		VertexBuffer::loadVertexAttribs((uint)0, 0, dataBlockBytes, vbFlags);
 		unbind();
+	}
+
+
+	VertexBuffer::VertexBuffer(const VertexBuffer& vb) {
+
+		verticesNumber = vb.verticesNumber;
+		floatsPerBlock = vb.floatsPerBlock;
+		vbFlags = vb.vbFlags;
+		float* vertexData = vb.readData();
+
+		// generate and bind the buffer
+		GL_DEBUG_FUNC(glGenBuffers(1, &bufferID));
+		bind();
+		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber * floatsPerBlock, vertexData, GL_DYNAMIC_DRAW));
+
+		VertexBuffer::loadVertexAttribs((uint)0, 0, floatsPerBlock * sizeof(float), vbFlags);
+		unbind();
+
+	}
+
+	float* VertexBuffer::readData() const {
+
+		float* data = new float[verticesNumber*floatsPerBlock];
+		bind();
+		glGetBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (void*)data);
+		unbind();
+		return data;
 	}
 
 	void VertexBuffer::render(uint drawMode) {

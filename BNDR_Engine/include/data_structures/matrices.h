@@ -87,7 +87,7 @@ namespace bndr {
 		// multiply in place
 		void operator*=(const Mat3x3<T>& mat);
 
-		// matrix templates
+		// matrix templates allocated on stack
 
 		// get a translation matrix
 		static Mat3x3<T> TransMat(const T& xTrans, const T& yTrans) {
@@ -111,7 +111,7 @@ namespace bndr {
 
 				(T)cosf((float)rad), (T)-sinf((float)rad), (T)0.0f,
 				(T)sinf((float)rad), (T)cosf((float)rad), (T)0.0f,
-				(T)0.0f, (T)0.0f, (T)1.0f
+				(T)1.0f, (T)1.0f, (T)0.0f
 			};
 		}
 
@@ -124,6 +124,46 @@ namespace bndr {
 				(T)0.0f, yScale, (T)0.0f,
 				(T)0.0f, (T)0.0f, (T)1.0f,
 			};
+
+		}
+
+		// matrix templates allocated on heap
+
+		// get a translation matrix
+		static Mat3x3<T>* HeapTransMat(const T& xTrans, const T& yTrans) {
+
+			return new Mat3x3({
+
+				(T)1.0f, (T)0.0f, (T)xTrans,
+				(T)0.0f, (T)1.0f, (T)yTrans,
+				(T)0.0f, (T)0.0f, (T)1.0f
+
+			});
+		}
+
+		// get a rotational matrix
+		// theta is in degrees
+		static Mat3x3<T>* HeapRotMat(const T& theta) {
+
+			// convert to radians
+			T rad = theta * static_cast<T>(BNDR_PI / 180.0f);
+			return new Mat3x3({
+
+				(T)cosf((float)rad), (T)-sinf((float)rad), (T)0.0f,
+				(T)sinf((float)rad), (T)cosf((float)rad), (T)0.0f,
+				(T)1.0f, (T)1.0f, (T)0.0f
+			});
+		}
+
+		// get a scale matrix
+		static Mat3x3<T>* HeapScaleMat(const T& xScale, const T& yScale) {
+
+			return new Mat3x3({
+
+				xScale, (T)0.0f, (T)0.0f,
+				(T)0.0f, yScale, (T)0.0f,
+				(T)0.0f, (T)0.0f, (T)1.0f,
+			});
 
 		}
 

@@ -54,6 +54,7 @@ namespace bndr {
 		GL_DEBUG_FUNC(glGenBuffers(1, &bufferID));
 		bind();
 		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber * floatsPerBlock, vertexData, GL_DYNAMIC_DRAW));
+		delete[] vertexData;
 
 		VertexBuffer::loadVertexAttribs((uint)0, 0, floatsPerBlock * sizeof(float), vbFlags);
 		unbind();

@@ -18,6 +18,11 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63,39):
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63): message : see declaration of 'bndr::Queue<bndr::MouseEvent>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65,41): warning C4251: 'bndr::Window::scrollEvents': class 'bndr::Queue<bndr::ScrollEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): message : see declaration of 'bndr::Queue<bndr::ScrollEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(57,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(66,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(74,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(82,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(90,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(44,25): warning C4251: 'bndr::Shader::shaderData': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'bndr::Shader'
@@ -39,6 +44,11 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63,39):
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63): message : see declaration of 'bndr::Queue<bndr::MouseEvent>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65,41): warning C4251: 'bndr::Window::scrollEvents': class 'bndr::Queue<bndr::ScrollEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): message : see declaration of 'bndr::Queue<bndr::ScrollEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(57,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(66,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(74,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(82,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(90,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(44,25): warning C4251: 'bndr::Shader::shaderData': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'bndr::Shader'
@@ -76,13 +86,18 @@ D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\chr
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(37,16): warning C4251: 'bndr::Clock::end': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
 D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
   VertexBuffer.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(57,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(66,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(74,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(82,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(90,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(37,72): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(45,3): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(54,4): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(62,4): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(70,4): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.cpp(78,4): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
   VertexArray.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(57,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(66,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(74,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(82,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(90,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
   shaders.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(44,25): warning C4251: 'bndr::Shader::shaderData': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'bndr::Shader'
 D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\xstring(4648): message : see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
@@ -91,6 +106,11 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shad
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(86): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(184,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   textures.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(57,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(66,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(74,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(82,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(90,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.cpp(86,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data

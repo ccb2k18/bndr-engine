@@ -30,8 +30,28 @@ namespace bndr {
 		glGenBuffers(1, &bufferID);
 		bind();
 		size = indexData.size();
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * size, &indexData[0], GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * size, (const void*)&indexData[0], GL_DYNAMIC_DRAW);
 		unbind();
+	}
+
+	IndexBuffer::IndexBuffer(const IndexBuffer& ib) {
+
+		glGenBuffers(1, &bufferID);
+		bind();
+		size = ib.size;
+		uint* data = ib.readData();
+		GL_DEBUG_FUNC(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * size, (const void*)data, GL_DYNAMIC_DRAW));
+		delete[] data;
+		unbind();
+	}
+
+	uint* IndexBuffer::readData() const {
+
+		uint* data = new uint[size];
+		bind();
+		GL_DEBUG_FUNC(glGetBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size * sizeof(uint), (void*)data));
+		unbind();
+		return data;
 	}
 
 	void IndexBuffer::render(uint drawMode) {

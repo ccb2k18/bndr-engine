@@ -22,6 +22,7 @@ SOFTWARE.*/
 
 #pragma once
 #include <pch.h>
+#include "GLDebug.h"
 
 namespace bndr {
 
@@ -33,14 +34,19 @@ namespace bndr {
 	public:
 
 		IndexBuffer(std::vector<uint>&& indexData);
-		// the copy constructor is not allowed
-		IndexBuffer(const IndexBuffer&) = delete;
+		// the copy constructor
+		IndexBuffer(const IndexBuffer&);
 		// the move constructor is not allowed
 		IndexBuffer(IndexBuffer&&) = delete;
+		// assignment operator is not allowed
+		IndexBuffer& operator=(const IndexBuffer&) = delete;
+		// read from the buffer data in the GPU
+		// DO NOT USE: This is meant to be used automatically by the class
+		uint* readData() const;
 		// bind the buffer
-		inline void bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID); }
+		inline void bind() const { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID); }
 		// unbind the buffer
-		inline void unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+		inline void unbind() const { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
 		// returns the number of indices
 		inline uint getSize() { return size; }
 		// render the vertices using indices

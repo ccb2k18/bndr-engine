@@ -51,6 +51,10 @@ namespace bndr {
 		// IndexBuffer allocated on the heap
 		IndexBuffer* iBuffer = nullptr;
 
+		// used for copy constructor of VertexArray
+		inline const VertexBuffer* getVBuffer() const { return vBuffer; }
+		inline const IndexBuffer* getIBuffer() const { return iBuffer; }
+
 	public:
 
 		// bndr::VertexArray::VertexArray
@@ -59,16 +63,18 @@ namespace bndr {
 		// bndr::VertexArray::VertexArray
 		// Description: render the vertex array using just the vertices
 		VertexArray(uint drawingMode, std::vector<float>&& vertexData, int dataBlockBytes, uint vertexBufferFlags);
-		// the copy constructor is not allowed
-		VertexArray(const VertexArray&) = delete;
+		// the copy constructor
+		VertexArray(const VertexArray&);
 		// the move constructor is not allowed
 		VertexArray(VertexArray&&) = delete;
+		// assignment operator is not allowed
+		VertexArray& operator=(const VertexArray&) = delete;
 		// render the vertex array
 		void render();
 		// bind the vertex array
-		inline void bind() { glBindVertexArray(arrayID); }
+		inline void bind() const { glBindVertexArray(arrayID); }
 		// unbind the vertex array
-		inline void unbind() { glBindVertexArray(0); }
+		inline void unbind() const { glBindVertexArray(0); }
 		// bndr::VertexArray::~VertexArray
 		// Description: Delete the VertexBuffer and IndexBuffer, as well as any textures
 		~VertexArray();

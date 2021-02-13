@@ -102,11 +102,14 @@ namespace bndr {
 		// Description: From a vector of floats, the size of each data block, and flags that indicate how many vertex
 		// attribs, this constructor will create an OpenGL vertex buffer in video memory that can be used in shaders
 		VertexBuffer(std::vector<float>&& vertexData, int dataBlockBytes, uint flags);
-		// the copy constructor is not allowed
+		// the copy constructor
 		VertexBuffer(const VertexBuffer&);
 		// the move constructor is not allowed
 		VertexBuffer(VertexBuffer&&) = delete;
-		// read the data from the buffer so we can copy it if we so desire
+		// assignment operator is not allowed
+		VertexBuffer& operator=(const VertexBuffer&) = delete;
+		// read from the buffer data in the GPU
+		// DO NOT USE: This is meant to be used automatically by the class
 		float* readData() const;
 		// bind the buffer
 		inline void bind() const { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, bufferID)); }

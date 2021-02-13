@@ -28,7 +28,7 @@ namespace bndr {
 	VertexArray::VertexArray(uint drawingMode, std::vector<float>&& vertexData, int dataBlockBytes, uint vertexBufferFlags, std::vector<uint>&& indexData) {
 
 		drawMode = drawingMode;
-		glGenVertexArrays(1, &arrayID);
+		GL_DEBUG_FUNC(glGenVertexArrays(1, &arrayID));
 		bind();
 
 		// assign the pointers to new instances of VertexBuffer and IndexBuffer
@@ -50,15 +50,31 @@ namespace bndr {
 		unbind();
 	}
 
+	VertexArray::VertexArray(const VertexArray& va) {
+
+		drawMode = va.drawMode;
+		glGenVertexArrays(1, &arrayID);
+		bind();
+
+		// create the vertex buffer from the other va's vb
+		vBuffer = new VertexBuffer(*(va.getVBuffer()));
+		// while the vertex buffer is guaranteed to be defined the index buffer is not
+		if (va.getIBuffer() != nullptr) {
+
+			iBuffer = new IndexBuffer(*(va.getIBuffer()));
+		}
+		unbind();
+	}
+
 	void VertexArray::render() {
 
 		bind();
-		// if the wants to use an IndexBuffer then render using the IndexBuffer
+		// if the programmer wants to use an IndexBuffer then render using the IndexBuffer
 		if (iBuffer != nullptr) {
 
 			iBuffer->render(drawMode);
 		}
-		// otherwise use the VertexBuffer instead since the instance was constructed without an index buffer
+		// otherwise use the VertexBuffer instead since the instance was constructed without an IndexBuffer
 		else {
 
 			vBuffer->render(drawMode);
@@ -69,11 +85,8 @@ namespace bndr {
 	VertexArray::~VertexArray() {
 
 		// delete the vertex buffer
-		if (vBuffer != nullptr) {
-
-			delete vBuffer;
-		}
-		// delete the index buffer
+		delete vBuffer;
+		// delete the index buffer if it exists
 		if (iBuffer != nullptr) {
 
 			delete iBuffer;

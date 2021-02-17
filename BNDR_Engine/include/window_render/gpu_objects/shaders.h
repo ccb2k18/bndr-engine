@@ -86,12 +86,15 @@ namespace bndr {
 		static std::unordered_map<const char*, uint> programMap;
 	public:
 
+		Program() : programID(0) {}
 		// bndr::Program::Program
 		// Arguments:
 		//        vertexShader = The compiled vertex shader to link with the program
 		//        fragmentShader = The compiled fragment shader to link with the program
 		Program(Shader&& vertexShader, Shader&& fragmentShader);
 		Program(const Program& program);
+		Program& operator=(const Program& program) { programID = program.programID; return *this; }
+		inline uint getID() { return programID; }
 		// use the program
 		inline void use() { glUseProgram(programID); }
 		// stop using the program

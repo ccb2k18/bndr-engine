@@ -41,6 +41,7 @@ namespace bndr {
 	public:
 
 		inline T getAt(int row, int col) const { return BaseMatrix<T>::data[row * nRows + col]; }
+		inline void setAt(int row, int col, const T& value) { BaseMatrix<T>::data[row * nRows + col] = value; }
 		inline T* getData() { return data; }
 		~BaseMatrix();
 	};

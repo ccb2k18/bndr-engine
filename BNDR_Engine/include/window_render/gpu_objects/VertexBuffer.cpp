@@ -65,7 +65,7 @@ namespace bndr {
 
 		float* data = new float[verticesNumber*floatsPerBlock];
 		bind();
-		glGetBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (void*)data);
+		GL_DEBUG_FUNC(glGetBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (void*)data));
 		unbind();
 		return data;
 	}

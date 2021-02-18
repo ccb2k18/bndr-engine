@@ -63,7 +63,6 @@ namespace bndr {
 	protected:
 		// array of coordinates
 		T* data;
-		inline T& operator[](int index) { return data[index]; }
 
 	public:
 
@@ -71,6 +70,8 @@ namespace bndr {
 		inline T* getData() { return data; }
 		// used to get a copied value from the vector
 		virtual inline T getValue(int index) const { return BaseVector<T>::data[index]; }
+		// get a value without copying
+		inline T& operator[](int index) { return data[index]; }
 		// default constructor sets each of the values to their default constructor
 		BaseVector() : data(new T[2]) {}
 		// assign the objects in the array to the new objects

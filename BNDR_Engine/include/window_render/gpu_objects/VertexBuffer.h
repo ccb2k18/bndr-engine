@@ -111,6 +111,9 @@ namespace bndr {
 		// read from the buffer data in the GPU
 		// DO NOT USE: This is meant to be used automatically by the class
 		float* readData() const;
+		// write to the buffer data in the GPU
+		// DO NOT USE: This is meanto to be used automatically by the class
+		void writeData(float* data, int size);
 		// bind the buffer
 		inline void bind() const { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, bufferID)); }
 		// unbind the buffer

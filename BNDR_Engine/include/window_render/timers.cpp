@@ -28,7 +28,7 @@ namespace bndr {
 	float Clock::deltaTime() {
 
 		end = Clock::now();
-		float deltaTime = ((end - start).count())*0.000001f;
+		float deltaTime = ((end - start).count())*0.000000001f;
 		start = end;
 		return deltaTime;
 	}

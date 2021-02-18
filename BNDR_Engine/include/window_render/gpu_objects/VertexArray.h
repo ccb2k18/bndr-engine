@@ -69,6 +69,8 @@ namespace bndr {
 		VertexArray(VertexArray&&) = delete;
 		// assignment operator is not allowed
 		VertexArray& operator=(const VertexArray&) = delete;
+		// update the vertex buffer data
+		inline void updateVertexBufferData(float* data, int size) { vBuffer->writeData(data, size); }
 		// render the vertex array
 		void render();
 		// bind the vertex array

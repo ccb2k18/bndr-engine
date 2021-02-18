@@ -57,7 +57,7 @@ namespace bndr {
 	void IndexBuffer::render(uint drawMode) {
 
 		bind();
-		glDrawElements(drawMode, size, GL_UNSIGNED_INT, NULL);
+		GL_DEBUG_FUNC(glDrawElements(drawMode, size, GL_UNSIGNED_INT, NULL));
 		unbind();
 	}
 }

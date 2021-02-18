@@ -70,6 +70,13 @@ namespace bndr {
 		return data;
 	}
 
+	void VertexBuffer::writeData(float* data, int size) {
+
+		bind();
+		GL_DEBUG_FUNC(glBufferSubData(GL_ARRAY_BUFFER, 0, size, data));
+		unbind();
+	}
+
 	void VertexBuffer::render(uint drawMode) {
 
 		bind();

@@ -121,10 +121,6 @@ namespace bndr {
 
 	protected:
 
-		// program for a shape with one color
-		static Program defaultPoly;
-		// program for a shape with multiple colors
-		static Program multiColorPoly;
 		// define the shader programs if they do not exist
 		inline void definePrograms() { if (defaultPoly.getID() == 0) { defaultPoly = Program::defaultPolygonProgram(); multiColorPoly = Program::multiColorPolygonProgram(); }}
 		// update the translation uniform in the program
@@ -139,6 +135,11 @@ namespace bndr {
 		Shape();
 
 	public:
+
+		// program for a shape with one color
+		static Program defaultPoly;
+		// program for a shape with multiple colors
+		static Program multiColorPoly;
 
 		// reset the translation matrix
 		virtual void setTranslation(float xTrans, float yTrans) override;
@@ -206,7 +207,7 @@ namespace bndr {
 		// update the scale uniform in the program
 		inline virtual void updateScaleUniform(Program* currentProgram = &Shape::multiColorPoly) override { Shape::updateScaleUniform(currentProgram); }
 		// update the color data in the vertex buffer of va
-		virtual void updateColorData(Program* currentProgram = &Shape::defaultPoly) override;
+		virtual void updateColorData(Program* currentProgram = &Shape::multiColorPoly) override;
 	public:
 
 		ColorfulRect(float x, float y, float width, float height);

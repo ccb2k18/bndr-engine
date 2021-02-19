@@ -115,9 +115,9 @@ namespace bndr {
 		// DO NOT USE: This is meanto to be used automatically by the class
 		void writeData(float* data, int size);
 		// bind the buffer
-		inline void bind() const { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, bufferID)); }
+		inline void bind() const { glBindBuffer(GL_ARRAY_BUFFER, bufferID); }
 		// unbind the buffer
-		inline void unbind() const { GL_DEBUG_FUNC(glBindBuffer(GL_ARRAY_BUFFER, 0)); }
+		inline void unbind() const { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 		// returns the number of vertices
 		inline int getNumVertices() { return verticesNumber; }
 		// render the vertices

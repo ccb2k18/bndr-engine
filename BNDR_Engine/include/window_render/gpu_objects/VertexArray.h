@@ -70,7 +70,7 @@ namespace bndr {
 		// assignment operator is not allowed
 		VertexArray& operator=(const VertexArray&) = delete;
 		// update the vertex buffer data
-		inline void updateVertexBufferData(float* data, int size) { vBuffer->writeData(data, size); }
+		inline void updateVertexBufferData(float* data, int size) { bind();  vBuffer->writeData(data, size); unbind(); }
 		// render the vertex array
 		void render();
 		// bind the vertex array

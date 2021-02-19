@@ -83,7 +83,7 @@ namespace bndr {
 
 		uint programID;
 		// make sure we do not have duplicate programs as well as store static template programs in the map
-		static std::unordered_map<const char*, uint> programMap;
+		static std::unordered_map<std::string, uint> programMap;
 	public:
 
 		Program() : programID(0) {}
@@ -91,7 +91,7 @@ namespace bndr {
 		// Arguments:
 		//        vertexShader = The compiled vertex shader to link with the program
 		//        fragmentShader = The compiled fragment shader to link with the program
-		Program(Shader&& vertexShader, Shader&& fragmentShader);
+		Program(Shader&& vertexShader, Shader&& fragmentShader, const char* hash = nullptr);
 		Program(const Program& program);
 		Program& operator=(const Program& program) { programID = program.programID; return *this; }
 		inline uint getID() { return programID; }
@@ -115,6 +115,7 @@ namespace bndr {
 		// this template is meant to be used for polygons of one single color
 		static Program defaultPolygonProgram() {
 
+			const char* hash = "defaultPoly\0";
 			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nuniform vec4 color;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
 			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
 			return Program::generateProgramFromSource(vert, frag);
@@ -123,6 +124,7 @@ namespace bndr {
 		// this template is for drawing polygons with multiple blended colors for each vertex
 		static Program multiColorPolygonProgram() {
 
+			const char* hash = "multiColorPoly\0";
 			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
 			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
 			return Program::generateProgramFromSource(vert, frag);
@@ -134,42 +136,47 @@ namespace bndr {
 		Program(const char* programMapKey);
 
 		// generates a map key for a given vertex and fragment shader
-		static std::string generateMapKey(Shader& vertexShader, Shader& fragmentShader) {
+		static std::string generateMapKey(Shader& vertexShader, Shader& fragmentShader, const char* hash = nullptr) {
 
 			const char* vShaderSource = vertexShader.getShaderSource();
 			const char* fShaderSource = fragmentShader.getShaderSource();
 
-			return generateMapKey(vShaderSource, fShaderSource, vertexShader.getShaderLength(), fragmentShader.getShaderLength());
+			return generateMapKey(vShaderSource, fShaderSource, vertexShader.getShaderLength(), fragmentShader.getShaderLength(), hash);
 		}
 
 		// generates a map key for a given vertex and fragment shader source and char lengths
-		static std::string generateMapKey(const char* vertexShader, const char* fragmentShader, int vertexShaderLen, int fragmentShaderLen) {
+		static std::string generateMapKey(const char* vertexShader, const char* fragmentShader, int vertexShaderLen, int fragmentShaderLen, const char* hash = nullptr) {
 
-			// we strategically pick a key that is almost certainly guaranteed to be unique
-			// in order to avoid overwritting issues
+			// if there is a prespecified hash string then use that
+			// otherwise generate one
+			if (hash == nullptr) {
 
-			// first we create the string for the map key
-			char key[11];
-			key[10] = '\0';
-			std::string mapKey(key);
+				// we strategically pick a key that is almost certainly guaranteed to be unique
+				// in order to avoid overwritting issues
+				// first we create the string for the map key
+				char key[11];
+				key[10] = '\0';
+				std::string mapKey(key);
 
-			// then for each shader pick five characters from it
-			int vShaderIncrement = (vertexShaderLen) / 5;
-			int fShaderIncrement = (fragmentShaderLen) / 5;
+				// then for each shader pick five characters from it
+				int vShaderIncrement = (vertexShaderLen) / 5;
+				int fShaderIncrement = (fragmentShaderLen) / 5;
 
-			const char* vShaderSource = vertexShader;
-			const char* fShaderSource = fragmentShader;
+				const char* vShaderSource = vertexShader;
+				const char* fShaderSource = fragmentShader;
 
-			for (int i = 0; i < 5; i++) {
+				for (int i = 0; i < 5; i++) {
 
-				// skip the first 32 ascii characters to avoid overwriting buffer
-				mapKey[i] = (char)((((int)vShaderSource[((i + 1) * vShaderIncrement)] + (int)vShaderSource[i * vShaderIncrement]) % 95) + 32);
+					// skip the first 32 ascii characters to avoid overwriting buffer
+					mapKey[i] = (char)((((int)vShaderSource[((i + 1) * vShaderIncrement)] + (int)vShaderSource[i * vShaderIncrement]) % 95) + 32);
+				}
+				for (int i = 6; i < 11; i++) {
+
+					mapKey[i - 1] = (char)(((int)fShaderSource[((i - 5) * fShaderIncrement)] + (int)fShaderSource[(i - 6) * fShaderIncrement]) % 95) + 32;
+				}
+				return mapKey;
 			}
-			for (int i = 6; i < 11; i++) {
-
-				mapKey[i - 1] = (char)(((int)fShaderSource[((i - 5) * fShaderIncrement)] + (int)fShaderSource[(i - 6) * fShaderIncrement]) % 95) + 32;
-			}
-			return mapKey;
+			return hash;
 		}
 
 		static bool programExists(const char* mapKey) {
@@ -182,14 +189,14 @@ namespace bndr {
 			return false;
 		}
 
-		static Program generateProgramFromSource(std::string& vShaderSource, std::string& fShaderSource) {
+		static Program generateProgramFromSource(std::string& vShaderSource, std::string& fShaderSource, const char* hash = nullptr) {
 
-			std::string programKey = Program::generateMapKey(vShaderSource.c_str(), fShaderSource.c_str(), vShaderSource.size(), fShaderSource.size());
+			std::string programKey = Program::generateMapKey(vShaderSource.c_str(), fShaderSource.c_str(), vShaderSource.size(), fShaderSource.size(), hash);
 			if (Program::programExists(programKey.c_str())) {
 
 				return Program(programKey.c_str());
 			}
-			return Program(Shader(VERTEX_SHADER, vShaderSource.c_str()), Shader(FRAGMENT_SHADER, fShaderSource.c_str()));
+			return Program(Shader(VERTEX_SHADER, vShaderSource.c_str()), Shader(FRAGMENT_SHADER, fShaderSource.c_str()), hash);
 		}
 	};
 }

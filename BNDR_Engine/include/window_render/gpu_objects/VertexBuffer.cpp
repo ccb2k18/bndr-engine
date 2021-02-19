@@ -73,7 +73,7 @@ namespace bndr {
 	void VertexBuffer::writeData(float* data, int size) {
 
 		bind();
-		GL_DEBUG_FUNC(glBufferSubData(GL_ARRAY_BUFFER, 0, size, data));
+		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, verticesNumber * floatsPerBlock * sizeof(float), data, GL_DYNAMIC_DRAW));
 		unbind();
 	}
 

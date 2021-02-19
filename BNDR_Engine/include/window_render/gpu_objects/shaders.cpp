@@ -26,7 +26,7 @@ SOFTWARE.*/
 namespace bndr {
 
 	// define the shader map
-	std::unordered_map<const char*, uint> Program::programMap;
+	std::unordered_map<std::string, uint> Program::programMap;
 
 	Shader::Shader(uint shaderType, const char* shaderSource, bool fromFile) {
 
@@ -82,9 +82,9 @@ namespace bndr {
 	}
 
 
-	Program::Program(Shader&& vertexShader, Shader&& fragmentShader) {
+	Program::Program(Shader&& vertexShader, Shader&& fragmentShader, const char* hash) {
 
-		std::string mapKey = Program::generateMapKey(vertexShader, fragmentShader);
+		std::string mapKey = Program::generateMapKey(vertexShader, fragmentShader, hash);
 
 		// check if program already exists
 		if (Program::programExists(mapKey.c_str())) {
@@ -125,7 +125,8 @@ namespace bndr {
 
 		// now we must not forget to add the program to the map
 		Program::programMap.insert(std::make_pair(mapKey.c_str(), programID));
-		BNDR_MESSAGE("added new program!\n");
+		std::string msg = "Added new program with hash key " + std::string("\"") + mapKey + std::string("\"");
+		BNDR_MESSAGE(msg.c_str());
 	}
 
 	Program::Program(const Program& program) {

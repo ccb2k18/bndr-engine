@@ -48,32 +48,31 @@ namespace bndr {
 		verticesNumber = vb.verticesNumber;
 		floatsPerBlock = vb.floatsPerBlock;
 		vbFlags = vb.vbFlags;
-		float* vertexData = vb.readData();
+		std::unique_ptr<float> vertexData = vb.readData();
 
 		// generate and bind the buffer
 		GL_DEBUG_FUNC(glGenBuffers(1, &bufferID));
 		bind();
-		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber * floatsPerBlock, vertexData, GL_DYNAMIC_DRAW));
-		delete[] vertexData;
+		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber * floatsPerBlock, (const void*)vertexData.get(), GL_DYNAMIC_DRAW));
 
 		VertexBuffer::loadVertexAttribs((uint)0, 0, floatsPerBlock * sizeof(float), vbFlags);
 		unbind();
 
 	}
 
-	float* VertexBuffer::readData() const {
+	std::unique_ptr<float> VertexBuffer::readData() const {
 
-		float* data = new float[verticesNumber*floatsPerBlock];
+		float* data(new float[verticesNumber*floatsPerBlock]);
 		bind();
 		GL_DEBUG_FUNC(glGetBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (void*)data));
 		unbind();
-		return data;
+		return std::unique_ptr<float>(data);
 	}
 
-	void VertexBuffer::writeData(float* data, int size) {
+	void VertexBuffer::writeData(float* data) {
 
 		bind();
-		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, verticesNumber * floatsPerBlock * sizeof(float), data, GL_DYNAMIC_DRAW));
+		GL_DEBUG_FUNC(glBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (const void*)data));
 		unbind();
 	}
 

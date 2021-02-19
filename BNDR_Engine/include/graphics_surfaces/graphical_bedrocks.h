@@ -87,7 +87,7 @@ namespace bndr {
 		// update the color data in the shader program
 		virtual void updateColorData(Program* currentProgram = nullptr) = 0;
 		// load the color buffer into memory
-		void loadColorBuffer(int length) { colorBuffer = new float[length]; }
+		inline void loadColorBuffer(int length) { colorBuffer = new float[length]; }
 
 	public:
 
@@ -211,7 +211,7 @@ namespace bndr {
 	public:
 
 		ColorfulRect(float x, float y, float width, float height);
-		ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors);
+		//ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors);
 		// set a single fill color for the rect (if you only want a solid color then you should probably just use BasicRect)
 		virtual void setFillColor(const RGBAData& data) override;
 		// set a color for every corner of the rectangle

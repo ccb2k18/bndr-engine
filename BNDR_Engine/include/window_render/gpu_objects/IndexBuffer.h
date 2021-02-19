@@ -41,8 +41,7 @@ namespace bndr {
 		// assignment operator is not allowed
 		IndexBuffer& operator=(const IndexBuffer&) = delete;
 		// read from the buffer data in the GPU
-		// DO NOT USE: This is meant to be used automatically by the class
-		uint* readData() const;
+		std::unique_ptr<uint> readData() const;
 		// bind the buffer
 		inline void bind() const { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID); }
 		// unbind the buffer

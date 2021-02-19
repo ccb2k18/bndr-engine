@@ -125,7 +125,7 @@ namespace bndr {
 		static Program multiColorPolygonProgram() {
 
 			const char* hash = "multiColorPoly\0";
-			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
+			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
 			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
 			return Program::generateProgramFromSource(vert, frag);
 		}

@@ -119,7 +119,7 @@ namespace bndr {
 		updateRotationUniform();
 		updateScaleUniform();
 
-		// update the fill color
+		// update the fill color(s)
 		updateColorData();
 
 
@@ -178,7 +178,7 @@ namespace bndr {
 			(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11],
 			(*pos)[0] + (*size)[0], (*pos)[1], 0.0f, colorBuffer[12], colorBuffer[13], colorBuffer[14], colorBuffer[15]
 		};
-		va->updateVertexBufferData(updatedData, 28);
+		va->updateVertexBufferData(updatedData);
 	}
 
 	void ColorfulRect::setFillColor(const RGBAData& data) {

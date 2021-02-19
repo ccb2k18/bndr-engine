@@ -109,11 +109,10 @@ namespace bndr {
 		// assignment operator is not allowed
 		VertexBuffer& operator=(const VertexBuffer&) = delete;
 		// read from the buffer data in the GPU
-		// DO NOT USE: This is meant to be used automatically by the class
-		float* readData() const;
+		std::unique_ptr<float> readData() const;
 		// write to the buffer data in the GPU
 		// DO NOT USE: This is meanto to be used automatically by the class
-		void writeData(float* data, int size);
+		void writeData(float* data);
 		// bind the buffer
 		inline void bind() const { glBindBuffer(GL_ARRAY_BUFFER, bufferID); }
 		// unbind the buffer

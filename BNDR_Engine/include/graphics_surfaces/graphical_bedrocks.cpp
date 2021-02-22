@@ -105,11 +105,10 @@ namespace bndr {
 
 	void Shape::setFillColor(const RGBAData& data) {
 
-		float rgba[4] = { data.red, data.green, data.blue, data.alpha };
-		colorBuffer[0] = rgba[0];
-		colorBuffer[1] = rgba[1];
-		colorBuffer[2] = rgba[2];
-		colorBuffer[3] = rgba[3];
+		colorBuffer[0] = (float)data.red / 255.0f;
+		colorBuffer[1] = (float)data.green / 255.0f;
+		colorBuffer[2] = (float)data.blue / 255.0f;
+		colorBuffer[3] = (float)data.alpha / 255.0f;
 	}
 
 	void Shape::render(Program* currentProgram) {
@@ -131,9 +130,10 @@ namespace bndr {
 		currentProgram->unuse();
 	}
 
-	BasicRect::BasicRect(float x, float y, float width, float height) : Shape(), GraphicsRect(x, y, width, height) {
+	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color) : Shape(), GraphicsRect(x, y, width, height) {
 
 		loadColorBuffer(4);
+		setFillColor(color);
 
 		va = new VertexArray(TRIANGLES,
 			{
@@ -145,9 +145,10 @@ namespace bndr {
 			3 * sizeof(float), 0, { 0, 1, 2, 2, 3, 0 });
 	}
 
-	BasicTriangle::BasicTriangle(const Vec2<float>& coord1, const Vec2<float>& coord2, const Vec2<float>& coord3) : Shape() {
+	BasicTriangle::BasicTriangle(const Vec2<float>& coord1, const Vec2<float>& coord2, const Vec2<float>& coord3, const RGBAData& color) : Shape() {
 
 		loadColorBuffer(4);
+		setFillColor(color);
 
 		va = new VertexArray(TRIANGLES, {
 			coord1.getValue(0), coord1.getValue(1), 0.0f,
@@ -156,18 +157,42 @@ namespace bndr {
 			}, sizeof(float) * 3, 0);
 	}
 
-	ColorfulRect::ColorfulRect(float x, float y, float width, float height) : Shape(), GraphicsRect(x, y, width, height) {
+	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors) : Shape(), GraphicsRect(x, y, width, height) {
 
 		loadColorBuffer(16);
+		// specify cases based on how many colors that are provided
+		int s = colors.size();
+		switch (s) {
 
+		case 1:
+
+			setFillColor(colors[0]);
+			break;
+		case 2:
+
+			setFillColors(colors[0], colors[1], colors[0], colors[1]);
+			break;
+		case 3:
+
+			setFillColors(colors[0], colors[1], colors[2], colors[0]);
+			break;
+		case 4:
+
+			setFillColors(colors[0], colors[1], colors[2], colors[3]);
+			break;
+		default:
+
+			setFillColor(bndr::WHITE);
+			break;
+		}
+		// create the vertex array with all the data
 		va = new VertexArray(TRIANGLES, {
 
-			x, y, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			x, y + height, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			x + width, y + height, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			x + width, y, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
+			(*pos)[0], (*pos)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3],
+			(*pos)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[4], colorBuffer[5], colorBuffer[6], colorBuffer[7],
+			(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11],
+			(*pos)[0] + (*size)[0], (*pos)[1], 0.0f, colorBuffer[12], colorBuffer[13], colorBuffer[14], colorBuffer[15]
 			}, 7 * sizeof(float), bndr::RGBA_COLOR_ATTRIB, { 0, 1, 2, 2, 3, 0 });
-
 	}
 
 	void ColorfulRect::updateColorData(Program* currentProgram) {
@@ -183,16 +208,16 @@ namespace bndr {
 
 	void ColorfulRect::setFillColor(const RGBAData& data) {
 
-		float color[4] = { data.red, data.green, data.blue, data.alpha };
+		float color[4] = { (float)data.red / 255.0f, (float)data.green / 255.0f, (float)data.blue / 255.0f, (float)data.alpha / 255.0f };
 		for (int i = 0; i < 16; i++) { colorBuffer[i] = color[i % 4]; }
 	}
 
 	void ColorfulRect::setFillColors(const RGBAData& bottomLeft, const RGBAData& topLeft, const RGBAData& topRight, const RGBAData& bottomRight) {
 
-		colorBuffer[0] = bottomLeft.red; colorBuffer[1] = bottomLeft.green; colorBuffer[2] = bottomLeft.blue; colorBuffer[3] = bottomLeft.alpha;
-		colorBuffer[4] = topLeft.red; colorBuffer[5] = topLeft.green; colorBuffer[6] = topLeft.blue; colorBuffer[7] = topLeft.alpha;
-		colorBuffer[8] = topRight.red; colorBuffer[9] = topRight.green; colorBuffer[10] = topRight.blue; colorBuffer[11] = topRight.alpha;
-		colorBuffer[12] = bottomRight.red; colorBuffer[13] = bottomRight.green; colorBuffer[14] = bottomRight.blue; colorBuffer[15] = bottomRight.alpha;
+		colorBuffer[0] = (float)bottomLeft.red/255.0f; colorBuffer[1] = (float)bottomLeft.green/255.0f; colorBuffer[2] = (float)bottomLeft.blue/255.0f; colorBuffer[3] = (float)bottomLeft.alpha/255.0f;
+		colorBuffer[4] = (float)topLeft.red/255.0f; colorBuffer[5] = (float)topLeft.green/255.0f; colorBuffer[6] = (float)topLeft.blue/255.0f; colorBuffer[7] = (float)topLeft.alpha/255.0f;
+		colorBuffer[8] = (float)topRight.red/255.0f; colorBuffer[9] = (float)topRight.green/255.0f; colorBuffer[10] = (float)topRight.blue/255.0f; colorBuffer[11] = (float)topRight.alpha/255.0f;
+		colorBuffer[12] = (float)bottomRight.red/255.0f; colorBuffer[13] = (float)bottomRight.green/255.0f; colorBuffer[14] = (float)bottomRight.blue/255.0f; colorBuffer[15] = (float)bottomRight.alpha/255.0f;
 	}
 
 

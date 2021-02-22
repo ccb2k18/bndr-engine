@@ -31,10 +31,12 @@ namespace bndr {
 	// Description: Flags to specify a variable number of vertex attributes for the constructor of bndr::VertexBuffer
 	enum vertexBufferParams {
 
-		RGBA_COLOR_ATTRIB = 0x01,
-		VERTEX_NORMALS_ATTRIB = 0x02,
-		TEXTURE_COORDS_ATTRIB = 0x04,
-		TEXTURE_INDEX_ATTRIB = 0x08
+		POSITIONS_ATTRIB = 0x01,
+		RGBA_COLOR_ATTRIB = 0x02,
+		VERTEX_NORMALS_ATTRIB = 0x04,
+		TEXTURE_COORDS_ATTRIB = 0x08,
+		TEXTURE_INDEX_ATTRIB = 0x10,
+		INTERLEAVED_ATTRIBS = 0x40000000
 	};
 
 	// bndr::VertexBuffer
@@ -50,46 +52,66 @@ namespace bndr {
 		// store the flags for copying or moving
 		uint vbFlags;
 
-		static void loadVertexAttribs(uint attribIndex, int offset, int dataBlockBytes, uint flags) {
+		static void saveInterleavedAttrib(uint flags, uint targetFlag, uint& attribIndex, int& offset, int numParams, int dataBlockBytes) {
 
-			// at bare minimum we have a single vertex attribute pointer for the positions
-			GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-			GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-			// add to offset
-			offset += 3 * sizeof(float);
-			// increment the attrib index
-			attribIndex++;
-			// if the color attrib flag is set
-			if (flags & RGBA_COLOR_ATTRIB) {
+			if (flags & targetFlag) {
 
+				// enable the attribute
 				GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 4, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-				offset += 4 * sizeof(float);
+				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, numParams, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
+				// add to offset
+				offset += numParams * sizeof(float);
+				// increment the attrib index
 				attribIndex++;
 			}
-			// if the normals attrib flag is set
-			if (flags & VERTEX_NORMALS_ATTRIB) {
+		}
 
+		static void interleafVertexAttribs(int dataBlockBytes, uint flags) {
+
+			uint attribIndex = (uint)0;
+			int offset = 0;
+			
+			saveInterleavedAttrib(flags, POSITIONS_ATTRIB, attribIndex, offset, 3, dataBlockBytes);
+			saveInterleavedAttrib(flags, RGBA_COLOR_ATTRIB, attribIndex, offset, 4, dataBlockBytes);
+			saveInterleavedAttrib(flags, VERTEX_NORMALS_ATTRIB, attribIndex, offset, 3, dataBlockBytes);
+			saveInterleavedAttrib(flags, TEXTURE_COORDS_ATTRIB, attribIndex, offset, 2, dataBlockBytes);
+			saveInterleavedAttrib(flags, TEXTURE_INDEX_ATTRIB, attribIndex, offset, 1, dataBlockBytes);
+		}
+
+		static void saveBatchedAttrib(uint& attribIndex, int& offset, int numParams, float* data, int dataSize, uint& flags, uint flagTarget) {
+
+			if (dataSize > 0) {
+
+				// update flags value
+				flags = flags | flagTarget;
+
+				GL_DEBUG_FUNC(glBufferSubData(GL_ARRAY_BUFFER, offset, dataSize, data));
 				GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 3, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-				offset += 3 * sizeof(float);
+				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, numParams, GL_FLOAT, GL_FALSE, numParams * sizeof(float), (void*)offset));
+
 				attribIndex++;
+				offset += (sizeof(float) * dataSize);
 			}
-			// if texture coordinates are specified
-			if (flags & TEXTURE_COORDS_ATTRIB) {
+		};
 
-				GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 2, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-				offset += 2 * sizeof(float);
-				attribIndex++;
-			}
-			// if there is more than one texture a texture index will be specified
-			if (flags & TEXTURE_INDEX_ATTRIB) {
+		static void batchVertexAttribs(std::vector<float>& positions, std::vector<float>& colors, std::vector<float>& normals,
+			std::vector<float>& textureCoords, std::vector<float>& textureIndices, uint& flags) {
 
-				GL_DEBUG_FUNC(glEnableVertexAttribArray(attribIndex));
-				GL_DEBUG_FUNC(glVertexAttribPointer(attribIndex, 1, GL_FLOAT, GL_FALSE, dataBlockBytes, (void*)offset));
-				offset += sizeof(float);
-			}
+			uint attribIndex = (uint)0;
+			int offset = 0;
+
+			saveBatchedAttrib(attribIndex, offset, 3, &positions[0], positions.size(), flags, POSITIONS_ATTRIB);
+			saveBatchedAttrib(attribIndex, offset, 4, &colors[0], colors.size(), flags, RGBA_COLOR_ATTRIB);
+			saveBatchedAttrib(attribIndex, offset, 3, &normals[0], normals.size(), flags, VERTEX_NORMALS_ATTRIB);
+			saveBatchedAttrib(attribIndex, offset, 2, &textureCoords[0], textureCoords.size(), flags, TEXTURE_COORDS_ATTRIB);
+			saveBatchedAttrib(attribIndex, offset, 1, &textureIndices[0], textureIndices.size(), flags, TEXTURE_INDEX_ATTRIB);
+		}
+
+		static void batchVertexAttribsFromPointers(float* positions, int positionsSize, float* colors = nullptr, int colorsSize = 0,
+			float* normals = nullptr, int normalsSize = 0, float* textureCoords = nullptr, int textureCoordsSize = 0,
+			float* textureIndices = nullptr, int textureIndicesSize = 0) {
+
+
 		}
 
 	public:
@@ -102,6 +124,10 @@ namespace bndr {
 		// Description: From a vector of floats, the size of each data block, and flags that indicate how many vertex
 		// attribs, this constructor will create an OpenGL vertex buffer in video memory that can be used in shaders
 		VertexBuffer(std::vector<float>&& vertexData, int dataBlockBytes, uint flags);
+		// bndr::VertexBuffer::VertexBuffer
+		// Description: this constructor batches the vertex attributes into blocks instead of interleaving them
+		VertexBuffer(std::vector<float>&& positions, std::vector<float>&& colors = {}, std::vector<float>&& normals = {},
+			std::vector<float>&& textureCoords = {}, std::vector<float>&& textureIndices = {});
 		// the copy constructor
 		VertexBuffer(const VertexBuffer&);
 		// the move constructor is not allowed

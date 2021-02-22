@@ -29,26 +29,27 @@ SOFTWARE.*/
 namespace bndr {
 
 	// bndr::RGBData
-	// Description: Data structure to store rgb color values in
+	// Description: Data structure to store rgb color values in. In instances of PixelSurface the colorBuffer will normalize
+	// these values between 0.0f and 1.0f
 	struct BNDR_API RGBAData {
 
-		float red;
-		float green;
-		float blue;
-		float alpha;
+		uint8 red;
+		uint8 green;
+		uint8 blue;
+		uint8 alpha;
 	};
 	// declare colors
 	// define colors
-	static RGBAData RED = { 1.0f, 0.0f, 0.0f, 1.0f };
-	static RGBAData GREEN = { 0.0f, 1.0f, 0.0f, 1.0f };
-	static RGBAData BLUE = { 0.0f, 0.0f, 1.0f, 1.0f };
-	static RGBAData YELLOW = { 1.0f, 1.0f, 0.0f, 1.0f };
-	static RGBAData PURPLE = { 1.0f, 0.0f, 1.0f, 1.0f };
-	static RGBAData TORQUOISE = { 0.0f, 1.0f, 1.0f, 1.0f };
-	static RGBAData BLACK = { 0.0f, 0.0f, 0.0f, 1.0f };
-	static RGBAData WHITE = { 1.0f, 1.0f, 1.0f, 1.0f };
-	static RGBAData ORANGE = { 1.0f, 0.5f, 0.0f, 1.0f };
-	static RGBAData BROWN = { 0.25f, 0.125f, 0.0f, 1.0f };
+	static RGBAData RED = { 255, 0, 0, 255 };
+	static RGBAData GREEN = { 0, 255, 0, 255 };
+	static RGBAData BLUE = { 0, 0, 255, 255 };
+	static RGBAData YELLOW = { 255, 255, 0, 255 };
+	static RGBAData PURPLE = { 255, 0, 255, 255 };
+	static RGBAData TORQUOISE = { 0, 255, 255, 255 };
+	static RGBAData BLACK = { 0, 0, 0, 255 };
+	static RGBAData WHITE = { 255, 255, 255, 255 };
+	static RGBAData ORANGE = { 255, 128, 0, 255 };
+	static RGBAData BROWN = { 64, 32, 0, 255 };
 
 
 	// bndr::PixelSurface
@@ -116,7 +117,7 @@ namespace bndr {
 	};
 
 	// bndr::Shape
-	// Description: base class for all shapes
+	// Description: base class for all shapes (rectangles, triangles, and ellipses/circles)
 	class BNDR_API Shape : public PixelSurface {
 
 	protected:
@@ -153,7 +154,7 @@ namespace bndr {
 		virtual void changeRotationBy(float theta) override;
 		// change the scale matrix by a certain amount
 		virtual void changeScaleBy(float xScale, float yScale) override;
-		// set the fill color for the shape
+		// set the fill color for the shape (converts a rgba color to floats)
 		virtual void setFillColor(const RGBAData& data);
 		// render the surface to the screen
 		virtual void render(Program* currentProgram = &Shape::defaultPoly) override;
@@ -180,7 +181,7 @@ namespace bndr {
 
 	public:
 
-		BasicRect(float x, float y, float width, float height);
+		BasicRect(float x, float y, float width, float height, const RGBAData& color = bndr::WHITE);
 	};
 
 
@@ -190,7 +191,7 @@ namespace bndr {
 
 	public:
 
-		BasicTriangle(const Vec2<float>& coord1, const Vec2<float>& coord2, const Vec2<float>& coord3);
+		BasicTriangle(const Vec2<float>& coord1, const Vec2<float>& coord2, const Vec2<float>& coord3, const RGBAData& color);
 
 	};
 
@@ -210,9 +211,9 @@ namespace bndr {
 		virtual void updateColorData(Program* currentProgram = &Shape::multiColorPoly) override;
 	public:
 
-		ColorfulRect(float x, float y, float width, float height);
-		//ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors);
+		ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE });
 		// set a single fill color for the rect (if you only want a solid color then you should probably just use BasicRect)
+		// (converts a rgba color to floats)
 		virtual void setFillColor(const RGBAData& data) override;
 		// set a color for every corner of the rectangle
 		void setFillColors(const RGBAData& bottomLeft, const RGBAData& topLeft, const RGBAData& topRight, const RGBAData& bottomRight);

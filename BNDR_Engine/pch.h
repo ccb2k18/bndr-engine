@@ -30,6 +30,7 @@ SOFTWARE.*/
 #define PCH_H
 
 // add headers that you want to pre-compile here
+#include <cstring>
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -41,11 +42,13 @@ SOFTWARE.*/
 #include <sstream>
 #include <thread>
 #include <algorithm>
+#include <functional>
 #include "glew.h"
 #include "glfw3.h"
 #include "framework.h"
 #include "logger.h"
 #include "include/data_structures/Queue.h"
+typedef unsigned char uint8;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned char uchar;

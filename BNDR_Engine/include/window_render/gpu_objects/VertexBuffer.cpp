@@ -36,9 +36,28 @@ namespace bndr {
 		// the vertices number is equal to the size of the entire data divided by the size of each data block
 		verticesNumber = (sizeof(float) * vertexData.size()) / dataBlockBytes;
 		floatsPerBlock = dataBlockBytes / 4;
-		vbFlags = flags;
+		// we are interleaving the attributes so save that in the flags
+		vbFlags = flags | INTERLEAVED_ATTRIBS | POSITIONS_ATTRIB;
 
-		VertexBuffer::loadVertexAttribs((uint)0, 0, dataBlockBytes, vbFlags);
+		VertexBuffer::interleafVertexAttribs(dataBlockBytes, vbFlags);
+		unbind();
+	}
+
+	VertexBuffer::VertexBuffer(std::vector<float>&& positions, std::vector<float>&& colors, std::vector<float>&& normals,
+		std::vector<float>&& textureCoords, std::vector<float>&& textureIndices) {
+
+		// generate and bind the buffer
+		GL_DEBUG_FUNC(glGenBuffers(1, &bufferID));
+		bind();
+		int size = positions.size() + colors.size() + normals.size() + textureCoords.size() + textureIndices.size();
+		// allocate block of data equal to the total size of all the data
+		glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
+
+		verticesNumber = size;
+		floatsPerBlock = 1;
+		vbFlags = 0;
+		// batch each attribute data into the buffer
+		VertexBuffer::batchVertexAttribs(positions, colors, normals, textureCoords, textureIndices, vbFlags);
 		unbind();
 	}
 
@@ -53,9 +72,36 @@ namespace bndr {
 		// generate and bind the buffer
 		GL_DEBUG_FUNC(glGenBuffers(1, &bufferID));
 		bind();
-		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber * floatsPerBlock, (const void*)vertexData.get(), GL_DYNAMIC_DRAW));
 
-		VertexBuffer::loadVertexAttribs((uint)0, 0, floatsPerBlock * sizeof(float), vbFlags);
+		// if the attributes are interleaved
+		if (vbFlags & INTERLEAVED_ATTRIBS) {
+
+			GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber * floatsPerBlock, (const void*)vertexData.get(), GL_DYNAMIC_DRAW));
+			VertexBuffer::interleafVertexAttribs(floatsPerBlock * sizeof(float), vbFlags);
+		}
+		// otherwise batch the attributes
+		else {
+
+			GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber, (const void*)NULL, GL_DYNAMIC_DRAW));
+			/*std::pair<float*, int> attribs[5] = { std::make_pair(nullptr, 0) };
+			float blockSizes[5] = { 0, 0, 0, 0, 0 };
+			if (vbFlags & POSITIONS_ATTRIB) { blockSizes[0] = 3 * sizeof(float); }
+			if (vbFlags & RGBA_COLOR_ATTRIB) { blockSizes[1] = 4 * sizeof(float); }
+			if (vbFlags & VERTEX_NORMALS_ATTRIB) { blockSizes[2] = 3 * sizeof(float); }
+			if (vbFlags & TEXTURE_COORDS_ATTRIB) { blockSizes[3] = 2 * sizeof(float); }
+			if (vbFlags & TEXTURE_INDEX_ATTRIB) { blockSizes[4] = sizeof(float); }
+			int blockSizesSum = blockSizes[0] + blockSizes[1] + blockSizes[2] + blockSizes[3] + blockSizes[4];
+			uint attribIndex = (uint)0;
+			int offset = 0;
+			for (int i = 0; i < 5; i++) {
+
+				if (blockSizes[i] != 0) {
+
+					attribs[i].first = (float*)(vertexData.get() + offset);
+					attribs->second = 
+				}
+			}*/
+		}
 		unbind();
 
 	}
@@ -72,7 +118,10 @@ namespace bndr {
 	void VertexBuffer::writeData(float* data) {
 
 		bind();
-		GL_DEBUG_FUNC(glBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (const void*)data));
+		void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		//GL_DEBUG_FUNC(glBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (const void*)data));
+		memcpy(ptr, data, verticesNumber * floatsPerBlock * sizeof(float));
+		GL_DEBUG_FUNC(glUnmapBuffer(GL_ARRAY_BUFFER));
 		unbind();
 	}
 

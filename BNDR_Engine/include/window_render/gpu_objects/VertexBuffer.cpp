@@ -118,10 +118,10 @@ namespace bndr {
 	void VertexBuffer::writeData(float* data) {
 
 		bind();
-		void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-		//GL_DEBUG_FUNC(glBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (const void*)data));
-		memcpy(ptr, data, verticesNumber * floatsPerBlock * sizeof(float));
-		GL_DEBUG_FUNC(glUnmapBuffer(GL_ARRAY_BUFFER));
+		//void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		GL_DEBUG_FUNC(glBufferSubData(GL_ARRAY_BUFFER, 0, verticesNumber * floatsPerBlock * sizeof(float), (const void*)data));
+		//memcpy(ptr, data, verticesNumber * floatsPerBlock * sizeof(float));
+		//GL_DEBUG_FUNC(glUnmapBuffer(GL_ARRAY_BUFFER));
 		unbind();
 	}
 

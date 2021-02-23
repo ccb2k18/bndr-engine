@@ -114,12 +114,12 @@ namespace bndr {
 	void Shape::render(Program* currentProgram) {
 
 		// update the matrices
-		updateTranslationUniform();
-		updateRotationUniform();
-		updateScaleUniform();
+		updateTranslationUniform(&Shape::multiColorPoly);
+		updateRotationUniform(&Shape::multiColorPoly);
+		updateScaleUniform(&Shape::multiColorPoly);
 
 		// update the fill color(s)
-		updateColorData();
+		updateColorData(&Shape::multiColorPoly);
 
 
 		currentProgram->use();

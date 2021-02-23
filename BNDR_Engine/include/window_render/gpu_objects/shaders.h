@@ -42,8 +42,10 @@ namespace bndr {
 		uint shaderID;
 		// shader source code
 		std::string shaderData;
+
 	public:
 
+		Shader() : shaderID((uint)0), shaderData("") {}
 		// bndr::Shader::Shader
 		// Arguments:
 		//        shaderType = the type of shader you are creating (vertex, fragment, or geometry)
@@ -52,8 +54,10 @@ namespace bndr {
 		//        fromFile = Indicates whether the Shader class should compile from file or from source code data
 		// Description: This constructor creates and compiles an OpenGL shader to be used in a program
 		Shader(uint shaderType, const char* shaderSource, bool fromFile = false);
-		// copy constructor is not allowed
-		Shader(const Shader&) = delete;
+		// copy constructor
+		Shader(const Shader& shader) { shaderID = shader.shaderID; shaderData = shader.shaderData; }
+
+		inline Shader& operator=(const Shader& shader) { shaderID = shader.shaderID; shaderData = shader.shaderData; return (*this); }
 		// move constructor
 		Shader(Shader&& shader) noexcept;
 		// get the shaderID (read-only)
@@ -62,8 +66,7 @@ namespace bndr {
 		inline const char* getShaderSource() { return shaderData.c_str(); }
 		// get length of shader source code
 		inline int getShaderLength() { return shaderData.size(); }
-
-		~Shader();
+		~Shader() { BNDR_MESSAGE("Shader Deleted!"); }
 	};
 
 	enum uniformDataTypes {
@@ -83,7 +86,10 @@ namespace bndr {
 
 		uint programID;
 		// make sure we do not have duplicate programs as well as store static template programs in the map
-		static std::unordered_map<std::string, uint> programMap;
+		// static std::unordered_map<std::string, uint> programMap;
+
+		// map of previously created shaders so that shaders are not created more than once for new programs
+		static std::unordered_map<std::string, std::pair<Shader, Shader>> shaderMap;
 	public:
 
 		Program() : programID(0) {}
@@ -91,7 +97,7 @@ namespace bndr {
 		// Arguments:
 		//        vertexShader = The compiled vertex shader to link with the program
 		//        fragmentShader = The compiled fragment shader to link with the program
-		Program(Shader&& vertexShader, Shader&& fragmentShader, const char* hash = nullptr);
+		Program(Shader&& vertexShader, Shader&& fragmentShader);
 		Program(const Program& program);
 		Program& operator=(const Program& program) { programID = program.programID; return *this; }
 		inline uint getID() { return programID; }
@@ -110,10 +116,37 @@ namespace bndr {
 		// deletes the OpenGL program
 		~Program();
 
+		static void linkProgram(uint& programID, Shader* vShader, Shader* fShader) {
+
+			// create the program and attach the shaders
+			programID = glCreateProgram();
+			glAttachShader(programID, vShader->getShaderID());
+			glAttachShader(programID, fShader->getShaderID());
+
+			// link the program
+			glLinkProgram(programID);
+
+			// check for link errors
+			int infoLogLen;
+			glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLen);
+
+			if (infoLogLen > 0) {
+
+				char infoLogBuffer[250];
+				glGetProgramInfoLog(programID, 250, &infoLogLen, infoLogBuffer);
+				// raise an exception with the program link error
+				BNDR_EXCEPTION(infoLogBuffer);
+			}
+
+			// detach the shaders
+			glDetachShader(programID, vShader->getShaderID());
+			glDetachShader(programID, fShader->getShaderID());
+		}
+
 		// program templates
 
 		// this template is meant to be used for polygons of one single color
-		static Program defaultPolygonProgram() {
+		static Program* defaultPolygonProgram() {
 
 			const char* hash = "defaultPoly\0";
 			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nuniform vec4 color;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
@@ -122,7 +155,7 @@ namespace bndr {
 		}
 
 		// this template is for drawing polygons with multiple blended colors for each vertex
-		static Program multiColorPolygonProgram() {
+		static Program* multiColorPolygonProgram() {
 
 			const char* hash = "multiColorPoly\0";
 			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
@@ -136,67 +169,61 @@ namespace bndr {
 		Program(const char* programMapKey);
 
 		// generates a map key for a given vertex and fragment shader
-		static std::string generateMapKey(Shader& vertexShader, Shader& fragmentShader, const char* hash = nullptr) {
+		static std::string generateMapKey(Shader& vertexShader, Shader& fragmentShader) {
 
 			const char* vShaderSource = vertexShader.getShaderSource();
 			const char* fShaderSource = fragmentShader.getShaderSource();
 
-			return generateMapKey(vShaderSource, fShaderSource, vertexShader.getShaderLength(), fragmentShader.getShaderLength(), hash);
+			return generateMapKey(vShaderSource, fShaderSource, vertexShader.getShaderLength(), fragmentShader.getShaderLength());
 		}
 
 		// generates a map key for a given vertex and fragment shader source and char lengths
-		static std::string generateMapKey(const char* vertexShader, const char* fragmentShader, int vertexShaderLen, int fragmentShaderLen, const char* hash = nullptr) {
+		static std::string generateMapKey(const char* vertexShader, const char* fragmentShader, int vertexShaderLen, int fragmentShaderLen) {
 
-			// if there is a prespecified hash string then use that
-			// otherwise generate one
-			if (hash == nullptr) {
+			// we strategically pick a key that is almost certainly guaranteed to be unique
+			// in order to avoid overwritting issues
+			// first we create the string for the map key
+			char key[11];
+			key[10] = '\0';
+			std::string mapKey(key);
 
-				// we strategically pick a key that is almost certainly guaranteed to be unique
-				// in order to avoid overwritting issues
-				// first we create the string for the map key
-				char key[11];
-				key[10] = '\0';
-				std::string mapKey(key);
+			// then for each shader pick five characters from it
+			int vShaderIncrement = (vertexShaderLen) / 5;
+			int fShaderIncrement = (fragmentShaderLen) / 5;
 
-				// then for each shader pick five characters from it
-				int vShaderIncrement = (vertexShaderLen) / 5;
-				int fShaderIncrement = (fragmentShaderLen) / 5;
+			const char* vShaderSource = vertexShader;
+			const char* fShaderSource = fragmentShader;
 
-				const char* vShaderSource = vertexShader;
-				const char* fShaderSource = fragmentShader;
+			for (int i = 0; i < 5; i++) {
 
-				for (int i = 0; i < 5; i++) {
-
-					// skip the first 32 ascii characters to avoid overwriting buffer
-					mapKey[i] = (char)((((int)vShaderSource[((i + 1) * vShaderIncrement)] + (int)vShaderSource[i * vShaderIncrement]) % 95) + 32);
-				}
-				for (int i = 6; i < 11; i++) {
-
-					mapKey[i - 1] = (char)(((int)fShaderSource[((i - 5) * fShaderIncrement)] + (int)fShaderSource[(i - 6) * fShaderIncrement]) % 95) + 32;
-				}
-				return mapKey;
+				// skip the first 32 ascii characters to avoid overwriting buffer
+				mapKey[i] = (char)((((int)vShaderSource[((i + 1) * vShaderIncrement)] + (int)vShaderSource[i * vShaderIncrement]) % 95) + 32);
 			}
-			return hash;
+			for (int i = 6; i < 11; i++) {
+
+				mapKey[i - 1] = (char)(((int)fShaderSource[((i - 5) * fShaderIncrement)] + (int)fShaderSource[(i - 6) * fShaderIncrement]) % 95) + 32;
+			}
+			return mapKey;
 		}
 
 		static bool programExists(const char* mapKey) {
 
 			// check if program already exists
-			if (Program::programMap.find(mapKey) != Program::programMap.end()) {
+			if (Program::shaderMap.find(mapKey) != Program::shaderMap.end()) {
 
 				return true;
 			}
 			return false;
 		}
 
-		static Program generateProgramFromSource(std::string& vShaderSource, std::string& fShaderSource, const char* hash = nullptr) {
+		static Program* generateProgramFromSource(std::string& vShaderSource, std::string& fShaderSource) {
 
-			std::string programKey = Program::generateMapKey(vShaderSource.c_str(), fShaderSource.c_str(), vShaderSource.size(), fShaderSource.size(), hash);
+			std::string programKey = Program::generateMapKey(vShaderSource.c_str(), fShaderSource.c_str(), vShaderSource.size(), fShaderSource.size());
 			if (Program::programExists(programKey.c_str())) {
 
-				return Program(programKey.c_str());
+				return new Program(programKey.c_str());
 			}
-			return Program(Shader(VERTEX_SHADER, vShaderSource.c_str()), Shader(FRAGMENT_SHADER, fShaderSource.c_str()), hash);
+			return new Program(Shader(VERTEX_SHADER, vShaderSource.c_str()), Shader(FRAGMENT_SHADER, fShaderSource.c_str()));
 		}
 	};
 }

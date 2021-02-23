@@ -27,14 +27,11 @@ namespace bndr {
 
 	// define static member variables
 	Window* PixelSurface::windowInstance = nullptr;
-	// program for shape base class is default polygon program
-	Program Shape::defaultPoly;
-	Program Shape::multiColorPoly;
-
 
 	PixelSurface::~PixelSurface() {
 
 		// delete vertex array, color buffer, and matrices
+		delete program;
 		delete va;
 		delete colorBuffer;
 		delete translation;
@@ -42,16 +39,12 @@ namespace bndr {
 		delete scale;
 	}
 
-	Shape::Shape() {
-
-		definePrograms();
-	}
-
 	void Shape::setTranslation(float xTrans, float yTrans) {
 
 		// update the translation matrix in RAM
 		translation->setAt(0, 2, xTrans);
 		translation->setAt(1, 2, yTrans);
+		updateTranslationUniform();
 
 	}
 
@@ -64,6 +57,7 @@ namespace bndr {
 		rotation->setAt(0, 1, -sinf(rad));
 		rotation->setAt(1, 0, sinf(rad));
 		rotation->setAt(1, 1, cosf(rad));
+		updateRotationUniform();
 
 	}
 
@@ -72,6 +66,7 @@ namespace bndr {
 		// update the scale matrix in RAM
 		scale->setAt(0, 0, xScale);
 		scale->setAt(1, 1, yScale);
+		updateScaleUniform();
 
 	}
 
@@ -80,6 +75,7 @@ namespace bndr {
 		// update the translation matrix in RAM
 		translation->setAt(0, 2, translation->getAt(0, 2) + xTrans);
 		translation->setAt(1, 2, translation->getAt(1, 2) + yTrans);
+		updateTranslationUniform();
 
 	}
 
@@ -92,6 +88,7 @@ namespace bndr {
 		rotation->setAt(0, 1, rotation->getAt(0, 1) - sinf(rad));
 		rotation->setAt(1, 0, rotation->getAt(1, 0) + sinf(rad));
 		rotation->setAt(1, 1, rotation->getAt(1, 1) + cosf(rad));
+		updateRotationUniform();
 
 	}
 
@@ -100,6 +97,7 @@ namespace bndr {
 		// update the scale matrix in RAM
 		scale->setAt(0, 0, scale->getAt(0, 0) + xScale);
 		scale->setAt(1, 1, scale->getAt(1, 1) + yScale);
+		updateScaleUniform();
 
 	}
 
@@ -109,29 +107,22 @@ namespace bndr {
 		colorBuffer[1] = (float)data.green / 255.0f;
 		colorBuffer[2] = (float)data.blue / 255.0f;
 		colorBuffer[3] = (float)data.alpha / 255.0f;
+		updateColorData();
 	}
 
-	void Shape::render(Program* currentProgram) {
+	void Shape::render() {
 
-		// update the matrices
-		updateTranslationUniform(&Shape::multiColorPoly);
-		updateRotationUniform(&Shape::multiColorPoly);
-		updateScaleUniform(&Shape::multiColorPoly);
-
-		// update the fill color(s)
-		updateColorData(&Shape::multiColorPoly);
-
-
-		currentProgram->use();
+		program->use();
 
 		// render the shape
 		va->render();
 
-		currentProgram->unuse();
+		program->unuse();
 	}
 
 	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color) : Shape(), GraphicsRect(x, y, width, height) {
 
+		program = Program::defaultPolygonProgram();
 		loadColorBuffer(4);
 		setFillColor(color);
 
@@ -147,6 +138,7 @@ namespace bndr {
 
 	BasicTriangle::BasicTriangle(const Vec2<float>& coord1, const Vec2<float>& coord2, const Vec2<float>& coord3, const RGBAData& color) : Shape() {
 
+		program = Program::defaultPolygonProgram();
 		loadColorBuffer(4);
 		setFillColor(color);
 
@@ -159,7 +151,16 @@ namespace bndr {
 
 	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors) : Shape(), GraphicsRect(x, y, width, height) {
 
+		program = Program::multiColorPolygonProgram();
 		loadColorBuffer(16);
+		// create the vertex array with all the data
+		va = new VertexArray(TRIANGLES, {
+
+			(*pos)[0], (*pos)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3],
+			(*pos)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[4], colorBuffer[5], colorBuffer[6], colorBuffer[7],
+			(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11],
+			(*pos)[0] + (*size)[0], (*pos)[1], 0.0f, colorBuffer[12], colorBuffer[13], colorBuffer[14], colorBuffer[15]
+			}, 7 * sizeof(float), bndr::RGBA_COLOR_ATTRIB, { 0, 1, 2, 2, 3, 0 });
 		// specify cases based on how many colors that are provided
 		int s = colors.size();
 		switch (s) {
@@ -185,17 +186,9 @@ namespace bndr {
 			setFillColor(bndr::WHITE);
 			break;
 		}
-		// create the vertex array with all the data
-		va = new VertexArray(TRIANGLES, {
-
-			(*pos)[0], (*pos)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3],
-			(*pos)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[4], colorBuffer[5], colorBuffer[6], colorBuffer[7],
-			(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11],
-			(*pos)[0] + (*size)[0], (*pos)[1], 0.0f, colorBuffer[12], colorBuffer[13], colorBuffer[14], colorBuffer[15]
-			}, 7 * sizeof(float), bndr::RGBA_COLOR_ATTRIB, { 0, 1, 2, 2, 3, 0 });
 	}
 
-	void ColorfulRect::updateColorData(Program* currentProgram) {
+	void ColorfulRect::updateColorData() {
 
 		float updatedData[28] = {
 			(*pos)[0], (*pos)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3],
@@ -210,6 +203,7 @@ namespace bndr {
 
 		float color[4] = { (float)data.red / 255.0f, (float)data.green / 255.0f, (float)data.blue / 255.0f, (float)data.alpha / 255.0f };
 		for (int i = 0; i < 16; i++) { colorBuffer[i] = color[i % 4]; }
+		updateColorData();
 	}
 
 	void ColorfulRect::setFillColors(const RGBAData& bottomLeft, const RGBAData& topLeft, const RGBAData& topRight, const RGBAData& bottomRight) {
@@ -218,6 +212,7 @@ namespace bndr {
 		colorBuffer[4] = (float)topLeft.red/255.0f; colorBuffer[5] = (float)topLeft.green/255.0f; colorBuffer[6] = (float)topLeft.blue/255.0f; colorBuffer[7] = (float)topLeft.alpha/255.0f;
 		colorBuffer[8] = (float)topRight.red/255.0f; colorBuffer[9] = (float)topRight.green/255.0f; colorBuffer[10] = (float)topRight.blue/255.0f; colorBuffer[11] = (float)topRight.alpha/255.0f;
 		colorBuffer[12] = (float)bottomRight.red/255.0f; colorBuffer[13] = (float)bottomRight.green/255.0f; colorBuffer[14] = (float)bottomRight.blue/255.0f; colorBuffer[15] = (float)bottomRight.alpha/255.0f;
+		updateColorData();
 	}
 
 

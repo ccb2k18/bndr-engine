@@ -26,7 +26,8 @@ SOFTWARE.*/
 namespace bndr {
 
 	// define the shader map
-	std::unordered_map<std::string, uint> Program::programMap;
+	// std::unordered_map<std::string, uint> Program::programMap;
+	std::unordered_map<std::string, std::pair<Shader, Shader>> Program::shaderMap;
 
 	Shader::Shader(uint shaderType, const char* shaderSource, bool fromFile) {
 
@@ -72,59 +73,35 @@ namespace bndr {
 	Shader::Shader(Shader&& shader) noexcept {
 
 		shaderID = shader.shaderID;
+		shaderData = shader.shaderData;
 		shaderID = 0;
 	}
 
-	Shader::~Shader() {
 
-		std::cout << "Shader deleted!\n";
-		glDeleteShader(shaderID);
-	}
+	Program::Program(Shader&& vertexShader, Shader&& fragmentShader) {
 
+		std::string mapKey = Program::generateMapKey(vertexShader, fragmentShader);
 
-	Program::Program(Shader&& vertexShader, Shader&& fragmentShader, const char* hash) {
-
-		std::string mapKey = Program::generateMapKey(vertexShader, fragmentShader, hash);
-
+		Shader* vShader = &vertexShader;
+		Shader* fShader = &fragmentShader;
 		// check if program already exists
 		if (Program::programExists(mapKey.c_str())) {
 
-			programID = Program::programMap[mapKey.c_str()];
+			std::pair<Shader,Shader>* pairPtr = &Program::shaderMap[mapKey.c_str()];
+			vShader = &pairPtr->first;
+			fShader = &pairPtr->second;
 			std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
 			BNDR_MESSAGE(message.c_str());
 			return;
 		}
 
-
-		// create the program and attach the shaders
-		programID = glCreateProgram();
-		glAttachShader(programID, vertexShader.getShaderID());
-		glAttachShader(programID, fragmentShader.getShaderID());
-
-		// link the program
-		glLinkProgram(programID);
-
-		// check for link errors
-		int infoLogLen;
-		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLen);
-
-		if (infoLogLen > 0) {
-
-			char infoLogBuffer[250];
-			glGetProgramInfoLog(programID, 250, &infoLogLen, infoLogBuffer);
-			// raise an exception with the program link error
-			BNDR_EXCEPTION(infoLogBuffer);
-		}
-
-		// detach the shaders
-		glDetachShader(programID, vertexShader.getShaderID());
-		glDetachShader(programID, fragmentShader.getShaderID());
+		Program::linkProgram(programID, vShader, fShader);
 
 		// the shaders have reached the end of their scope and will be deleted automatically in
 		// the Shader class destructor once the function ends
 
 		// now we must not forget to add the program to the map
-		Program::programMap.insert(std::make_pair(mapKey.c_str(), programID));
+		Program::shaderMap.insert(std::make_pair(mapKey.c_str(), std::make_pair(*vShader, *fShader)));
 		std::string msg = "Added new program with hash key " + std::string("\"") + mapKey + std::string("\"");
 		BNDR_MESSAGE(msg.c_str());
 	}
@@ -136,7 +113,12 @@ namespace bndr {
 
 	Program::Program(const char* mapKey) {
 
-		programID = Program::programMap[mapKey];
+		std::pair<Shader,Shader>* pairPtr = &Program::shaderMap[mapKey];
+		Shader* vShader = &pairPtr->first;
+		Shader* fShader = &pairPtr->second;
+
+		Program::linkProgram(programID, vShader, fShader);
+
 		std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
 		BNDR_MESSAGE(message.c_str());
 		return;
@@ -251,6 +233,6 @@ namespace bndr {
 
 	Program::~Program() {
 
-		//glDeleteProgram(programID);
+		glDeleteProgram(programID);
 	}
 }

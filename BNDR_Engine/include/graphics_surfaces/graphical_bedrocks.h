@@ -65,14 +65,14 @@ namespace bndr {
 		// every descendant of PixelSurface will be able to access the bndr::Window instance so that it is rendered correctly
 		static Window* windowInstance;
 		// matrices for transformations of the surface
-		Mat3x3<float>* translation;
-		Mat3x3<float>* rotation;
-		Mat3x3<float>* scale;
+		Vec3<float>* translation;
+		Vec3<float>* rotation;
+		Vec3<float>* scale;
 		// this constructor will be called for every child of PixelSurface
 		// by default the color buffer has a size of 4 for 1 rgba entry
 		// this can be changed by calling the constructor below and passing in a color buffer size
-		PixelSurface() : translation(Mat3x3<float>::HeapTransMat(0.0f, 0.0f)), rotation(Mat3x3<float>::HeapRotMat(0.0f)),
-			scale(Mat3x3<float>::HeapScaleMat(1.0f, 1.0f)), program(nullptr), colorBuffer(nullptr), va(nullptr) {
+		PixelSurface() : translation(new Vec3<float>()), rotation(new Vec3<float>()),
+			scale(new Vec3<float>(1.0f, 1.0f, 0.0f)), program(nullptr), colorBuffer(nullptr), va(nullptr) {
 		
 			// ensure that a window instance has been defined
 			if (windowInstance == nullptr) {
@@ -124,11 +124,11 @@ namespace bndr {
 	protected:
 
 		// update the translation uniform in the program
-		inline virtual void updateTranslationUniform() override { program->setFloatUniformValue("translation", translation->getData(), bndr::MAT3X3); }
+		inline virtual void updateTranslationUniform() override { program->setFloatUniformValue("translation", translation->getData(), VEC3); }
 		// update the rotation uniform in the program
-		inline virtual void updateRotationUniform() override { program->setFloatUniformValue("rotation", rotation->getData(), bndr::MAT3X3); }
+		inline virtual void updateRotationUniform() override { program->setFloatUniformValue("rotation", rotation->getData(), VEC3); }
 		// update the scale uniform in the program
-		inline virtual void updateScaleUniform() override { program->setFloatUniformValue("scale", scale->getData(), bndr::MAT3X3); }
+		inline virtual void updateScaleUniform() override { program->setFloatUniformValue("scale", scale->getData(), VEC3); }
 		// update the color uniform in the program
 		inline virtual void updateColorData() override { program->setFloatUniformValue("color", colorBuffer, VEC4); }
 		// default constructor
@@ -177,6 +177,19 @@ namespace bndr {
 		~GraphicsRect() { BNDR_MESSAGE("Deleted instance of GraphicsRect!"); delete pos; delete size; }
 	};
 
+	// treated as an interface for BasicTriangle, ColorfulTriangle, and TexturedTriangle
+	class BNDR_API GraphicsTriangle {
+
+	protected:
+
+		Vec2<float>* vertex1;
+		Vec2<float>* vertex2;
+		Vec2<float>* vertex3;
+
+		GraphicsTriangle(Vec2<float>&& v1, Vec2<float>&& v2, Vec2<float>&& v3) : vertex1(new Vec2<float>(v1)), vertex2(new Vec2<float>(v2)), vertex3(new Vec2<float>(v3)) {}
+		~GraphicsTriangle() { BNDR_MESSAGE("Deleted instance of GraphicsTriangle!"); delete vertex1; delete vertex2; delete vertex3; }
+	};
+
 
 	// bndr::BasicRect
 	// Description: This is a basic rectangle that you may specify a single color for
@@ -190,11 +203,11 @@ namespace bndr {
 
 	// bndr::BasicTriangle
 	// Description: This is a basic triangle that you may specify a single color for
-	class BNDR_API BasicTriangle : public Shape {
+	class BNDR_API BasicTriangle : public Shape, public GraphicsTriangle {
 
 	public:
 
-		BasicTriangle(const Vec2<float>& coord1, const Vec2<float>& coord2, const Vec2<float>& coord3, const RGBAData& color);
+		BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color = bndr::WHITE);
 
 	};
 
@@ -214,6 +227,25 @@ namespace bndr {
 		virtual void setFillColor(const RGBAData& data) override;
 		// set a color for every corner of the rectangle
 		void setFillColors(const RGBAData& bottomLeft, const RGBAData& topLeft, const RGBAData& topRight, const RGBAData& bottomRight);
+	};
+
+	// bndr::ColorfulTriangle
+	// Description: This is a triangle that can have a color for every vertex
+	class BNDR_API ColorfulTriangle : public Shape, public GraphicsTriangle {
+
+	protected:
+
+		// update the color data in the vertex buffer of va
+		virtual void updateColorData() override;
+	public:
+
+		ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors = { bndr::WHITE });
+		// set a single fill color for the triangle (if you only want a solid color then you should probably just use BasicTriangle)
+		// (converts a rgba color to floats)
+		virtual void setFillColor(const RGBAData& data) override;
+		// set a color for every vertex
+		void setFillColors(const RGBAData& one, const RGBAData& two, const RGBAData& three);
+
 	};
 }
 

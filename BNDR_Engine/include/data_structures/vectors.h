@@ -109,10 +109,12 @@ namespace bndr {
 		Vec2() : BaseVector<T>() {}
 		// constructor
 		Vec2(const T& x, const T& y, int numCoords = 2) : base(x, y, numCoords) {}
+		// constructor with initializer list
+		Vec2(std::initializer_list<T>&& coords) : base(*(coords.begin()), *(coords.begin() + 1), 2) {}
 		// copy constructor
-		Vec2(const Vec2<T>& vec);
+		Vec2(const Vec2<T>& vec) : base(vec.getValue(0), vec.getValue(1)) {}
 		// move constructor
-		Vec2(Vec2&& vec);
+		Vec2(Vec2&& vec) = delete;
 		// assignment operator
 		void operator=(const Vec2<T>& vec);
 
@@ -173,24 +175,6 @@ namespace bndr {
 	}
 
 	template <class T>
-	Vec2<T>::Vec2(const Vec2<T>& vec) {
-
-		base::data = new T[2];
-		(*this)[0] = vec.getValue(0);
-		(*this)[1] = vec.getValue(1);
-	}
-
-	template <class T>
-	Vec2<T>::Vec2(Vec2<T>&& vec) {
-
-		base::data = new T[2];
-		(*this)[0] = vec.getValue(0);
-		(*this)[1] = vec.getValue(1);
-		// make sure the Vec2<T> instance is deleted in this scope
-		std::unique_ptr<Vec2<T>> ptr(&vec);
-	}
-
-	template <class T>
 	void Vec2<T>::operator=(const Vec2<T>& vec) {
 
 		(*this)[0] = vec.getValue(0);
@@ -202,17 +186,17 @@ namespace bndr {
 	template <class T>
 	class Vec3 : public Vec2<T> {
 
-		using base = typename BaseVector<T>;
+		using base = typename Vec2<T>;
 	public:
 
 		// constructors/assignment
 
-		Vec3() : base::data(new T[3]) {}
+		Vec3() : base(0.0f, 0.0f, 3) {}
 		Vec3(const T& x, const T& y, const T& z);
 		// copy constructor
 		Vec3(const Vec3<T>& vec);
 		// move constructor
-		Vec3(Vec3&& vec);
+		Vec3(Vec3&& vec) = delete;
 		// assignment operator
 		void operator=(const Vec3<T>& vec);
 
@@ -279,11 +263,8 @@ namespace bndr {
 	};
 
 	template <class T>
-	Vec3<T>::Vec3(const T& x, const T& y, const T& z) {
+	Vec3<T>::Vec3(const T& x, const T& y, const T& z) : base(x, y, 3) {
 
-		base::data = new T[3];
-		(*this)[0] = x;
-		(*this)[1] = y;
 		(*this)[2] = z;
 	}
 
@@ -296,23 +277,9 @@ namespace bndr {
 	}
 
 	template <class T>
-	Vec3<T>::Vec3(const Vec3<T>& vec) {
+	Vec3<T>::Vec3(const Vec3<T>& vec) : base(vec.getValue(0), vec.getValue(1), 3) {
 
-		base::data = new T[3];
-		(*this)[0] = vec.getValue(0);
-		(*this)[1] = vec.getValue(1);
 		(*this)[2] = vec.getValue(2);
-	}
-
-	template <class T>
-	Vec3<T>::Vec3(Vec3<T>&& vec) {
-
-		base::data = new T[3];
-		(*this)[0] = vec.getValue(0);
-		(*this)[1] = vec.getValue(1);
-		(*this)[2] = vec.getValue(2);
-		// make sure the Vec3<T> instance is deleted in this scope
-		std::unique_ptr<Vec3<T>> ptr(&vec);
 	}
 
 	template <class T>

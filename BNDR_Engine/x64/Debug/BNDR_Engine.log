@@ -61,7 +61,8 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shad
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92,78): warning C4251: 'bndr::Program::shaderMap': class 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>' needs to have dll-interface to be used by clients of class 'bndr::Program'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92): message : see declaration of 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(219,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(162,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(160,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(226,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   keyboard_mouse_events.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'

@@ -148,7 +148,7 @@ namespace bndr {
 		// this template is meant to be used for polygons of one single color
 		static Program* defaultPolygonProgram() {
 
-			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nuniform vec4 color;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
+			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform vec3 translation;\nuniform vec3 rotation;\nuniform vec3 scale;\nuniform vec4 color;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = position + rotation + translation;\nnewPos.x *= scale.x;\nnewPos.y *= scale.y;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
 			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
 			return Program::generateProgramFromSource(vert, frag);
 		}
@@ -156,7 +156,7 @@ namespace bndr {
 		// this template is for drawing polygons with multiple blended colors for each vertex
 		static Program* multiColorPolygonProgram() {
 
-			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform mat3 translation;\nuniform mat3 rotation;\nuniform mat3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = translation * rotation * scale * position;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
+			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform vec3 translation;\nuniform vec3 rotation;\nuniform vec3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = position + rotation + translation;\nnewPos.x *= scale.x;\nnewPos.y *= scale.y;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
 			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
 			return Program::generateProgramFromSource(vert, frag);
 		}

@@ -102,15 +102,15 @@ namespace bndr {
 		Program& operator=(const Program& program) { programID = program.programID; return *this; }
 		inline uint getID() { return programID; }
 		// use the program
-		inline void use() { glUseProgram(programID); }
+		inline void use() const { glUseProgram(programID); }
 		// stop using the program
-		inline void unuse() { glUseProgram(0); }
+		inline void unuse() const { glUseProgram(0); }
 		// modify a uniform value that whose primitive attribute(s) is/are of type float
-		void setFloatUniformValue(const char* uniformName, float* data, uint dataType);
+		void setFloatUniformValue(const char* uniformName, const float* data, uint dataType) const;
 		// modify a uniform value that is an array of type float
-		void setFloatArrayUniformValue(const char* uniformName, float* data, int arraySize);
+		void setFloatArrayUniformValue(const char* uniformName, const float* data, int arraySize) const;
 		// modify a uniform value that is an array of type int
-		void setIntArrayUniformValue(const char* uniformName, int* data, int arraySize);
+		void setIntArrayUniformValue(const char* uniformName, const int* data, int arraySize) const;
 		// modify a uniform value that is a single int
 		void setIntUniformValue(const char* uniformName, int value);
 		// deletes the OpenGL program
@@ -148,7 +148,7 @@ namespace bndr {
 		// this template is meant to be used for polygons of one single color
 		static Program* defaultPolygonProgram() {
 
-			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform vec3 translation;\nuniform vec3 rotation;\nuniform vec3 scale;\nuniform vec4 color;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = position + rotation + translation;\nnewPos.x *= scale.x;\nnewPos.y *= scale.y;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
+			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform vec2 center;\nuniform vec3 translation;\nuniform vec3 rotation;\nuniform vec3 scale;\nuniform vec4 color;\nout vec4 fragColor;\nvoid main() {\nvec3 rotCenter = vec3(center, 0.0);\nvec3 newRot = vec3(rotCenter.x * rotation.x - rotCenter.y * rotation.y, rotCenter.y * rotation.x + rotCenter.x * rotation.y, 0.0);\nvec3 newPos = position;\nnewPos.x *= scale.x;\nnewPos.y *= scale.y;\nnewPos += -rotCenter + newRot + rotCenter + translation;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
 			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
 			return Program::generateProgramFromSource(vert, frag);
 		}
@@ -156,7 +156,7 @@ namespace bndr {
 		// this template is for drawing polygons with multiple blended colors for each vertex
 		static Program* multiColorPolygonProgram() {
 
-			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform vec3 translation;\nuniform vec3 rotation;\nuniform vec3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 newPos = position + rotation + translation;\nnewPos.x *= scale.x;\nnewPos.y *= scale.y;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
+			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform vec2 center;\nuniform vec3 translation;\nuniform vec3 rotation;\nuniform vec3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 rotCenter = vec3(center, 0.0);\nvec3 newRot = vec3(rotCenter.x * rotation.x - rotCenter.y * rotation.y, rotCenter.y * rotation.x + rotCenter.x * rotation.y, 0.0);\nvec3 newPos = position;\nnewPos.x *= scale.x;\nnewPos.y *= scale.y;\nnewPos += -rotCenter + newRot + rotCenter + translation;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
 			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
 			return Program::generateProgramFromSource(vert, frag);
 		}

@@ -164,8 +164,24 @@ namespace bndr {
 
 	};
 
+	// parent class of GraphicsRect and GraphicsTriangle
+	class BNDR_API GraphicsEntity {
+
+	protected:
+
+		Vec2<float>* center;
+		GraphicsEntity() : center(new Vec2<float>()) {}
+		// update the center of rotation of the entity
+		inline void updateCenterUniform(Program* program) const { program->setFloatUniformValue("center", center->getData(), VEC2); }
+		// update the center of rotation of the entity with a custom point
+		inline void updateCenterUniform(Program* program, const Vec2<float>& point) const { program->setFloatUniformValue("center", point.getData(), VEC2); }
+	public:
+		~GraphicsEntity() { delete center; }
+	};
+
+
 	// treated as an interface for BasicRect, ColorfulRect, and TexturedRect
-	class BNDR_API GraphicsRect {
+	class BNDR_API GraphicsRect : public GraphicsEntity {
 
 	protected:
 		// 0: x, 1: y
@@ -173,12 +189,19 @@ namespace bndr {
 		// 0: width, 1: height
 		Vec2<float>* size;
 		// construct the GraphicsRect
-		GraphicsRect(float x, float y, float width, float height) : pos(new Vec2<float>(x, y)), size(new Vec2<float>(width, height)) {}
+		GraphicsRect(float x, float y, float width, float height, Program* program) : GraphicsEntity(), pos(new Vec2<float>(x, y)),
+			size(new Vec2<float>(width, height)) {
+		
+			(*center)[0] = (x + x + width) / 2.0f;
+			(*center)[1] = (y + y + height) / 2.0f;
+			updateCenterUniform(program);
+		}
+	public:
 		~GraphicsRect() { BNDR_MESSAGE("Deleted instance of GraphicsRect!"); delete pos; delete size; }
 	};
 
 	// treated as an interface for BasicTriangle, ColorfulTriangle, and TexturedTriangle
-	class BNDR_API GraphicsTriangle {
+	class BNDR_API GraphicsTriangle : public GraphicsEntity {
 
 	protected:
 
@@ -186,7 +209,14 @@ namespace bndr {
 		Vec2<float>* vertex2;
 		Vec2<float>* vertex3;
 
-		GraphicsTriangle(Vec2<float>&& v1, Vec2<float>&& v2, Vec2<float>&& v3) : vertex1(new Vec2<float>(v1)), vertex2(new Vec2<float>(v2)), vertex3(new Vec2<float>(v3)) {}
+		GraphicsTriangle(Vec2<float>&& v1, Vec2<float>&& v2, Vec2<float>&& v3, Program* program) : GraphicsEntity(),
+			vertex1(new Vec2<float>(v1)), vertex2(new Vec2<float>(v2)), vertex3(new Vec2<float>(v3)) {
+		
+			(*center)[0] = ((*vertex1)[0] + (*vertex2)[0] + (*vertex3)[0]) / 3.0f;
+			(*center)[1] = ((*vertex1)[1] + (*vertex2)[1] + (*vertex3)[1]) / 3.0f;
+			updateCenterUniform(program);
+		}
+	public:
 		~GraphicsTriangle() { BNDR_MESSAGE("Deleted instance of GraphicsTriangle!"); delete vertex1; delete vertex2; delete vertex3; }
 	};
 
@@ -198,6 +228,12 @@ namespace bndr {
 	public:
 
 		BasicRect(float x, float y, float width, float height, const RGBAData& color = bndr::WHITE);
+		// the rotation is about the shape's center by default
+		// you only need to call this if you changed the center of rotation to a different point
+		// using setRotationAboutPoint(float x, float y)
+		//inline virtual void setRotationAboutCenter(Program* program) {}
+		inline void setRotationAboutCenter() { updateCenterUniform(program); }
+		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
 	};
 
 
@@ -208,6 +244,12 @@ namespace bndr {
 	public:
 
 		BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color = bndr::WHITE);
+		// the rotation is about the shape's center by default
+		// you only need to call this if you changed the center of rotation to a different point
+		// using setRotationAboutPoint(float x, float y)
+		//inline virtual void setRotationAboutCenter(Program* program) {}
+		inline void setRotationAboutCenter() { updateCenterUniform(program); }
+		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
 
 	};
 
@@ -227,6 +269,12 @@ namespace bndr {
 		virtual void setFillColor(const RGBAData& data) override;
 		// set a color for every corner of the rectangle
 		void setFillColors(const RGBAData& bottomLeft, const RGBAData& topLeft, const RGBAData& topRight, const RGBAData& bottomRight);
+		// the rotation is about the shape's center by default
+		// you only need to call this if you changed the center of rotation to a different point
+		// using setRotationAboutPoint(float x, float y)
+		//inline virtual void setRotationAboutCenter(Program* program) {}
+		inline void setRotationAboutCenter() { updateCenterUniform(program); }
+		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
 	};
 
 	// bndr::ColorfulTriangle
@@ -245,6 +293,12 @@ namespace bndr {
 		virtual void setFillColor(const RGBAData& data) override;
 		// set a color for every vertex
 		void setFillColors(const RGBAData& one, const RGBAData& two, const RGBAData& three);
+		// the rotation is about the shape's center by default
+		// you only need to call this if you changed the center of rotation to a different point
+		// using setRotationAboutPoint(float x, float y)
+		//inline virtual void setRotationAboutCenter(Program* program) {}
+		inline void setRotationAboutCenter() { updateCenterUniform(program); }
+		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
 
 	};
 }

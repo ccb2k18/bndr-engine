@@ -55,7 +55,6 @@ namespace bndr {
 		// update the rotation matrix in RAM
 		(*rotation)[0] = cosf(rad);
 		(*rotation)[1] = sinf(rad);
-
 		updateRotationUniform();
 
 	}
@@ -117,7 +116,8 @@ namespace bndr {
 		program->unuse();
 	}
 
-	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color) : Shape(Program::defaultPolygonProgram()), GraphicsRect(x, y, width, height) {
+	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color) : Shape(Program::defaultPolygonProgram()),
+		GraphicsRect(x, y, width, height, program) {
 
 		loadColorBuffer(4);
 		setFillColor(color);
@@ -133,7 +133,7 @@ namespace bndr {
 	}
 
 	BasicTriangle::BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color) : Shape(Program::defaultPolygonProgram()),
-		GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3)) {
+		GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3), program) {
 
 		loadColorBuffer(4);
 		setFillColor(color);
@@ -145,7 +145,8 @@ namespace bndr {
 			}, sizeof(float) * 3, 0);
 	}
 
-	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors) : Shape(Program::multiColorPolygonProgram()), GraphicsRect(x, y, width, height) {
+	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors) : Shape(Program::multiColorPolygonProgram()),
+		GraphicsRect(x, y, width, height, program) {
 
 		loadColorBuffer(16);
 		// create the vertex array with all the data
@@ -211,7 +212,7 @@ namespace bndr {
 	}
 
 	ColorfulTriangle::ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors)
-	: Shape(Program::multiColorPolygonProgram()), GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3)) {
+	: Shape(Program::multiColorPolygonProgram()), GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3), program) {
 
 		// 12 attribs (3 rgbas : 1 for each vertex)
 		loadColorBuffer(12);

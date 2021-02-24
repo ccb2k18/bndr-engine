@@ -123,7 +123,7 @@ namespace bndr {
 		return;
 	}
 
-	void Program::setFloatUniformValue(const char* uniformName, float* data, uint dataType) {
+	void Program::setFloatUniformValue(const char* uniformName, const float* data, uint dataType) const {
 
 		use();
 		try {
@@ -172,7 +172,7 @@ namespace bndr {
 		unuse();
 	}
 
-	void Program::setFloatArrayUniformValue(const char* uniformName, float* data, int arraySize) {
+	void Program::setFloatArrayUniformValue(const char* uniformName, const float* data, int arraySize) const {
 
 		use();
 		try {
@@ -191,7 +191,7 @@ namespace bndr {
 		unuse();
 	}
 
-	void Program::setIntArrayUniformValue(const char* uniformName, int* data, int arraySize) {
+	void Program::setIntArrayUniformValue(const char* uniformName, const int* data, int arraySize) const {
 
 		use();
 		try {

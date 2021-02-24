@@ -67,7 +67,7 @@ namespace bndr {
 	public:
 
 		// used to pass into a bndr::Program uniform
-		inline T* getData() { return data; }
+		inline const T* getData() const { return data; }
 		// used to get a copied value from the vector
 		virtual inline T getValue(int index) const { return BaseVector<T>::data[index]; }
 		// get a value without copying

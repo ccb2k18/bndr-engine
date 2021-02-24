@@ -32,7 +32,7 @@ D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\xst
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(68,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92,78): warning C4251: 'bndr::Program::shaderMap': class 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>' needs to have dll-interface to be used by clients of class 'bndr::Program'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92): message : see declaration of 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>'
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(221,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(219,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   graphical_bedrocks.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
@@ -60,8 +60,8 @@ D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\xst
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(68,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92,78): warning C4251: 'bndr::Program::shaderMap': class 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>' needs to have dll-interface to be used by clients of class 'bndr::Program'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92): message : see declaration of 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>'
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(221,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(165,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(219,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(162,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   keyboard_mouse_events.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
@@ -114,7 +114,7 @@ D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\xst
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(68,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92,78): warning C4251: 'bndr::Program::shaderMap': class 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>' needs to have dll-interface to be used by clients of class 'bndr::Program'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92): message : see declaration of 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>'
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(221,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(219,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   textures.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(61,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(90,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size

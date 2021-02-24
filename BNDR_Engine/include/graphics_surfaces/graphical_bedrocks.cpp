@@ -120,9 +120,8 @@ namespace bndr {
 		program->unuse();
 	}
 
-	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color) : Shape(), GraphicsRect(x, y, width, height) {
+	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color) : Shape(Program::defaultPolygonProgram()), GraphicsRect(x, y, width, height) {
 
-		program = Program::defaultPolygonProgram();
 		loadColorBuffer(4);
 		setFillColor(color);
 
@@ -136,9 +135,8 @@ namespace bndr {
 			3 * sizeof(float), 0, { 0, 1, 2, 2, 3, 0 });
 	}
 
-	BasicTriangle::BasicTriangle(const Vec2<float>& coord1, const Vec2<float>& coord2, const Vec2<float>& coord3, const RGBAData& color) : Shape() {
+	BasicTriangle::BasicTriangle(const Vec2<float>& coord1, const Vec2<float>& coord2, const Vec2<float>& coord3, const RGBAData& color) : Shape(Program::defaultPolygonProgram()) {
 
-		program = Program::defaultPolygonProgram();
 		loadColorBuffer(4);
 		setFillColor(color);
 
@@ -149,9 +147,8 @@ namespace bndr {
 			}, sizeof(float) * 3, 0);
 	}
 
-	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors) : Shape(), GraphicsRect(x, y, width, height) {
+	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors) : Shape(Program::multiColorPolygonProgram()), GraphicsRect(x, y, width, height) {
 
-		program = Program::multiColorPolygonProgram();
 		loadColorBuffer(16);
 		// create the vertex array with all the data
 		va = new VertexArray(TRIANGLES, {

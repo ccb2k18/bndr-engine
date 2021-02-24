@@ -132,7 +132,14 @@ namespace bndr {
 		// update the color uniform in the program
 		inline virtual void updateColorData() override { program->setFloatUniformValue("color", colorBuffer, VEC4); }
 		// default constructor
-		Shape() : PixelSurface() {}
+		Shape(Program* prog) : PixelSurface() {
+		
+			program = prog;
+			// update the transformation matrices
+			updateTranslationUniform();
+			updateRotationUniform();
+			updateScaleUniform();
+		}
 
 	public:
 
@@ -152,6 +159,8 @@ namespace bndr {
 		virtual void setFillColor(const RGBAData& data);
 		// render the surface to the screen
 		virtual void render() override;
+		// get the program id
+		inline uint getProgramID() { return program->getID(); }
 
 	};
 

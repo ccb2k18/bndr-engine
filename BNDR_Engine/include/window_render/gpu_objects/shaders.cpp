@@ -74,7 +74,6 @@ namespace bndr {
 
 		shaderID = shader.shaderID;
 		shaderData = shader.shaderData;
-		shaderID = 0;
 	}
 
 

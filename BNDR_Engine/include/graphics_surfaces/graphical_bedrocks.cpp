@@ -201,7 +201,7 @@ namespace bndr {
 	}
 
 	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, int colorBufferSize, bool super)
-		: BasicRect(x,y,width,height,colors[0],colorBufferSize,true) {
+		: BasicRect(x,y,width,height,bndr::WHITE,colorBufferSize,true) {
 
 		if (!super) {
 
@@ -276,7 +276,7 @@ namespace bndr {
 	}
 
 	ColorfulTriangle::ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors, int colorBufferSize, bool super)
-	: BasicTriangle(std::move(coord1), std::move(coord2), std::move(coord3), colors[0], colorBufferSize, true) {
+	: BasicTriangle(std::move(coord1), std::move(coord2), std::move(coord3), bndr::WHITE, colorBufferSize, true) {
 
 		if (!super) {
 
@@ -345,5 +345,18 @@ namespace bndr {
 			(*pos)[0] + (*size)[0], (*pos)[1], 0.0f, colorBuffer[12], colorBuffer[13], colorBuffer[14], colorBuffer[15], 1.0f, 0.0f
 		};
 		va->updateVertexBufferData(updatedData);
+	}
+
+	void TexturedRect::render() {
+
+		texArr->bindAll();
+
+		program->use();
+
+		va->render();
+
+		program->unuse();
+
+		texArr->unbindAll();
 	}
 }

@@ -345,6 +345,7 @@ namespace bndr {
 	public:
 
 		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {}, int colorBuffer = 16);
+		void render() override;
 		~TexturedRect() { delete texArr; }
 	};
 }

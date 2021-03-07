@@ -62,7 +62,8 @@ namespace bndr {
 
 		// default constructor
 		Texture() : textureSlot(GL_TEXTURE0), textureID((uint)0) {}
-
+		// copy constructor
+		Texture(const Texture& tex) : textureSlot(tex.textureSlot), textureID(tex.textureID) {}
 		Texture(const char* bitMapFile, uint textureSWrapping = TEXTURE_REPEAT,
 			uint textureTWrapping = TEXTURE_REPEAT, uint textureMinFiltering = TEXTURE_NEAREST,
 			uint textureMagFiltering = TEXTURE_NEAREST);

@@ -171,14 +171,8 @@ namespace bndr {
 			}, 7 * sizeof(float), bndr::RGBA_COLOR_ATTRIB, { 0, 1, 2, 2, 3, 0 });
 	}
 
-	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, int colorBufferSize, bool super)
-		: BasicRect(x,y,width,height,colors[0],colorBufferSize,true) {
+	void ColorfulRect::defineColors(std::vector<RGBAData>& colors) {
 
-		if (!super) {
-
-			init(colorBufferSize);
-			setRotationAboutCenter();
-		}
 		// specify cases based on how many colors that are provided
 		int s = colors.size();
 		switch (s) {
@@ -204,6 +198,18 @@ namespace bndr {
 			setFillColor(bndr::WHITE);
 			break;
 		}
+	}
+
+	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, int colorBufferSize, bool super)
+		: BasicRect(x,y,width,height,colors[0],colorBufferSize,true) {
+
+		if (!super) {
+
+			init(colorBufferSize);
+			setRotationAboutCenter();
+			defineColors(colors);
+		}
+		
 	}
 
 	void ColorfulRect::updateColorData() {
@@ -244,14 +250,8 @@ namespace bndr {
 			}, 7 * sizeof(float), RGBA_COLOR_ATTRIB);
 	}
 
-	ColorfulTriangle::ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors, int colorBufferSize, bool super)
-	: BasicTriangle(std::move(coord1), std::move(coord2), std::move(coord3), colors[0], colorBufferSize, true) {
+	void ColorfulTriangle::defineColors(std::vector<RGBAData>& colors) {
 
-		if (!super) {
-
-			init(colorBufferSize);
-			setRotationAboutCenter();
-		}
 		// specify cases based on how many colors that are provided
 		int s = colors.size();
 		switch (s) {
@@ -272,6 +272,17 @@ namespace bndr {
 
 			setFillColor(bndr::WHITE);
 			break;
+		}
+	}
+
+	ColorfulTriangle::ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors, int colorBufferSize, bool super)
+	: BasicTriangle(std::move(coord1), std::move(coord2), std::move(coord3), colors[0], colorBufferSize, true) {
+
+		if (!super) {
+
+			init(colorBufferSize);
+			setRotationAboutCenter();
+			defineColors(colors);
 		}
 
 	}
@@ -302,10 +313,37 @@ namespace bndr {
 		updateColorData();
 	}
 
-	/*TexturedRect::TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {})
-		: PolySurface(Program::singleTexPolygonProgram()), GraphicsRect(x, y, width, height, program) {
+	VertexArray* TexturedRect::generateVertexArray() {
 
+		return new VertexArray(TRIANGLES,
+			{
 
+			(*pos)[0], (*pos)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3], 0.0f, 0.0f,
+			(*pos)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[4], colorBuffer[5], colorBuffer[6], colorBuffer[7], 0.0f, 1.0f,
+			(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11], 1.0f, 1.0f,
+			(*pos)[0] + (*size)[0], (*pos)[1], 0.0f, colorBuffer[12], colorBuffer[13], colorBuffer[14], colorBuffer[15], 1.0f, 0.0f
+			}, 9 * sizeof(float), bndr::RGBA_COLOR_ATTRIB | bndr::TEXTURE_COORDS_ATTRIB, { 0, 1, 2, 2, 3, 0 });
+	}
 
-	}*/
+	TexturedRect::TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, std::initializer_list<Texture>&& texs, int colorBufferSize)
+		: ColorfulRect(x, y, width, height, {}, colorBufferSize, true) {
+
+		init(colorBufferSize);
+		setRotationAboutCenter();
+		defineColors(colors);
+
+		texArr = new TextureArray(std::move(texs));
+
+	}
+
+	void TexturedRect::updateColorData() {
+
+		float updatedData[36] = {
+			(*pos)[0], (*pos)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3], 0.0f, 0.0f,
+			(*pos)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[4], colorBuffer[5], colorBuffer[6], colorBuffer[7], 0.0f, 1.0f,
+			(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11], 1.0f, 1.0f,
+			(*pos)[0] + (*size)[0], (*pos)[1], 0.0f, colorBuffer[12], colorBuffer[13], colorBuffer[14], colorBuffer[15], 1.0f, 0.0f
+		};
+		va->updateVertexBufferData(updatedData);
+	}
 }

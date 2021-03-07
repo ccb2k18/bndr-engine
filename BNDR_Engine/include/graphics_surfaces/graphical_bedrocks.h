@@ -292,6 +292,8 @@ namespace bndr {
 		virtual void updateColorData() override;
 		// generate a program that allows for multiple colors to be used
 		inline virtual Program* generateShaderProgram() override { return Program::multiColorPolygonProgram(); }
+		// define the colors of the rectangle
+		void defineColors(std::vector<RGBAData>& colors);
 	public:
 
 		ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, int colorBufferSize = 16, bool super = false);
@@ -313,6 +315,8 @@ namespace bndr {
 		virtual void updateColorData() override;
 		// generate a program that allows for multiple colors to be used
 		inline virtual Program* generateShaderProgram() override { return Program::multiColorPolygonProgram(); }
+		// define the colors of the triangle
+		void defineColors(std::vector<RGBAData>& colors);
 	public:
 
 		ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors = { bndr::WHITE }, int colorBufferSize = 12, bool super = false);
@@ -326,19 +330,22 @@ namespace bndr {
 
 	// bndr::TexturedRect
 	// Description: This is a rectangle that can have a color for every vertex as well as blended textures
-	/*class BNDR_API TexturedRect : public ColorfulRect {
+	class BNDR_API TexturedRect : public ColorfulRect {
 
 	protected:
 
 		// texture array to store the textures of the rect
 		TextureArray* texArr;
 		// textured rect will specify additional values as opposed to colorful rect
-		virtual void initVertexArray() override;
+		virtual VertexArray* generateVertexArray() override;
+		// update the color data in the vertex buffer of va
+		virtual void updateColorData() override;
 		// generate a program that allows for multiple colors to be used with multiple textures
 		inline virtual Program* generateShaderProgram() override { return Program::singleTexPolygonProgram(); }
 	public:
 
-		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {});
-	};*/
+		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {}, int colorBuffer = 16);
+		~TexturedRect() { delete texArr; }
+	};
 }
 

@@ -69,7 +69,7 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_be
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(97): message : see declaration of 'std::vector<float,std::allocator<float>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(39,30): warning C4251: 'bndr::VAContainer::indexData': class 'std::vector<uint,std::allocator<uint>>' needs to have dll-interface to be used by clients of struct 'bndr::VAContainer'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\IndexBuffer.h(36): message : see declaration of 'std::vector<uint,std::allocator<uint>>'
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(183,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(177,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(256,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   keyboard_mouse_events.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'

@@ -28,6 +28,18 @@ SOFTWARE.*/
 
 namespace bndr {
 
+	// bndr::VAContainer
+	// a structure to contain the vertex array arguments to be passed down in the PolySurface class hierarchy
+	struct BNDR_API VAContainer {
+
+		uint drawingMode;
+		std::vector<float> vertexData;
+		int dataBlockBytes;
+		uint vertexBufferFlags;
+		std::vector<uint> indexData;
+	};
+
+
 	// bndr::RGBData
 	// Description: Data structure to store rgb color values in. In instances of PixelSurface the colorBuffer will normalize
 	// these values between 0.0f and 1.0f
@@ -40,20 +52,19 @@ namespace bndr {
 	};
 	// declare colors
 	// define colors
-	static RGBAData RED = { 255, 0, 0, 255 };
-	static RGBAData GREEN = { 0, 255, 0, 255 };
-	static RGBAData BLUE = { 0, 0, 255, 255 };
-	static RGBAData YELLOW = { 255, 255, 0, 255 };
-	static RGBAData PURPLE = { 255, 0, 255, 255 };
-	static RGBAData TORQUOISE = { 0, 255, 255, 255 };
-	static RGBAData BLACK = { 0, 0, 0, 255 };
-	static RGBAData WHITE = { 255, 255, 255, 255 };
-	static RGBAData ORANGE = { 255, 128, 0, 255 };
-	static RGBAData BROWN = { 64, 32, 0, 255 };
-
+	static const RGBAData RED = { 255, 0, 0, 255 };
+	static const RGBAData GREEN = { 0, 255, 0, 255 };
+	static const RGBAData BLUE = { 0, 0, 255, 255 };
+	static const RGBAData YELLOW = { 255, 255, 0, 255 };
+	static const RGBAData PURPLE = { 255, 0, 255, 255 };
+	static const RGBAData TORQUOISE = { 0, 255, 255, 255 };
+	static const RGBAData BLACK = { 0, 0, 0, 255 };
+	static const RGBAData WHITE = { 255, 255, 255, 255 };
+	static const RGBAData ORANGE = { 255, 128, 0, 255 };
+	static const RGBAData BROWN = { 64, 32, 0, 255 };
 
 	// bndr::PixelSurface
-	// Description: The fundamental abstract class for all graphical elements from shapes to images to character sprites
+	// Description: The fundamental abstract class for all graphical elements from PolySurfaces to images to character sprites
 	class BNDR_API PixelSurface {
 
 	protected:
@@ -117,9 +128,9 @@ namespace bndr {
 		~PixelSurface();
 	};
 
-	// bndr::Shape
-	// Description: base class for all shapes (rectangles, triangles, and ellipses/circles)
-	class BNDR_API Shape : public PixelSurface {
+	// bndr::PolySurface
+	// Description: base class for all PolySurfaces (rectangles, triangles, and ellipses/circles)
+	class BNDR_API PolySurface : public PixelSurface {
 
 	protected:
 
@@ -132,13 +143,27 @@ namespace bndr {
 		// update the color uniform in the program
 		inline virtual void updateColorData() override { program->setFloatUniformValue("color", colorBuffer, VEC4); }
 		// default constructor
-		Shape(Program* prog) : PixelSurface() {
-		
-			program = prog;
+		PolySurface(int colorBufferSize) : PixelSurface() {}
+
+		void init(int colorBufferSize) {
+
+			// generate the program for the polysurface
+			program = generateShaderProgram();
+			// load the color buffer with the correct number of colors
+			loadColorBuffer(colorBufferSize);
+			// load the vertex array data
+			va = generateVertexArray();
 			// update the transformation matrices
 			updateTranslationUniform();
 			updateRotationUniform();
 			updateScaleUniform();
+		}
+		// virtual function that will be overridden by children so that the appropriate program is created
+		inline virtual Program* generateShaderProgram() { return Program::defaultPolygonProgram(); }
+		// virtual function that specifies the vertex array data for the surface
+		virtual VertexArray* generateVertexArray() {
+
+			return nullptr;
 		}
 
 	public:
@@ -155,7 +180,7 @@ namespace bndr {
 		virtual void changeRotationBy(float theta) override;
 		// change the scale matrix by a certain amount
 		virtual void changeScaleBy(float xScale, float yScale) override;
-		// set the fill color for the shape (converts a rgba color to floats)
+		// set the fill color for the PolySurface (converts a rgba color to floats)
 		virtual void setFillColor(const RGBAData& data);
 		// render the surface to the screen
 		virtual void render() override;
@@ -171,11 +196,11 @@ namespace bndr {
 
 		Vec2<float>* center;
 		GraphicsEntity() : center(new Vec2<float>()) {}
+	public:
 		// update the center of rotation of the entity
 		inline void updateCenterUniform(Program* program) const { program->setFloatUniformValue("center", center->getData(), VEC2); }
 		// update the center of rotation of the entity with a custom point
 		inline void updateCenterUniform(Program* program, const Vec2<float>& point) const { program->setFloatUniformValue("center", point.getData(), VEC2); }
-	public:
 		~GraphicsEntity() { delete center; }
 	};
 
@@ -189,15 +214,14 @@ namespace bndr {
 		// 0: width, 1: height
 		Vec2<float>* size;
 		// construct the GraphicsRect
-		GraphicsRect(float x, float y, float width, float height, Program* program) : GraphicsEntity(), pos(new Vec2<float>(x, y)),
+		GraphicsRect(float x, float y, float width, float height) : GraphicsEntity(), pos(new Vec2<float>(x, y)),
 			size(new Vec2<float>(width, height)) {
 		
 			(*center)[0] = (x + x + width) / 2.0f;
 			(*center)[1] = (y + y + height) / 2.0f;
-			updateCenterUniform(program);
 		}
 	public:
-		~GraphicsRect() { BNDR_MESSAGE("Deleted instance of GraphicsRect!"); delete pos; delete size; }
+		~GraphicsRect() { delete pos; delete size; }
 	};
 
 	// treated as an interface for BasicTriangle, ColorfulTriangle, and TexturedTriangle
@@ -209,29 +233,30 @@ namespace bndr {
 		Vec2<float>* vertex2;
 		Vec2<float>* vertex3;
 
-		GraphicsTriangle(Vec2<float>&& v1, Vec2<float>&& v2, Vec2<float>&& v3, Program* program) : GraphicsEntity(),
+		GraphicsTriangle(Vec2<float>&& v1, Vec2<float>&& v2, Vec2<float>&& v3) : GraphicsEntity(),
 			vertex1(new Vec2<float>(v1)), vertex2(new Vec2<float>(v2)), vertex3(new Vec2<float>(v3)) {
 		
 			(*center)[0] = ((*vertex1)[0] + (*vertex2)[0] + (*vertex3)[0]) / 3.0f;
 			(*center)[1] = ((*vertex1)[1] + (*vertex2)[1] + (*vertex3)[1]) / 3.0f;
-			updateCenterUniform(program);
 		}
 	public:
-		~GraphicsTriangle() { BNDR_MESSAGE("Deleted instance of GraphicsTriangle!"); delete vertex1; delete vertex2; delete vertex3; }
+		~GraphicsTriangle() { delete vertex1; delete vertex2; delete vertex3; }
 	};
 
 
 	// bndr::BasicRect
 	// Description: This is a basic rectangle that you may specify a single color for
-	class BNDR_API BasicRect : public Shape, public GraphicsRect {
+	class BNDR_API BasicRect : public GraphicsRect, public PolySurface {
 
+	protected:
+
+		virtual VertexArray* generateVertexArray() override;
 	public:
 
-		BasicRect(float x, float y, float width, float height, const RGBAData& color = bndr::WHITE);
-		// the rotation is about the shape's center by default
+		BasicRect(float x, float y, float width, float height, const RGBAData& color = bndr::WHITE, int colorBufferSize = 4, bool super = false);
+		// the rotation is about the PolySurface's center by default
 		// you only need to call this if you changed the center of rotation to a different point
 		// using setRotationAboutPoint(float x, float y)
-		//inline virtual void setRotationAboutCenter(Program* program) {}
 		inline void setRotationAboutCenter() { updateCenterUniform(program); }
 		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
 	};
@@ -239,15 +264,17 @@ namespace bndr {
 
 	// bndr::BasicTriangle
 	// Description: This is a basic triangle that you may specify a single color for
-	class BNDR_API BasicTriangle : public Shape, public GraphicsTriangle {
+	class BNDR_API BasicTriangle : public GraphicsTriangle, public PolySurface {
 
+	protected:
+
+		virtual VertexArray* generateVertexArray() override;
 	public:
 
-		BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color = bndr::WHITE);
-		// the rotation is about the shape's center by default
+		BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color = bndr::WHITE, int colorBufferSize = 4, bool super = false);
+		// the rotation is about the PolySurface's center by default
 		// you only need to call this if you changed the center of rotation to a different point
 		// using setRotationAboutPoint(float x, float y)
-		//inline virtual void setRotationAboutCenter(Program* program) {}
 		inline void setRotationAboutCenter() { updateCenterUniform(program); }
 		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
 
@@ -255,51 +282,63 @@ namespace bndr {
 
 	// bndr::ColorfulRect
 	// Description: This is a rectangle that can have a color for every vertex
-	class BNDR_API ColorfulRect : public Shape, public GraphicsRect {
+	class BNDR_API ColorfulRect : public BasicRect {
 
 	protected:
 
+		// colorful rect will specify additional values as opposed to basic rect
+		virtual VertexArray* generateVertexArray() override;
 		// update the color data in the vertex buffer of va
 		virtual void updateColorData() override;
+		// generate a program that allows for multiple colors to be used
+		inline virtual Program* generateShaderProgram() override { return Program::multiColorPolygonProgram(); }
 	public:
 
-		ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE });
+		ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, int colorBufferSize = 16, bool super = false);
 		// set a single fill color for the rect (if you only want a solid color then you should probably just use BasicRect)
 		// (converts a rgba color to floats)
 		virtual void setFillColor(const RGBAData& data) override;
 		// set a color for every corner of the rectangle
-		void setFillColors(const RGBAData& bottomLeft, const RGBAData& topLeft, const RGBAData& topRight, const RGBAData& bottomRight);
-		// the rotation is about the shape's center by default
-		// you only need to call this if you changed the center of rotation to a different point
-		// using setRotationAboutPoint(float x, float y)
-		//inline virtual void setRotationAboutCenter(Program* program) {}
-		inline void setRotationAboutCenter() { updateCenterUniform(program); }
-		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
+		virtual void setFillColors(const RGBAData& bottomLeft, const RGBAData& topLeft, const RGBAData& topRight, const RGBAData& bottomRight);
 	};
 
 	// bndr::ColorfulTriangle
 	// Description: This is a triangle that can have a color for every vertex
-	class BNDR_API ColorfulTriangle : public Shape, public GraphicsTriangle {
+	class BNDR_API ColorfulTriangle : public BasicTriangle {
 
 	protected:
 
+		virtual VertexArray* generateVertexArray() override;
 		// update the color data in the vertex buffer of va
 		virtual void updateColorData() override;
+		// generate a program that allows for multiple colors to be used
+		inline virtual Program* generateShaderProgram() override { return Program::multiColorPolygonProgram(); }
 	public:
 
-		ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors = { bndr::WHITE });
+		ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors = { bndr::WHITE }, int colorBufferSize = 12, bool super = false);
 		// set a single fill color for the triangle (if you only want a solid color then you should probably just use BasicTriangle)
 		// (converts a rgba color to floats)
 		virtual void setFillColor(const RGBAData& data) override;
 		// set a color for every vertex
 		void setFillColors(const RGBAData& one, const RGBAData& two, const RGBAData& three);
-		// the rotation is about the shape's center by default
-		// you only need to call this if you changed the center of rotation to a different point
-		// using setRotationAboutPoint(float x, float y)
-		//inline virtual void setRotationAboutCenter(Program* program) {}
-		inline void setRotationAboutCenter() { updateCenterUniform(program); }
-		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
 
 	};
+
+	// bndr::TexturedRect
+	// Description: This is a rectangle that can have a color for every vertex as well as blended textures
+	/*class BNDR_API TexturedRect : public ColorfulRect {
+
+	protected:
+
+		// texture array to store the textures of the rect
+		TextureArray* texArr;
+		// textured rect will specify additional values as opposed to colorful rect
+		virtual void initVertexArray() override;
+		// generate a program that allows for multiple colors to be used with multiple textures
+		inline virtual Program* generateShaderProgram() override { return Program::singleTexPolygonProgram(); }
+	public:
+
+		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {});
+	};*/
 }
 

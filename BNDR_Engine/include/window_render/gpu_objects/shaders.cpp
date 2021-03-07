@@ -89,8 +89,8 @@ namespace bndr {
 			std::pair<Shader,Shader>* pairPtr = &Program::shaderMap[mapKey.c_str()];
 			vShader = &pairPtr->first;
 			fShader = &pairPtr->second;
-			std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
-			BNDR_MESSAGE(message.c_str());
+			//std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
+			//BNDR_MESSAGE(message.c_str());
 			return;
 		}
 
@@ -101,8 +101,8 @@ namespace bndr {
 
 		// now we must not forget to add the program to the map
 		Program::shaderMap.insert(std::make_pair(mapKey.c_str(), std::make_pair(*vShader, *fShader)));
-		std::string msg = "Added new program with hash key " + std::string("\"") + mapKey + std::string("\"");
-		BNDR_MESSAGE(msg.c_str());
+		//std::string msg = "Added new program with hash key " + std::string("\"") + mapKey + std::string("\"");
+		//BNDR_MESSAGE(msg.c_str());
 	}
 
 	Program::Program(const Program& program) {
@@ -118,8 +118,8 @@ namespace bndr {
 
 		Program::linkProgram(programID, vShader, fShader);
 
-		std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
-		BNDR_MESSAGE(message.c_str());
+		//std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
+		//BNDR_MESSAGE(message.c_str());
 		return;
 	}
 

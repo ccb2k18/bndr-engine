@@ -143,6 +143,8 @@ namespace bndr {
 		inline int getIDAt(int index) { return textures[index].getID(); }
 		// get the slot at a specific index
 		inline int getSlotAt(int index) { return textures[index].getSlot(); }
+		// get the number of textures contained
+		inline int getSize() { return size; }
 		~TextureArray();
 	};
 

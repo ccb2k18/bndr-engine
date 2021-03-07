@@ -148,17 +148,100 @@ namespace bndr {
 		// this template is meant to be used for polygons of one single color
 		static Program* defaultPolygonProgram() {
 
-			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nuniform vec2 center;\nuniform vec3 translation;\nuniform vec3 rotation;\nuniform vec3 scale;\nuniform vec4 color;\nout vec4 fragColor;\nvoid main() {\nvec3 rotCenter = vec3(center, 0.0);\nvec3 newRot = vec3(rotCenter.x * rotation.x - rotCenter.y * rotation.y, rotCenter.y * rotation.x + rotCenter.x * rotation.y, 0.0);\nvec3 newPos = position;\nnewPos.x *= scale.x;\nnewPos.y *= scale.y;\nnewPos += -rotCenter + newRot + rotCenter + translation;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
-			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
+			std::string vert = "# version 330 core\n"
+				"layout (location = 0) in vec3 position;\n"
+				"uniform vec2 center;\n"
+				"uniform vec3 translation;\n"
+				"uniform vec3 rotation;\n"
+				"uniform vec3 scale;\n"
+				"uniform vec4 color;\n"
+				"out vec4 fragColor;\n"
+				"void main() {\n"
+				"vec3 rotCenter = vec3(center, 0.0);\n"
+				"vec3 newRot = vec3(rotCenter.x * rotation.x - rotCenter.y * rotation.y, rotCenter.y * rotation.x + rotCenter.x * rotation.y, 0.0);\n"
+				"vec3 newPos = position;\n"
+				"newPos.x *= scale.x;\n"
+				"newPos.y *= scale.y;\n"
+				"newPos += -rotCenter + newRot + rotCenter + translation;\n"
+				"newPos.z = 0.0;\n"
+				"gl_Position = vec4(newPos, 1.0);\n"
+				"fragColor = color;\n"
+				"}\0";
+			std::string frag = "# version 330 core\n"
+				"in vec4 fragColor;\n"
+				"out vec4 finalColor;\n"
+				"void main() {\n"
+				"finalColor = fragColor;\n"
+				"}\0";
 			return Program::generateProgramFromSource(vert, frag);
 		}
 
 		// this template is for drawing polygons with multiple blended colors for each vertex
 		static Program* multiColorPolygonProgram() {
 
-			std::string vert = "# version 330 core\nlayout (location = 0) in vec3 position;\nlayout (location = 1) in vec4 color;\nuniform vec2 center;\nuniform vec3 translation;\nuniform vec3 rotation;\nuniform vec3 scale;\nout vec4 fragColor;\nvoid main() {\nvec3 rotCenter = vec3(center, 0.0);\nvec3 newRot = vec3(rotCenter.x * rotation.x - rotCenter.y * rotation.y, rotCenter.y * rotation.x + rotCenter.x * rotation.y, 0.0);\nvec3 newPos = position;\nnewPos.x *= scale.x;\nnewPos.y *= scale.y;\nnewPos += -rotCenter + newRot + rotCenter + translation;\nnewPos.z = 0.0;\ngl_Position = vec4(newPos, 1.0);\nfragColor = color;\n}\0";
-			std::string frag = "# version 330 core\nin vec4 fragColor;\nout vec4 finalColor;\nvoid main() {\nfinalColor = fragColor;\n}\0";
+			std::string vert = "# version 330 core\n"
+				"layout (location = 0) in vec3 position;\n"
+				"layout (location = 1) in vec4 color;\n"
+				"uniform vec2 center;\n"
+				"uniform vec3 translation;\n"
+				"uniform vec3 rotation;\n"
+				"uniform vec3 scale;\n"
+				"out vec4 fragColor;\n"
+				"void main() {\n"
+				"vec3 rotCenter = vec3(center, 0.0);\n"
+				"vec3 newRot = vec3(rotCenter.x * rotation.x - rotCenter.y * rotation.y, rotCenter.y * rotation.x + rotCenter.x * rotation.y, 0.0);\n"
+				"vec3 newPos = position;\n"
+				"newPos.x *= scale.x;\n"
+				"newPos.y *= scale.y;\n"
+				"newPos += -rotCenter + newRot + rotCenter + translation;\n"
+				"newPos.z = 0.0;\n"
+				"gl_Position = vec4(newPos, 1.0);\n"
+				"fragColor = color;\n"
+				"}\0";
+			std::string frag = "# version 330 core\n"
+				"in vec4 fragColor;\n"
+				"out vec4 finalColor;\n"
+				"void main() {\n"
+				"finalColor = fragColor;\n"
+				"}\0";
 			return Program::generateProgramFromSource(vert, frag);
+		}
+
+		// this template is meant for textured rects or triangles with only one texture
+		static Program* singleTexPolygonProgram() {
+
+			std::string vert = "# version 330 core\n"
+				"layout (location = 0) in vec3 position;\n"
+				"layout (location = 1) in vec4 color;\n"
+				"layout (location = 2) in vec2 texCoords;\n"
+				"uniform vec2 center;\n"
+				"uniform vec3 translation;\n"
+				"uniform vec3 rotation;\n"
+				"uniform vec3 scale;\n"
+				"out vec4 fragColor;\n"
+				"out vec2 fragTexCoords;\n"
+				"void main() {\n"
+				"vec3 rotCenter = vec3(center, 2.0);\n"
+				"vec3 newRot = vec3(rotCenter.x * rotation.x - rotCenter.y * rotation.y, rotCenter.y * rotation.x + rotCenter.x * rotation.y, 0.0);\n"
+				"vec3 newPos = position;\n"
+				"newPos.x *= scale.x;\n"
+				"newPos.y *= scale.y;\n"
+				"newPos += -rotCenter + newRot + rotCenter + translation;\n"
+				"newPos.z = 0.0;\n"
+				"gl_Position = vec4(newPos, 1.0);\n"
+				"fragColor = color;\n"
+				"fragTexCoords = texCoords;\n"
+				"}\0";
+			std::string frag = "# version 330 core\n"
+				"in vec4 fragColor;\n"
+				"in vec2 fragTexCoords;\n"
+				"uniform sampler2D texs[1];\n"
+				"out vec4 finalColor;\n"
+				"void main(){\n"
+				"finalColor = texture(texs[0], fragTexCoords) * fragColor;\n"
+				"}\0";
+			return Program::generateProgramFromSource(vert, frag);
+
 		}
 	private:
 

@@ -39,7 +39,7 @@ namespace bndr {
 		delete scale;
 	}
 
-	void Shape::setTranslation(float xTrans, float yTrans) {
+	void PolySurface::setTranslation(float xTrans, float yTrans) {
 
 		// update the translation matrix in RAM
 		(*translation)[0] = xTrans;
@@ -48,7 +48,7 @@ namespace bndr {
 
 	}
 
-	void Shape::setRotation(float theta) {
+	void PolySurface::setRotation(float theta) {
 
 		// convert theta to radians
 		float rad = theta * (BNDR_PI / 180.0f);
@@ -59,7 +59,7 @@ namespace bndr {
 
 	}
 
-	void Shape::setScale(float xScale, float yScale) {
+	void PolySurface::setScale(float xScale, float yScale) {
 
 		// update the scale matrix in RAM
 		(*scale)[0] = xScale;
@@ -68,7 +68,7 @@ namespace bndr {
 
 	}
 
-	void Shape::changeTranslationBy(float xTrans, float yTrans) {
+	void PolySurface::changeTranslationBy(float xTrans, float yTrans) {
 
 		// update the translation matrix in RAM
 		(*translation)[0] += xTrans;
@@ -77,7 +77,7 @@ namespace bndr {
 
 	}
 
-	void Shape::changeRotationBy(float theta) {
+	void PolySurface::changeRotationBy(float theta) {
 
 		// convert theta to radians
 		float rad = theta * (BNDR_PI / 180.0f);
@@ -88,7 +88,7 @@ namespace bndr {
 
 	}
 
-	void Shape::changeScaleBy(float xScale, float yScale) {
+	void PolySurface::changeScaleBy(float xScale, float yScale) {
 
 		// update the scale matrix in RAM
 		(*scale)[0] += xScale;
@@ -97,7 +97,7 @@ namespace bndr {
 
 	}
 
-	void Shape::setFillColor(const RGBAData& data) {
+	void PolySurface::setFillColor(const RGBAData& data) {
 
 		colorBuffer[0] = (float)data.red / 255.0f;
 		colorBuffer[1] = (float)data.green / 255.0f;
@@ -106,57 +106,79 @@ namespace bndr {
 		updateColorData();
 	}
 
-	void Shape::render() {
+	void PolySurface::render() {
 
 		program->use();
 
-		// render the shape
+		// render the PolySurface
 		va->render();
 
 		program->unuse();
 	}
 
-	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color) : Shape(Program::defaultPolygonProgram()),
-		GraphicsRect(x, y, width, height, program) {
+	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color, int colorBufferSize, bool super)
+		: GraphicsRect(x, y, width, height), PolySurface(colorBufferSize) {
 
-		loadColorBuffer(4);
-		setFillColor(color);
+		if (!super) {
 
-		va = new VertexArray(TRIANGLES,
+			init(colorBufferSize);
+			setFillColor(color);
+			setRotationAboutCenter();
+		}
+	}
+
+	VertexArray* BasicRect::generateVertexArray() {
+
+		// load the vertex array data at runtime (different descendants will have different vertex arrays)
+		return new VertexArray(TRIANGLES,
 			{
-				x, y, 0.0f,
-				x, y + height, 0.0f,
-				x + width, y + height, 0.0f,
-				x + width, y, 0.0f
-			},
+				(*pos)[0], (*pos)[1], 0.0f,
+				(*pos)[0], (*pos)[1] + (*size)[1], 0.0f,
+				(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f,
+				(*pos)[0] + (*size)[0], (*pos)[1], 0.0f
+		},
 			3 * sizeof(float), 0, { 0, 1, 2, 2, 3, 0 });
 	}
 
-	BasicTriangle::BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color) : Shape(Program::defaultPolygonProgram()),
-		GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3), program) {
+	VertexArray* BasicTriangle::generateVertexArray() {
 
-		loadColorBuffer(4);
-		setFillColor(color);
-
-		va = new VertexArray(TRIANGLES, {
+		return new VertexArray(TRIANGLES, {
 			(*vertex1)[0], (*vertex1)[1], 0.0f,
 			(*vertex2)[0], (*vertex2)[1], 0.0f,
 			(*vertex3)[0], (*vertex3)[1], 0.0f
 			}, sizeof(float) * 3, 0);
 	}
 
-	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors) : Shape(Program::multiColorPolygonProgram()),
-		GraphicsRect(x, y, width, height, program) {
+	BasicTriangle::BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color, int colorBufferSize, bool super)
+		: GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3)), PolySurface(colorBufferSize) {
 
-		loadColorBuffer(16);
-		// create the vertex array with all the data
-		va = new VertexArray(TRIANGLES, {
+		if (!super) {
+
+			init(colorBufferSize);
+			setFillColor(color);
+			setRotationAboutCenter();
+		}
+	}
+
+	VertexArray* ColorfulRect::generateVertexArray() {
+
+		return new VertexArray(TRIANGLES, {
 
 			(*pos)[0], (*pos)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3],
 			(*pos)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[4], colorBuffer[5], colorBuffer[6], colorBuffer[7],
 			(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11],
 			(*pos)[0] + (*size)[0], (*pos)[1], 0.0f, colorBuffer[12], colorBuffer[13], colorBuffer[14], colorBuffer[15]
 			}, 7 * sizeof(float), bndr::RGBA_COLOR_ATTRIB, { 0, 1, 2, 2, 3, 0 });
+	}
+
+	ColorfulRect::ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, int colorBufferSize, bool super)
+		: BasicRect(x,y,width,height,colors[0],colorBufferSize,true) {
+
+		if (!super) {
+
+			init(colorBufferSize);
+			setRotationAboutCenter();
+		}
 		// specify cases based on how many colors that are provided
 		int s = colors.size();
 		switch (s) {
@@ -186,7 +208,7 @@ namespace bndr {
 
 	void ColorfulRect::updateColorData() {
 
-		float updatedData[28] = {
+		float updatedData[28] = {										
 			(*pos)[0], (*pos)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3],
 			(*pos)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[4], colorBuffer[5], colorBuffer[6], colorBuffer[7],
 			(*pos)[0] + (*size)[0], (*pos)[1] + (*size)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11],
@@ -211,18 +233,25 @@ namespace bndr {
 		updateColorData();
 	}
 
-	ColorfulTriangle::ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors)
-	: Shape(Program::multiColorPolygonProgram()), GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3), program) {
+	VertexArray* ColorfulTriangle::generateVertexArray() {
 
-		// 12 attribs (3 rgbas : 1 for each vertex)
-		loadColorBuffer(12);
 		// create the vertex array with all the data
-		va = new VertexArray(TRIANGLES,
+		return new VertexArray(TRIANGLES,
 			{
 				(*vertex1)[0], (*vertex1)[1], 0.0f, colorBuffer[0], colorBuffer[1], colorBuffer[2], colorBuffer[3],
 				(*vertex2)[0], (*vertex2)[1], 0.0f, colorBuffer[4], colorBuffer[5], colorBuffer[6], colorBuffer[7],
 				(*vertex3)[0], (*vertex3)[1], 0.0f, colorBuffer[8], colorBuffer[9], colorBuffer[10], colorBuffer[11]
 			}, 7 * sizeof(float), RGBA_COLOR_ATTRIB);
+	}
+
+	ColorfulTriangle::ColorfulTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, std::vector<RGBAData>&& colors, int colorBufferSize, bool super)
+	: BasicTriangle(std::move(coord1), std::move(coord2), std::move(coord3), colors[0], colorBufferSize, true) {
+
+		if (!super) {
+
+			init(colorBufferSize);
+			setRotationAboutCenter();
+		}
 		// specify cases based on how many colors that are provided
 		int s = colors.size();
 		switch (s) {
@@ -273,5 +302,10 @@ namespace bndr {
 		updateColorData();
 	}
 
+	/*TexturedRect::TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {})
+		: PolySurface(Program::singleTexPolygonProgram()), GraphicsRect(x, y, width, height, program) {
 
+
+
+	}*/
 }

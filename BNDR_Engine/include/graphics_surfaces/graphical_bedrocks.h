@@ -143,12 +143,12 @@ namespace bndr {
 		// update the color uniform in the program
 		inline virtual void updateColorData() override { program->setFloatUniformValue("color", colorBuffer, VEC4); }
 		// default constructor
-		PolySurface(int colorBufferSize) : PixelSurface() {}
-
-		void init(int colorBufferSize) {
+		PolySurface() : PixelSurface() {}
+		// colorBufferSize and numTexes are used by children of PolySurface
+		void init(int colorBufferSize, int numTexes) {
 
 			// generate the program for the polysurface
-			program = generateShaderProgram();
+			program = generateShaderProgram(numTexes);
 			// load the color buffer with the correct number of colors
 			loadColorBuffer(colorBufferSize);
 			// load the vertex array data
@@ -159,7 +159,7 @@ namespace bndr {
 			updateScaleUniform();
 		}
 		// virtual function that will be overridden by children so that the appropriate program is created
-		inline virtual Program* generateShaderProgram() { return Program::defaultPolygonProgram(); }
+		inline virtual Program* generateShaderProgram(int numTexes = 0) { return Program::defaultPolygonProgram(); }
 		// virtual function that specifies the vertex array data for the surface
 		virtual VertexArray* generateVertexArray() {
 
@@ -291,7 +291,7 @@ namespace bndr {
 		// update the color data in the vertex buffer of va
 		virtual void updateColorData() override;
 		// generate a program that allows for multiple colors to be used
-		inline virtual Program* generateShaderProgram() override { return Program::multiColorPolygonProgram(); }
+		inline virtual Program* generateShaderProgram(int numTexes = 0) override { return Program::multiColorPolygonProgram(); }
 		// define the colors of the rectangle
 		void defineColors(std::vector<RGBAData>& colors);
 	public:
@@ -314,7 +314,7 @@ namespace bndr {
 		// update the color data in the vertex buffer of va
 		virtual void updateColorData() override;
 		// generate a program that allows for multiple colors to be used
-		inline virtual Program* generateShaderProgram() override { return Program::multiColorPolygonProgram(); }
+		inline virtual Program* generateShaderProgram(int numTexes = 0) override { return Program::multiColorPolygonProgram(); }
 		// define the colors of the triangle
 		void defineColors(std::vector<RGBAData>& colors);
 	public:
@@ -341,10 +341,14 @@ namespace bndr {
 		// update the color data in the vertex buffer of va
 		virtual void updateColorData() override;
 		// generate a program that allows for multiple colors to be used with multiple textures
-		inline virtual Program* generateShaderProgram() override { return Program::singleTexPolygonProgram(); }
+		inline virtual Program* generateShaderProgram(int numTexes = 0) override { return Program::texPolygonProgram(numTexes); }
+		// set the nested alpha weight for mix (for two or three textures bound at once)
+		inline void setNestedAlphaWeight(float value) { program->setFloatUniformValue("nestedTexAlphaWeight", &value, bndr::FLOAT); }
+		// set the outer alpha weight for mix (three textures bound at once)
+		inline void setOuterAlphaWeight(float value) { program->setFloatUniformValue("outerTexAlphaWeight", &value, bndr::FLOAT); }
 	public:
 
-		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {}, int colorBuffer = 16);
+		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {}, std::vector<float>&& alphaWeights = {}, int colorBuffer = 16);
 		void render() override;
 		~TexturedRect() { delete texArr; }
 	};

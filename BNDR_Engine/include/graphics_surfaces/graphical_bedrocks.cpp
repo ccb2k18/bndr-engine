@@ -117,11 +117,11 @@ namespace bndr {
 	}
 
 	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color, int colorBufferSize, bool super)
-		: GraphicsRect(x, y, width, height), PolySurface(colorBufferSize) {
+		: GraphicsRect(x, y, width, height), PolySurface() {
 
 		if (!super) {
 
-			init(colorBufferSize);
+			init(colorBufferSize, 0);
 			setFillColor(color);
 			setRotationAboutCenter();
 		}
@@ -150,11 +150,11 @@ namespace bndr {
 	}
 
 	BasicTriangle::BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color, int colorBufferSize, bool super)
-		: GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3)), PolySurface(colorBufferSize) {
+		: GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3)), PolySurface() {
 
 		if (!super) {
 
-			init(colorBufferSize);
+			init(colorBufferSize, 0);
 			setFillColor(color);
 			setRotationAboutCenter();
 		}
@@ -205,7 +205,7 @@ namespace bndr {
 
 		if (!super) {
 
-			init(colorBufferSize);
+			init(colorBufferSize, 0);
 			setRotationAboutCenter();
 			defineColors(colors);
 		}
@@ -280,7 +280,7 @@ namespace bndr {
 
 		if (!super) {
 
-			init(colorBufferSize);
+			init(colorBufferSize, 0);
 			setRotationAboutCenter();
 			defineColors(colors);
 		}
@@ -325,14 +325,36 @@ namespace bndr {
 			}, 9 * sizeof(float), bndr::RGBA_COLOR_ATTRIB | bndr::TEXTURE_COORDS_ATTRIB, { 0, 1, 2, 2, 3, 0 });
 	}
 
-	TexturedRect::TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, std::initializer_list<Texture>&& texs, int colorBufferSize)
+	TexturedRect::TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, std::initializer_list<Texture>&& texs, std::vector<float>&& alphaWeights, int colorBufferSize)
 		: ColorfulRect(x, y, width, height, {}, colorBufferSize, true) {
 
-		init(colorBufferSize);
+		init(colorBufferSize,texs.size());
 		setRotationAboutCenter();
 		defineColors(colors);
 
 		texArr = new TextureArray(std::move(texs));
+
+		switch (alphaWeights.size()) {
+
+		default:
+
+			break;
+		case 1:
+
+			if (texArr->getSize() == 2) {
+
+				setNestedAlphaWeight(alphaWeights[0]);
+			}
+			break;
+		case 2:
+
+			if (texArr->getSize() == 3) {
+
+				setNestedAlphaWeight(alphaWeights[0]);
+				setOuterAlphaWeight(alphaWeights[1]);
+			}
+			break;
+		}
 
 	}
 

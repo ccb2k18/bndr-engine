@@ -208,7 +208,7 @@ namespace bndr {
 		}
 
 		// this template is meant for textured rects or triangles with only one texture
-		static Program* singleTexPolygonProgram() {
+		static Program* texPolygonProgram(int numTexes) {
 
 			std::string vert = "# version 330 core\n"
 				"layout (location = 0) in vec3 position;\n"
@@ -232,14 +232,48 @@ namespace bndr {
 				"fragColor = color;\n"
 				"fragTexCoords = texCoords;\n"
 				"}\0";
-			std::string frag = "# version 330 core\n"
-				"in vec4 fragColor;\n"
-				"in vec2 fragTexCoords;\n"
-				"uniform sampler2D texs[1];\n"
-				"out vec4 finalColor;\n"
-				"void main(){\n"
-				"finalColor = texture(texs[0], fragTexCoords) * fragColor;\n"
-				"}\0";
+			std::string frag;
+			switch (numTexes) {
+
+			default:
+
+				frag = "# version 330 core\n"
+					"in vec4 fragColor;\n"
+					"in vec2 fragTexCoords;\n"
+					"uniform sampler2D texs[2];\n"
+					"out vec4 finalColor;\n"
+					"void main(){\n"
+					"finalColor = texture(texs[1], fragTexCoords) * fragColor;\n"
+					"}\0";
+				break;
+			case 2:
+
+				frag = "# version 330 core\n"
+					"in vec4 fragColor;\n"
+					"in vec2 fragTexCoords;\n"
+					"uniform sampler2D texs[3];\n"
+					"uniform float nestedTexAlphaWeight;\n"
+					"out vec4 finalColor;\n"
+					"void main(){\n"
+					"finalColor = mix(texture(texs[0], fragTexCoords),texture(texs[2], fragTexCoords), nestedTexAlphaWeight) * fragColor;\n"
+					"}\0";
+				break;
+			case 3:
+
+				frag = "# version 330 core\n"
+					"in vec4 fragColor;\n"
+					"in vec2 fragTexCoords;\n"
+					"uniform sampler2D texs[4];\n"
+					"uniform float nestedTexAlphaWeight;\n"
+					"uniform float outerTexAlphaWeight;\n"
+					"out vec4 finalColor;\n"
+					"void main(){\n"
+					"finalColor = mix(mix(texture(texs[1], fragTexCoords),texture(texs[2], fragTexCoords), nestedTexAlphaWeight), texture(texs[3], fragTexCoords), outerTexAlphaWeight) * fragColor;\n"
+					"}\0";
+				break;
+
+
+			}
 			return Program::generateProgramFromSource(vert, frag);
 
 		}

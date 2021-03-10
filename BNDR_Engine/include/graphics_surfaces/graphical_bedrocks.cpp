@@ -117,7 +117,7 @@ namespace bndr {
 	}
 
 	BasicRect::BasicRect(float x, float y, float width, float height, const RGBAData& color, int colorBufferSize, bool super)
-		: GraphicsRect(x, y, width, height), PolySurface() {
+		: GraphicsRect(convertScreenSpaceToGLSpace(Vec2<float>(x,y)), convertScreenSpaceBetween0And2(Vec2<float>(width,height))), PolySurface() {
 
 		if (!super) {
 
@@ -150,7 +150,7 @@ namespace bndr {
 	}
 
 	BasicTriangle::BasicTriangle(Vec2<float>&& coord1, Vec2<float>&& coord2, Vec2<float>&& coord3, const RGBAData& color, int colorBufferSize, bool super)
-		: GraphicsTriangle(std::move(coord1), std::move(coord2), std::move(coord3)), PolySurface() {
+		: GraphicsTriangle(convertScreenSpaceToGLSpace(std::move(coord1)), convertScreenSpaceToGLSpace(std::move(coord2)), convertScreenSpaceToGLSpace(std::move(coord3))), PolySurface() {
 
 		if (!super) {
 
@@ -355,6 +355,13 @@ namespace bndr {
 			}
 			break;
 		}
+
+		// set the texture uniform
+		/*for (int i = 0; i < texArr->getSize(); i++) {
+
+			std::string name = "tex" + std::to_string(i);
+			program->setIntUniformValue(name.c_str(), texArr->getIDAt(i));
+		}*/
 
 	}
 

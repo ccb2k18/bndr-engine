@@ -114,7 +114,7 @@ namespace bndr {
 		// copy constructor
 		Vec2(const Vec2<T>& vec) : base(vec.getValue(0), vec.getValue(1)) {}
 		// move constructor
-		Vec2(Vec2&& vec) = delete;
+		Vec2(Vec2&& vec) : base(vec.getValue(0), vec.getValue(1)) {}
 		// assignment operator
 		void operator=(const Vec2<T>& vec);
 

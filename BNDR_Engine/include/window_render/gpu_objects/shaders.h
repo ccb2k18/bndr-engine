@@ -240,10 +240,10 @@ namespace bndr {
 				frag = "# version 330 core\n"
 					"in vec4 fragColor;\n"
 					"in vec2 fragTexCoords;\n"
-					"uniform sampler2D texs[2];\n"
+					"uniform sampler2D tex0;\n"
 					"out vec4 finalColor;\n"
 					"void main(){\n"
-					"finalColor = texture(texs[1], fragTexCoords) * fragColor;\n"
+					"finalColor = texture(tex0, fragTexCoords) * fragColor;\n"
 					"}\0";
 				break;
 			case 2:
@@ -251,11 +251,12 @@ namespace bndr {
 				frag = "# version 330 core\n"
 					"in vec4 fragColor;\n"
 					"in vec2 fragTexCoords;\n"
-					"uniform sampler2D texs[3];\n"
+					"uniform sampler2D tex0;\n"
+					"uniform sampler2D tex1;\n"
 					"uniform float nestedTexAlphaWeight;\n"
 					"out vec4 finalColor;\n"
 					"void main(){\n"
-					"finalColor = mix(texture(texs[0], fragTexCoords),texture(texs[2], fragTexCoords), nestedTexAlphaWeight) * fragColor;\n"
+					"finalColor = mix(texture(tex0, fragTexCoords),texture(tex1, fragTexCoords), nestedTexAlphaWeight) * fragColor;\n"
 					"}\0";
 				break;
 			case 3:
@@ -263,12 +264,14 @@ namespace bndr {
 				frag = "# version 330 core\n"
 					"in vec4 fragColor;\n"
 					"in vec2 fragTexCoords;\n"
-					"uniform sampler2D texs[4];\n"
+					"uniform sampler2D tex0;\n"
+					"uniform sampler2D tex1;\n"
+					"uniform sampler2D tex2;\n"
 					"uniform float nestedTexAlphaWeight;\n"
 					"uniform float outerTexAlphaWeight;\n"
 					"out vec4 finalColor;\n"
 					"void main(){\n"
-					"finalColor = mix(mix(texture(texs[1], fragTexCoords),texture(texs[2], fragTexCoords), nestedTexAlphaWeight), texture(texs[3], fragTexCoords), outerTexAlphaWeight) * fragColor;\n"
+					"finalColor = mix(mix(texture(tex0, fragTexCoords),texture(tex1, fragTexCoords), nestedTexAlphaWeight), texture(tex2, fragTexCoords), outerTexAlphaWeight) * fragColor;\n"
 					"}\0";
 				break;
 

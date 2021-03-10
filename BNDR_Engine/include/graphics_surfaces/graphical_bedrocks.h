@@ -166,6 +166,30 @@ namespace bndr {
 			return nullptr;
 		}
 
+		// converts screen space coordinates into OpenGL space coordinates
+		inline Vec2<float> convertScreenSpaceToGLSpace(Vec2<float>&& coordinate) {
+
+			Vec2<float> newCoordinate;
+			// retrieve window size
+			std::pair<float, float> size = windowInstance->getSize();
+			newCoordinate[0] = ((coordinate[0] / size.first) * 2.0f) - 1.0f;
+			// y coordinate is multiplied by the aspect ratio
+			newCoordinate[1] = ((coordinate[1] / size.second) * (size.first / size.second)) - 1.0f;
+			return newCoordinate;
+		}
+
+		// use for size of rect
+		inline Vec2<float> convertScreenSpaceBetween0And2(Vec2<float>&& sizeCoordinate) {
+
+			Vec2<float> newCoordinate;
+			// retrieve window size
+			std::pair<float, float> size = windowInstance->getSize();
+			newCoordinate[0] = (sizeCoordinate[0] / size.first) * 2.0f;
+			// y sizeCoordinate is multiplied by the aspect ratio
+			newCoordinate[1] = (sizeCoordinate[1] / size.second) * (size.first / size.second);
+			return newCoordinate;
+		}
+
 	public:
 
 		// reset the translation matrix
@@ -214,11 +238,11 @@ namespace bndr {
 		// 0: width, 1: height
 		Vec2<float>* size;
 		// construct the GraphicsRect
-		GraphicsRect(float x, float y, float width, float height) : GraphicsEntity(), pos(new Vec2<float>(x, y)),
-			size(new Vec2<float>(width, height)) {
+		GraphicsRect(Vec2<float>&& newPos, Vec2<float>&& newSize) : GraphicsEntity(), pos(new Vec2<float>(newPos[0], newPos[1])),
+			size(new Vec2<float>(newSize[0], newSize[1])) {
 		
-			(*center)[0] = (x + x + width) / 2.0f;
-			(*center)[1] = (y + y + height) / 2.0f;
+			(*center)[0] = ((*pos)[0] + (*pos)[0] + (*size)[0]) / 2.0f;
+			(*center)[1] = ((*pos)[1] + (*pos)[1] + (*size)[1]) / 2.0f;
 		}
 	public:
 		~GraphicsRect() { delete pos; delete size; }

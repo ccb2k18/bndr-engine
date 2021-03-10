@@ -89,7 +89,7 @@ namespace bndr {
 		// set the close flag to true (useful for custom quit scenarios)
 		inline void quitWindow() { windowFlags = windowFlags | WINDOW_CLOSE; }
 		// get the width and height of the window
-		inline std::pair<int, int> getSize() { int w, h; glfwGetWindowSize(window, &w, &h); return std::make_pair(w, h); }
+		inline std::pair<float, float> getSize() { int w, h; glfwGetWindowSize(window, &w, &h); return std::make_pair((float)w, (float)h); }
 		// get the mouse cursor position
 		std::pair<float, float> getCursorPos();
 		// updates flags regarding the window and whether or not the user has quit
@@ -117,6 +117,8 @@ namespace bndr {
 		// bndr::Window::~Window
 		// Description: This destructor calls glfw functions to clean up the window and memory associated with it
 		~Window();
+		// retrieve the size of the window
+		inline std::pair<float, float> getFramebufferSize() { int width, height; glfwGetFramebufferSize(window, &width, &height); return std::make_pair((float)width, (float)height); }
 
 	private:
 

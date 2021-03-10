@@ -85,12 +85,14 @@ namespace bndr {
 		uint slot = GL_TEXTURE0;
 		size = textureList.size();
 		textures = new Texture[size];
+		texIDs = new int[size];
 
 		// overwrite each of the texture ids in our array with the values in the initializer list
 		for (int i = 0; i < size; i++) {
 
 			// notice that each texture slot will always be within the max number of slots by using the modulus operator
 			textures[i].overwriteData((textureList.begin() + i)->textureID, slot + (i % maxTextureSlots));
+			texIDs[i] = textures[i].getID();
 		}
 	}
 
@@ -110,5 +112,6 @@ namespace bndr {
 		// a texture object, then we would have to reload it all over again instead of just getting the texture id insanely
 		// fast. All in all it makes sense to keep the texture in video memory until the program terminates
 		delete[] textures;
+		delete[] texIDs;
 	}
 }

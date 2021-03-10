@@ -126,6 +126,8 @@ namespace bndr {
 
 		// texture array
 		Texture* textures = nullptr;
+		// array of ids
+		int* texIDs = nullptr;
 		// size of the array
 		int size;
 		// gpu-dependent (some gpus have more texture slots than others)
@@ -146,6 +148,8 @@ namespace bndr {
 		inline int getSlotAt(int index) { return textures[index].getSlot(); }
 		// get the number of textures contained
 		inline int getSize() { return size; }
+		// returns the texture ids pointer
+		inline const int* getIDs() { return texIDs; }
 		~TextureArray();
 	};
 

@@ -116,7 +116,7 @@ namespace bndr {
 		// move constructor
 		Vec2(Vec2&& vec) : base(vec.getValue(0), vec.getValue(1)) {}
 		// assignment operator
-		void operator=(const Vec2<T>& vec);
+		Vec2<T>& operator=(const Vec2<T>& vec);
 
 		// vector operations
 
@@ -175,10 +175,11 @@ namespace bndr {
 	}
 
 	template <class T>
-	void Vec2<T>::operator=(const Vec2<T>& vec) {
+	Vec2<T>& Vec2<T>::operator=(const Vec2<T>& vec) {
 
 		(*this)[0] = vec.getValue(0);
 		(*this)[1] = vec.getValue(1);
+		return (*this);
 	}
 
 	// bndr::Vec3

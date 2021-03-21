@@ -26,7 +26,12 @@ SOFTWARE.*/
 namespace bndr {
 
 	// define static member variables
+
+	// window instance we are drawing to
 	Window* PixelSurface::windowInstance = nullptr;
+	// the window's size upon initialization
+	Vec2<float> PixelSurface::windowInitialSize;
+
 
 	PixelSurface::~PixelSurface() {
 
@@ -325,43 +330,14 @@ namespace bndr {
 			}, 9 * sizeof(float), bndr::RGBA_COLOR_ATTRIB | bndr::TEXTURE_COORDS_ATTRIB, { 0, 1, 2, 2, 3, 0 });
 	}
 
-	TexturedRect::TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, std::initializer_list<Texture>&& texs, std::vector<float>&& alphaWeights, int colorBufferSize)
+	TexturedRect::TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, Texture* newTex, int colorBufferSize)
 		: ColorfulRect(x, y, width, height, {}, colorBufferSize, true) {
 
-		init(colorBufferSize,texs.size());
+		init(colorBufferSize,(newTex != nullptr) ? true : false);
 		setRotationAboutCenter();
 		defineColors(colors);
 
-		texArr = new TextureArray(std::move(texs));
-
-		switch (alphaWeights.size()) {
-
-		default:
-
-			break;
-		case 1:
-
-			if (texArr->getSize() == 2) {
-
-				setNestedAlphaWeight(alphaWeights[0]);
-			}
-			break;
-		case 2:
-
-			if (texArr->getSize() == 3) {
-
-				setNestedAlphaWeight(alphaWeights[0]);
-				setOuterAlphaWeight(alphaWeights[1]);
-			}
-			break;
-		}
-
-		// set the texture uniform
-		/*for (int i = 0; i < texArr->getSize(); i++) {
-
-			std::string name = "tex" + std::to_string(i);
-			program->setIntUniformValue(name.c_str(), texArr->getIDAt(i));
-		}*/
+		tex = newTex;
 
 	}
 
@@ -378,7 +354,7 @@ namespace bndr {
 
 	void TexturedRect::render() {
 
-		texArr->bindAll();
+		if (tex != nullptr) { tex->bind(); }
 
 		program->use();
 
@@ -386,6 +362,6 @@ namespace bndr {
 
 		program->unuse();
 
-		texArr->unbindAll();
+		if (tex != nullptr) { tex->unbind(); }
 	}
 }

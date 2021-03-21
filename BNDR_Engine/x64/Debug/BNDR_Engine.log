@@ -6,6 +6,8 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(35,18):
 D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\timers.h(37,16): warning C4251: 'bndr::Clock::end': class 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>' needs to have dll-interface to be used by clients of class 'bndr::Clock'
 D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\chrono(603): message : see declaration of 'std::chrono::time_point<std::chrono::steady_clock,std::chrono::nanoseconds>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\BNDR_Engine.h(26,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\ui\ui_base\UIRect.h(25,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75): message : see declaration of 'bndr::KeyEvent'
@@ -37,6 +39,8 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_be
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(97): message : see declaration of 'std::vector<float,std::allocator<float>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(39,30): warning C4251: 'bndr::VAContainer::indexData': class 'std::vector<uint,std::allocator<uint>>' needs to have dll-interface to be used by clients of struct 'bndr::VAContainer'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\IndexBuffer.h(36): message : see declaration of 'std::vector<uint,std::allocator<uint>>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(81,39): warning C4251: 'bndr::PixelSurface::windowInitialSize': class 'bndr::Vec2<float>' needs to have dll-interface to be used by clients of class 'bndr::PixelSurface'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(81): message : see declaration of 'bndr::Vec2<float>'
   graphical_bedrocks.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
@@ -69,9 +73,10 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_be
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(97): message : see declaration of 'std::vector<float,std::allocator<float>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(39,30): warning C4251: 'bndr::VAContainer::indexData': class 'std::vector<uint,std::allocator<uint>>' needs to have dll-interface to be used by clients of struct 'bndr::VAContainer'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\IndexBuffer.h(36): message : see declaration of 'std::vector<uint,std::allocator<uint>>'
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(177,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(256,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(331,35): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(81,39): warning C4251: 'bndr::PixelSurface::windowInitialSize': class 'bndr::Vec2<float>' needs to have dll-interface to be used by clients of class 'bndr::PixelSurface'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(81): message : see declaration of 'bndr::Vec2<float>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(182,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.cpp(261,24): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   keyboard_mouse_events.cpp
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
@@ -136,6 +141,41 @@ D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\Vert
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
 D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.cpp(86,28): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  UIRect.cpp
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\ui\ui_base\UIRect.h(25,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75,41): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(75): message : see declaration of 'bndr::KeyEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92,43): warning C4275: non dll-interface class 'bndr::Event' used as base for dll-interface class 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\events.h(31): message : see declaration of 'bndr::Event'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\event_objects\keyboard_mouse_events.h(92): message : see declaration of 'bndr::MouseEvent'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(61,35): warning C4251: 'bndr::Window::keyEvents': class 'bndr::Queue<bndr::KeyEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(61): message : see declaration of 'bndr::Queue<bndr::KeyEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63,39): warning C4251: 'bndr::Window::mouseEvents': class 'bndr::Queue<bndr::MouseEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(63): message : see declaration of 'bndr::Queue<bndr::MouseEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65,41): warning C4251: 'bndr::Window::scrollEvents': class 'bndr::Queue<bndr::ScrollEvent>' needs to have dll-interface to be used by clients of class 'bndr::Window'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\window.h(65): message : see declaration of 'bndr::Queue<bndr::ScrollEvent>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(61,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(90,1): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(103,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(104,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(105,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(106,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(107,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53,58): warning C4251: 'bndr::Texture::textureIDs': class 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>' needs to have dll-interface to be used by clients of class 'bndr::Texture'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\textures.h(53): message : see declaration of 'std::unordered_map<const char *,uint,std::hash<const char *>,std::equal_to<const char *>,std::allocator<std::pair<const char *const ,uint>>>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(44,25): warning C4251: 'bndr::Shader::shaderData': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' needs to have dll-interface to be used by clients of class 'bndr::Shader'
+D:\MS Visual Studio 2019\Visual Studio IDE\VC\Tools\MSVC\14.28.29333\include\xstring(4648): message : see declaration of 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(68,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92,78): warning C4251: 'bndr::Program::shaderMap': class 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>' needs to have dll-interface to be used by clients of class 'bndr::Program'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(92): message : see declaration of 'std::unordered_map<std::string,std::pair<bndr::Shader,bndr::Shader>,std::hash<std::string>,std::equal_to<std::string>,std::allocator<std::pair<const std::string,std::pair<bndr::Shader,bndr::Shader>>>>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\shaders.h(339,1): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(36,32): warning C4251: 'bndr::VAContainer::vertexData': class 'std::vector<float,std::allocator<float>>' needs to have dll-interface to be used by clients of struct 'bndr::VAContainer'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\VertexBuffer.h(97): message : see declaration of 'std::vector<float,std::allocator<float>>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(39,30): warning C4251: 'bndr::VAContainer::indexData': class 'std::vector<uint,std::allocator<uint>>' needs to have dll-interface to be used by clients of struct 'bndr::VAContainer'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\window_render\gpu_objects\IndexBuffer.h(36): message : see declaration of 'std::vector<uint,std::allocator<uint>>'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(81,39): warning C4251: 'bndr::PixelSurface::windowInitialSize': class 'bndr::Vec2<float>' needs to have dll-interface to be used by clients of class 'bndr::PixelSurface'
+D:\Senior Project\BNDR_Engine\BNDR_Engine\include\graphics_surfaces\graphical_bedrocks.h(81): message : see declaration of 'bndr::Vec2<float>'
   Generating Code...
      Creating library D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.lib and object D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.exp
   BNDR_Engine.vcxproj -> D:\Senior Project\BNDR_Engine\x64\Debug\BNDR_Engine.dll

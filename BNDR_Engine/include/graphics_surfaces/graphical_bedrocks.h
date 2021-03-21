@@ -63,6 +63,9 @@ namespace bndr {
 	static const RGBAData ORANGE = { 255, 128, 0, 255 };
 	static const RGBAData BROWN = { 64, 32, 0, 255 };
 
+	// if you want coordinates to be in percent screen size instead of absolute values in pixels
+	typedef int percent;
+
 	// bndr::PixelSurface
 	// Description: The fundamental abstract class for all graphical elements from PolySurfaces to images to character sprites
 	class BNDR_API PixelSurface {
@@ -75,6 +78,7 @@ namespace bndr {
 		float* colorBuffer;
 		// every descendant of PixelSurface will be able to access the bndr::Window instance so that it is rendered correctly
 		static Window* windowInstance;
+		static Vec2<float> windowInitialSize;
 		// matrices for transformations of the surface
 		Vec3<float>* translation;
 		Vec3<float>* rotation;
@@ -120,10 +124,19 @@ namespace bndr {
 		virtual void changeScaleBy(float xScale, float yScale) = 0;
 		// render the surface to the screen
 		virtual void render() = 0;
+		// get the initial size of the window
+		static Vec2<float> getWindowInitialSize() { return windowInitialSize; }
 		// define the window instance for all pixel surfaces (if you don't do this nothing will draw and you will get an exception)
 		static void setWindowInstance(Window* window) {
 
+			if (windowInstance != nullptr) {
+
+				BNDR_EXCEPTION("You cannot reinstaniate the window instance after it has already been set.");
+			}
 			windowInstance = window;
+			std::pair<float, float> windowSize = window->getSize();
+			windowInitialSize = Vec2<float>(windowSize.first, windowSize.second);
+
 		}
 		~PixelSurface();
 	};
@@ -145,10 +158,10 @@ namespace bndr {
 		// default constructor
 		PolySurface() : PixelSurface() {}
 		// colorBufferSize and numTexes are used by children of PolySurface
-		void init(int colorBufferSize, int numTexes) {
+		void init(int colorBufferSize, bool hasTex) {
 
 			// generate the program for the polysurface
-			program = generateShaderProgram(numTexes);
+			program = generateShaderProgram(hasTex ? 1 : 0);
 			// load the color buffer with the correct number of colors
 			loadColorBuffer(colorBufferSize);
 			// load the vertex array data
@@ -171,10 +184,10 @@ namespace bndr {
 
 			Vec2<float> newCoordinate;
 			// retrieve window size
-			std::pair<float, float> size = windowInstance->getSize();
-			newCoordinate[0] = ((coordinate[0] / size.first) * 2.0f) - 1.0f;
+			Vec2<float> size = PixelSurface::windowInitialSize;
+			newCoordinate[0] = ((coordinate[0] / size[0]) * 2.0f) - 1.0f;
 			// y coordinate is multiplied by the aspect ratio
-			newCoordinate[1] = ((coordinate[1] / size.second) * (size.first / size.second)) - 1.0f;
+			newCoordinate[1] = ((coordinate[1] / size[1]) * (size[0] / size[1])) - 1.0f;
 			return newCoordinate;
 		}
 
@@ -183,10 +196,10 @@ namespace bndr {
 
 			Vec2<float> newCoordinate;
 			// retrieve window size
-			std::pair<float, float> size = windowInstance->getSize();
-			newCoordinate[0] = (sizeCoordinate[0] / size.first) * 2.0f;
+			Vec2<float> size = PixelSurface::windowInitialSize;
+			newCoordinate[0] = (sizeCoordinate[0] / size[0]) * 2.0f;
 			// y sizeCoordinate is multiplied by the aspect ratio
-			newCoordinate[1] = (sizeCoordinate[1] / size.second) * (size.first / size.second);
+			newCoordinate[1] = (sizeCoordinate[1] / size[1]) * (size[0] / size[1]);
 			return newCoordinate;
 		}
 
@@ -241,8 +254,8 @@ namespace bndr {
 		GraphicsRect(Vec2<float>&& newPos, Vec2<float>&& newSize) : GraphicsEntity(), pos(new Vec2<float>(newPos[0], newPos[1])),
 			size(new Vec2<float>(newSize[0], newSize[1])) {
 		
-			(*center)[0] = ((*pos)[0] + (*pos)[0] + (*size)[0]) / 2.0f;
-			(*center)[1] = ((*pos)[1] + (*pos)[1] + (*size)[1]) / 2.0f;
+			(*center)[0] = (*pos)[0];
+			(*center)[1] = (*pos)[1];
 		}
 	public:
 		~GraphicsRect() { delete pos; delete size; }
@@ -277,7 +290,9 @@ namespace bndr {
 		virtual VertexArray* generateVertexArray() override;
 	public:
 
+		// contstructor for absolute coordinates and width and height in pixels
 		BasicRect(float x, float y, float width, float height, const RGBAData& color = bndr::WHITE, int colorBufferSize = 4, bool super = false);
+		
 		// the rotation is about the PolySurface's center by default
 		// you only need to call this if you changed the center of rotation to a different point
 		// using setRotationAboutPoint(float x, float y)
@@ -353,28 +368,24 @@ namespace bndr {
 	};
 
 	// bndr::TexturedRect
-	// Description: This is a rectangle that can have a color for every vertex as well as blended textures
+	// Description: This is a rectangle that can have a color for every vertex as well as a texture
 	class BNDR_API TexturedRect : public ColorfulRect {
 
 	protected:
 
-		// texture array to store the textures of the rect
-		TextureArray* texArr;
+		// texture to store the texture of the rect
+		Texture* tex;
 		// textured rect will specify additional values as opposed to colorful rect
 		virtual VertexArray* generateVertexArray() override;
 		// update the color data in the vertex buffer of va
 		virtual void updateColorData() override;
 		// generate a program that allows for multiple colors to be used with multiple textures
-		inline virtual Program* generateShaderProgram(int numTexes = 0) override { return Program::texPolygonProgram(numTexes); }
-		// set the nested alpha weight for mix (for two or three textures bound at once)
-		inline void setNestedAlphaWeight(float value) { program->setFloatUniformValue("nestedTexAlphaWeight", &value, bndr::FLOAT); }
-		// set the outer alpha weight for mix (three textures bound at once)
-		inline void setOuterAlphaWeight(float value) { program->setFloatUniformValue("outerTexAlphaWeight", &value, bndr::FLOAT); }
+		inline virtual Program* generateShaderProgram(int numTexes = 0) override { return (numTexes == 1) ? Program::texPolygonProgram(1) : Program::multiColorPolygonProgram(); }
 	public:
 
-		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, std::initializer_list<Texture>&& texs = {}, std::vector<float>&& alphaWeights = {}, int colorBuffer = 16);
+		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, Texture* newTex = nullptr, int colorBuffer = 16);
 		void render() override;
-		~TexturedRect() { delete texArr; }
+		~TexturedRect() { if (tex != nullptr) { delete tex; } }
 	};
 }
 

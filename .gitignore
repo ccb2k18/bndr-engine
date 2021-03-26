@@ -1,3 +1,6 @@
 .vs/
 x64/
+x64/Debug/
 BNDR_Engine/x64/
+BNDR_Engine/x64/Debug/
+BNDR_Engine/x64/Debug/BNDR_Engine.tlog/

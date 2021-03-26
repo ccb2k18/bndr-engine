@@ -23,4 +23,4 @@ SOFTWARE.*/
 #pragma once
 
 #include "window_render/timers.h"
-#include "ui/ui_base/UIRect.h";
+#include "graphics_surfaces/frame_rects.h";

@@ -22,17 +22,18 @@ SOFTWARE.*/
 
 #pragma once
 #include <pch.h>
-#include "include/graphics_surfaces/graphical_bedrocks.h";
+#include "include/graphics_surfaces/primitives/graphical_bedrocks.h";
 
 namespace bndr {
 
 	// style flags to apply to the ui rectangle
-	// ANCHOR_TO_CENTER: sets the x and y coordinate to be at the center of rectangle as opposed to the lower left corner
+	// ANCHOR_TO_CENTER: sets the x and y coordinate to be at the center of rectangle as opposed to the top left corner
 	// X_COORD_IS_PERCENT: if flag is set the x coordinate is treated as a percentage value where 100.0f would be 100% of the screen width
 	// Y_COORD_IS_PERCENT: if flag is set the y coordinate is treated as a percentage value where 100.0f would be 100% of the screen height
 	// WIDTH_IS_PERCENT: if flag is set the width is treated as a percentage value where 100.0f would be 100% of the screen width
 	// HEIGHT_IS_PERCENT: if flag is set the height is treated as a percentage value where 100.0f would be 100% of the screen height
-	enum BNDR_API UIRectStyles {
+	enum BNDR_API FrameRectStyles {
+
 		UIRECT_ANCHOR_TO_CENTER = 1,
 		UIRECT_X_COORD_IS_PERCENT = 2,
 		UIRECT_Y_COORD_IS_PERCENT = 4,
@@ -41,14 +42,15 @@ namespace bndr {
 	};
 
 
-	class BNDR_API UIRect {
+	// an optimal class for a graphics component with only a single animation frame
+	class BNDR_API FrameRect {
 
 		// this TexturedRect will manage all the lower level drawing stuff for us
 		TexturedRect* texRect = nullptr;
 	public:
-		UIRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, Texture* newTex = nullptr, uint styleFlags = 0);
+		FrameRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, Texture* newTex = nullptr, uint styleFlags = 0);
 		inline void render() { texRect->render(); }
-		~UIRect();
+		~FrameRect();
 	};
 }
 

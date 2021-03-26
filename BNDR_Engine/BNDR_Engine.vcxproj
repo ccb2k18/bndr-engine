@@ -175,7 +175,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\graphics_surfaces\graphical_bedrocks.h" />
+    <ClInclude Include="include\graphics_surfaces\primitives\graphical_bedrocks.h" />
     <ClInclude Include="include\event_objects\events.h" />
     <ClInclude Include="include\BNDR_Engine.h" />
     <ClInclude Include="framework.h" />
@@ -193,11 +193,11 @@
     <ClInclude Include="include\window_render\gpu_objects\shaders.h" />
     <ClInclude Include="include\window_render\gpu_objects\textures.h" />
     <ClInclude Include="include\data_structures\vectors.h" />
-    <ClInclude Include="include\ui\ui_base\UIRect.h" />
+    <ClInclude Include="include\graphics_surfaces\frame_rects.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="include\graphics_surfaces\graphical_bedrocks.cpp" />
+    <ClCompile Include="include\graphics_surfaces\primitives\graphical_bedrocks.cpp" />
     <ClCompile Include="include\event_objects\keyboard_mouse_events.cpp" />
     <ClCompile Include="include\window_render\gpu_objects\GLDebug.cpp" />
     <ClCompile Include="include\window_render\gpu_objects\IndexBuffer.cpp" />
@@ -213,7 +213,7 @@
     <ClCompile Include="include\window_render\gpu_objects\VertexArray.cpp" />
     <ClCompile Include="include\window_render\gpu_objects\shaders.cpp" />
     <ClCompile Include="include\window_render\gpu_objects\textures.cpp" />
-    <ClCompile Include="include\ui\ui_base\UIRect.cpp" />
+    <ClCompile Include="include\graphics_surfaces\frame_rects.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

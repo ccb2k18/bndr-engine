@@ -21,21 +21,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
 #include <pch.h>
-#include "UIRect.h"
+#include "frame_rects.h"
 
 namespace bndr {
 
-	UIRect::UIRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, Texture* newTex, uint styleFlags) {
+	FrameRect::FrameRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors, Texture* newTex, uint styleFlags) {
 
 		// get the initial window size so we can convert coordinates from percents to pixels if we need to
 		Vec2<float> initialSize = PixelSurface::getWindowInitialSize();
-
-		// now adjust it so that it is anchored to the center if required
-		if (styleFlags & UIRECT_ANCHOR_TO_CENTER) {
-
-			x -= width / 2.0f;
-			y -= height / 2.0f;
-		}
 
 		if (styleFlags & UIRECT_X_COORD_IS_PERCENT) {
 
@@ -53,12 +46,22 @@ namespace bndr {
 
 			height = (height / 100.0f) * initialSize[1];
 		}
+
+		// now adjust it so that it is anchored to the center if required
+		if (styleFlags & UIRECT_ANCHOR_TO_CENTER) {
+
+			x -= width / 2.0f;
+			y -= height / 2.0f;
+		}
+
+		// we need to convert the y coordinate so that 0 is at the top of the screen
+		y = (initialSize[1] - y) - height;
 		
 		// now create the textured rect to manage the low level graphics stuff for us
 		texRect = new TexturedRect(x, y, width, height, std::move(colors), newTex);
 	}
 
-	UIRect::~UIRect() {
+	FrameRect::~FrameRect() {
 		delete texRect;
 	}
 }

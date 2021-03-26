@@ -187,7 +187,7 @@ namespace bndr {
 			Vec2<float> size = PixelSurface::windowInitialSize;
 			newCoordinate[0] = ((coordinate[0] / size[0]) * 2.0f) - 1.0f;
 			// y coordinate is multiplied by the aspect ratio
-			newCoordinate[1] = ((coordinate[1] / size[1]) * (size[0] / size[1])) - 1.0f;
+			newCoordinate[1] = ((coordinate[1] / size[1]) * 2.0f) - 1.0f;
 			return newCoordinate;
 		}
 
@@ -199,7 +199,7 @@ namespace bndr {
 			Vec2<float> size = PixelSurface::windowInitialSize;
 			newCoordinate[0] = (sizeCoordinate[0] / size[0]) * 2.0f;
 			// y sizeCoordinate is multiplied by the aspect ratio
-			newCoordinate[1] = (sizeCoordinate[1] / size[1]) * (size[0] / size[1]);
+			newCoordinate[1] = (sizeCoordinate[1] / size[1]) * 2.0f;
 			return newCoordinate;
 		}
 

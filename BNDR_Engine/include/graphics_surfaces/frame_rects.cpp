@@ -56,12 +56,60 @@ namespace bndr {
 
 		// we need to convert the y coordinate so that 0 is at the top of the screen
 		y = (initialSize[1] - y) - height;
-		
+
 		// now create the textured rect to manage the low level graphics stuff for us
 		texRect = new TexturedRect(x, y, width, height, std::move(colors), newTex);
 	}
 
 	FrameRect::~FrameRect() {
+
+		// set the texture of texRect to be a nullptr so we don't get a double free error
+		// only do this when we are changing the texture of texRect dynamically (i.e. it isn't a FrameRect base class)
+		if (!isFrameRect) {
+			texRect->changeTexture(nullptr);
+		}
 		delete texRect;
+	}
+
+
+
+	AnimationRect::AnimationRect(float x, float y, float width, float height,
+		AnimationInitializerList&& animationCycleList, std::vector<RGBAData>&& colors,
+		uint styleFlags) :
+		FrameRect(x, y, width, height, std::move(colors), (Texture*)0xcccc, styleFlags),
+		animationIndex(0), animationFrame(0), elapsedTime(0.0f), shouldAnimate(true) {
+	
+		// this is an animation rect so we do not want texRect to delete the texture pointer it has
+		isFrameRect = false;
+
+		// raise an exception if there are zero animation cycles
+		if (animationCycleList.size() == 0) {
+			BNDR_EXCEPTION("AnimationInitializerList must at least have one animation cycle.");
+		}
+		// initialize the vector of AnimationFrames
+		animationCycles = new AnimationTexList(std::move(animationCycleList));
+
+		// load the starting frame of the animation
+		texRect->changeTexture(&(*animationCycles)[animationIndex].frames[animationFrame]);
+	}
+
+	void AnimationRect::update(float deltaTime) {
+
+		// only change frames if we should
+		if (shouldAnimate) { elapsedTime += deltaTime; }
+		// if it is time to change frames
+		if (elapsedTime > (1.0f / (float)(*animationCycles)[animationIndex].fps)) {
+
+			elapsedTime = 0.0f;
+			// keep the animation frame within the bounds of the number of frames
+			animationFrame = (animationFrame + 1) % (*animationCycles)[animationIndex].frames.size();
+			// change the texture to be rendered
+			texRect->changeTexture(&(*animationCycles)[animationIndex].frames[animationFrame]);
+			// check if the animation should stop (i.e it is not meant to loop)
+			if (!(*animationCycles)[animationIndex].loop && animationFrame == 0) {
+
+				shouldAnimate = false;
+			}
+		}
 	}
 }

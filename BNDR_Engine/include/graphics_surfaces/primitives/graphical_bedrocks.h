@@ -385,6 +385,11 @@ namespace bndr {
 
 		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, Texture* newTex = nullptr, int colorBuffer = 16);
 		void render() override;
+		// change the texture that the textured rect will render
+		inline void changeTexture(Texture* newTex) { tex = newTex; }
+		// get the texture of the TexturedRect
+		// WARNING: Do not use this method! This is meant to be used by automated classes only!
+		inline Texture* getTexture() { return tex; }
 		~TexturedRect() { if (tex != nullptr) { delete tex; } }
 	};
 }

@@ -355,7 +355,7 @@ namespace bndr {
 	void TexturedRect::render() {
 
 		if (tex != nullptr) { tex->bind(); }
-
+		
 		program->use();
 
 		va->render();

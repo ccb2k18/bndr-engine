@@ -26,7 +26,7 @@ SOFTWARE.*/
 
 namespace bndr {
 
-	class BNDR_API IndexBuffer {
+	class IndexBuffer {
 
 		uint bufferID;
 		uint size;

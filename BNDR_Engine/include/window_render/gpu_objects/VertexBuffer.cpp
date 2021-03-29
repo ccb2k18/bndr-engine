@@ -73,35 +73,8 @@ namespace bndr {
 		GL_DEBUG_FUNC(glGenBuffers(1, &bufferID));
 		bind();
 
-		// if the attributes are interleaved
-		if (vbFlags & INTERLEAVED_ATTRIBS) {
-
-			GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber * floatsPerBlock, (const void*)vertexData.get(), GL_DYNAMIC_DRAW));
-			VertexBuffer::interleafVertexAttribs(floatsPerBlock * sizeof(float), vbFlags);
-		}
-		// otherwise batch the attributes
-		else {
-
-			GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber, (const void*)NULL, GL_DYNAMIC_DRAW));
-			/*std::pair<float*, int> attribs[5] = { std::make_pair(nullptr, 0) };
-			float blockSizes[5] = { 0, 0, 0, 0, 0 };
-			if (vbFlags & POSITIONS_ATTRIB) { blockSizes[0] = 3 * sizeof(float); }
-			if (vbFlags & RGBA_COLOR_ATTRIB) { blockSizes[1] = 4 * sizeof(float); }
-			if (vbFlags & VERTEX_NORMALS_ATTRIB) { blockSizes[2] = 3 * sizeof(float); }
-			if (vbFlags & TEXTURE_COORDS_ATTRIB) { blockSizes[3] = 2 * sizeof(float); }
-			if (vbFlags & TEXTURE_INDEX_ATTRIB) { blockSizes[4] = sizeof(float); }
-			int blockSizesSum = blockSizes[0] + blockSizes[1] + blockSizes[2] + blockSizes[3] + blockSizes[4];
-			uint attribIndex = (uint)0;
-			int offset = 0;
-			for (int i = 0; i < 5; i++) {
-
-				if (blockSizes[i] != 0) {
-
-					attribs[i].first = (float*)(vertexData.get() + offset);
-					attribs->second = 
-				}
-			}*/
-		}
+		GL_DEBUG_FUNC(glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesNumber * floatsPerBlock, (const void*)vertexData.get(), GL_DYNAMIC_DRAW));
+		VertexBuffer::interleafVertexAttribs(floatsPerBlock * sizeof(float), vbFlags);
 		unbind();
 
 	}

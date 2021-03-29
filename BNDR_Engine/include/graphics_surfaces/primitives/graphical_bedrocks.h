@@ -30,7 +30,7 @@ namespace bndr {
 
 	// bndr::VAContainer
 	// a structure to contain the vertex array arguments to be passed down in the PolySurface class hierarchy
-	struct BNDR_API VAContainer {
+	struct VAContainer {
 
 		uint drawingMode;
 		std::vector<float> vertexData;
@@ -49,6 +49,8 @@ namespace bndr {
 		uint8 green;
 		uint8 blue;
 		uint8 alpha;
+
+		RGBAData(uint8 r, uint8 g, uint8 b, uint8 a) : red(r), green(g), blue(b), alpha(a) {}
 	};
 	// declare colors
 	// define colors
@@ -110,6 +112,7 @@ namespace bndr {
 
 		PixelSurface(const PixelSurface&) = delete;
 		PixelSurface(PixelSurface&&) = delete;
+		PixelSurface& operator=(const PixelSurface&) = delete;
 		// reset the translation matrix
 		virtual void setTranslation(float xTrans, float yTrans) = 0;
 		// reset the rotation matrix
@@ -143,7 +146,7 @@ namespace bndr {
 
 	// bndr::PolySurface
 	// Description: base class for all PolySurfaces (rectangles, triangles, and ellipses/circles)
-	class BNDR_API PolySurface : public PixelSurface {
+	class PolySurface : public PixelSurface {
 
 	protected:
 
@@ -227,7 +230,7 @@ namespace bndr {
 	};
 
 	// parent class of GraphicsRect and GraphicsTriangle
-	class BNDR_API GraphicsEntity {
+	class GraphicsEntity {
 
 	protected:
 
@@ -243,7 +246,7 @@ namespace bndr {
 
 
 	// treated as an interface for BasicRect, ColorfulRect, and TexturedRect
-	class BNDR_API GraphicsRect : public GraphicsEntity {
+	class GraphicsRect : public GraphicsEntity {
 
 	protected:
 		// 0: x, 1: y
@@ -262,7 +265,7 @@ namespace bndr {
 	};
 
 	// treated as an interface for BasicTriangle, ColorfulTriangle, and TexturedTriangle
-	class BNDR_API GraphicsTriangle : public GraphicsEntity {
+	class GraphicsTriangle : public GraphicsEntity {
 
 	protected:
 
@@ -283,13 +286,14 @@ namespace bndr {
 
 	// bndr::BasicRect
 	// Description: This is a basic rectangle that you may specify a single color for
-	class BNDR_API BasicRect : public GraphicsRect, public PolySurface {
+	class BasicRect : public GraphicsRect, public PolySurface {
 
 	protected:
 
 		virtual VertexArray* generateVertexArray() override;
 	public:
 
+		BasicRect() : GraphicsRect(Vec2<float>(), Vec2<float>()) {}
 		// contstructor for absolute coordinates and width and height in pixels
 		BasicRect(float x, float y, float width, float height, const RGBAData& color = bndr::WHITE, int colorBufferSize = 4, bool super = false);
 		
@@ -303,7 +307,7 @@ namespace bndr {
 
 	// bndr::BasicTriangle
 	// Description: This is a basic triangle that you may specify a single color for
-	class BNDR_API BasicTriangle : public GraphicsTriangle, public PolySurface {
+	class BasicTriangle : public GraphicsTriangle, public PolySurface {
 
 	protected:
 
@@ -321,7 +325,7 @@ namespace bndr {
 
 	// bndr::ColorfulRect
 	// Description: This is a rectangle that can have a color for every vertex
-	class BNDR_API ColorfulRect : public BasicRect {
+	class ColorfulRect : public BasicRect {
 
 	protected:
 
@@ -335,6 +339,7 @@ namespace bndr {
 		void defineColors(std::vector<RGBAData>& colors);
 	public:
 
+		ColorfulRect() {}
 		ColorfulRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, int colorBufferSize = 16, bool super = false);
 		// set a single fill color for the rect (if you only want a solid color then you should probably just use BasicRect)
 		// (converts a rgba color to floats)
@@ -345,7 +350,7 @@ namespace bndr {
 
 	// bndr::ColorfulTriangle
 	// Description: This is a triangle that can have a color for every vertex
-	class BNDR_API ColorfulTriangle : public BasicTriangle {
+	class ColorfulTriangle : public BasicTriangle {
 
 	protected:
 
@@ -384,6 +389,11 @@ namespace bndr {
 	public:
 
 		TexturedRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, Texture* newTex = nullptr, int colorBuffer = 16);
+		// copy constructor
+		TexturedRect(const TexturedRect& texRect);
+		// move constructor is not allowed
+		// assignment operator is not allowed
+		TexturedRect& operator=(const TexturedRect&) = delete;
 		void render() override;
 		// change the texture that the textured rect will render
 		inline void changeTexture(Texture* newTex) { tex = newTex; }

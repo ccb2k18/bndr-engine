@@ -79,17 +79,18 @@ namespace bndr {
 
 	Program::Program(Shader&& vertexShader, Shader&& fragmentShader) {
 
-		std::string mapKey = Program::generateMapKey(vertexShader, fragmentShader);
+		// define the key to access the already compiled shaders
+		programKey = Program::generateMapKey(vertexShader, fragmentShader);
 
 		Shader* vShader = &vertexShader;
 		Shader* fShader = &fragmentShader;
 		// check if program already exists
-		if (Program::programExists(mapKey.c_str())) {
+		if (Program::programExists(programKey.c_str())) {
 
-			std::pair<Shader,Shader>* pairPtr = &Program::shaderMap[mapKey.c_str()];
+			std::pair<Shader,Shader>* pairPtr = &Program::shaderMap[programKey.c_str()];
 			vShader = &pairPtr->first;
 			fShader = &pairPtr->second;
-			//std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
+			//std::string message = "the program with map key " + std::string("\"") + programKey + std::string("\"") + " already exists\n";
 			//BNDR_MESSAGE(message.c_str());
 			return;
 		}
@@ -100,19 +101,16 @@ namespace bndr {
 		// the Shader class destructor once the function ends
 
 		// now we must not forget to add the program to the map
-		Program::shaderMap.insert(std::make_pair(mapKey.c_str(), std::make_pair(*vShader, *fShader)));
+		Program::shaderMap.insert(std::make_pair(programKey.c_str(), std::make_pair(*vShader, *fShader)));
 		//std::string msg = "Added new program with hash key " + std::string("\"") + mapKey + std::string("\"");
 		//BNDR_MESSAGE(msg.c_str());
-	}
-
-	Program::Program(const Program& program) {
-
-		programID = program.programID;
 	}
 
 	Program::Program(const char* mapKey) {
 
 		std::pair<Shader,Shader>* pairPtr = &Program::shaderMap[mapKey];
+		// copy the map key
+		programKey = mapKey;
 		Shader* vShader = &pairPtr->first;
 		Shader* fShader = &pairPtr->second;
 
@@ -120,7 +118,17 @@ namespace bndr {
 
 		//std::string message = "the program with map key " + std::string("\"") + mapKey + std::string("\"") + " already exists\n";
 		//BNDR_MESSAGE(message.c_str());
-		return;
+	}
+
+	Program::Program(const Program& program) {
+
+		std::pair<Shader, Shader>* pairPtr = &Program::shaderMap[program.programKey];
+		// copy the map key
+		programKey = program.programKey;
+		Shader* vShader = &pairPtr->first;
+		Shader* fShader = &pairPtr->second;
+
+		Program::linkProgram(programID, vShader, fShader);
 	}
 
 	void Program::setFloatUniformValue(const char* uniformName, const float* data, uint dataType) const {

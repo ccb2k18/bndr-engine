@@ -32,7 +32,6 @@ namespace bndr {
 	// the window's size upon initialization
 	Vec2<float> PixelSurface::windowInitialSize;
 
-
 	PixelSurface::~PixelSurface() {
 
 		// delete vertex array, color buffer, and matrices
@@ -339,6 +338,28 @@ namespace bndr {
 
 		tex = newTex;
 
+	}
+
+	TexturedRect::TexturedRect(const TexturedRect& texRect) :
+		ColorfulRect((*texRect.pos)[0], (*texRect.pos)[1], (*texRect.size)[0], (*texRect.size)[1],
+			{}, 16, true) {
+
+		// transformations
+		(*translation) = (*texRect.translation);
+		(*rotation) = (*texRect.rotation);
+		(*scale) = (*texRect.scale);
+
+		init(16, (texRect.tex != nullptr) ? true : false);
+		setRotationAboutCenter();
+		std::vector<RGBAData> colors = {
+			RGBAData((uint8)(texRect.colorBuffer[0]*255.0f),(uint8)(texRect.colorBuffer[1]*255.0f),(uint8)(texRect.colorBuffer[2]*255.0f),(uint8)(texRect.colorBuffer[3]*255.0f)),
+			RGBAData((uint8)(texRect.colorBuffer[4]*255.0f),(uint8)(texRect.colorBuffer[5]*255.0f),(uint8)(texRect.colorBuffer[6]*255.0f),(uint8)(texRect.colorBuffer[7]*255.0f)),
+			RGBAData((uint8)(texRect.colorBuffer[8]*255.0f),(uint8)(texRect.colorBuffer[9]*255.0f),(uint8)(texRect.colorBuffer[10]*255.0f),(uint8)(texRect.colorBuffer[11]*255.0f)),
+			RGBAData((uint8)(texRect.colorBuffer[12]*255.0f),(uint8)(texRect.colorBuffer[13]*255.0f),(uint8)(texRect.colorBuffer[14]*255.0f),(uint8)(texRect.colorBuffer[15]*255.0f)),
+		};
+		defineColors(colors);
+
+		tex = texRect.tex;
 	}
 
 	void TexturedRect::updateColorData() {

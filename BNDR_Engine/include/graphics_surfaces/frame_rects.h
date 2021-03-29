@@ -52,6 +52,7 @@ namespace bndr {
 		bool isFrameRect = true;
 	public:
 		FrameRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, Texture* newTex = nullptr, uint styleFlags = 0);
+		FrameRect(const FrameRect& frameRect) : texRect(new TexturedRect(*frameRect.texRect)), isFrameRect(frameRect.isFrameRect) {}
 		inline void render() { texRect->render(); }
 		~FrameRect();
 	};

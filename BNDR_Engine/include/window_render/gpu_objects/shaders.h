@@ -37,7 +37,7 @@ namespace bndr {
 
 	// bndr::Shader
 	// Description: base class for all shaders in the application
-	class BNDR_API Shader {
+	class Shader {
 
 		uint shaderID;
 		// shader source code
@@ -82,14 +82,17 @@ namespace bndr {
 
 	// bndr::Program
 	// Description: class that contains OpenGL program given shaders to compile and link
-	class BNDR_API Program {
+	class Program {
 
 		uint programID;
 		// make sure we do not have duplicate programs as well as store static template programs in the map
-		// static std::unordered_map<std::string, uint> programMap;
 
 		// map of previously created shaders so that shaders are not created more than once for new programs
 		static std::unordered_map<std::string, std::pair<Shader, Shader>> shaderMap;
+
+		// save the key so when we copy the program it generates the equivalent program quickly from the
+		// respective shaders
+		std::string programKey;
 	public:
 
 		Program() : programID(0) {}
@@ -99,7 +102,8 @@ namespace bndr {
 		//        fragmentShader = The compiled fragment shader to link with the program
 		Program(Shader&& vertexShader, Shader&& fragmentShader);
 		Program(const Program& program);
-		Program& operator=(const Program& program) { programID = program.programID; return *this; }
+		Program(Program&& program) = delete;
+		Program& operator=(const Program& program) = delete;
 		inline uint getID() { return programID; }
 		// use the program
 		inline void use() const { glUseProgram(programID); }

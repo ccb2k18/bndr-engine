@@ -63,7 +63,7 @@ namespace bndr {
 	protected:
 		// array of coordinates
 		T* data;
-
+		int coordsNumber;
 	public:
 
 		// used to pass into a bndr::Program uniform
@@ -74,15 +74,31 @@ namespace bndr {
 		inline T& operator[](int index) { return data[index]; }
 		// default constructor sets each of the values to their default constructor
 		BaseVector() : data(new T[2]) {}
+		// copy constructor
+		BaseVector(const BaseVector&) = delete;
+		// move constructor is not alowed
+		BaseVector(BaseVector&&) = delete;
+		// assignment operator is not allowed
+		BaseVector& operator=(const BaseVector&) = delete;
 		// assign the objects in the array to the new objects
 		BaseVector(const T& x, const T& y, int numCoords = 2);
 		// delete the vector BaseVector<T>::data in the array
 		~BaseVector();
 	};
 
+	/*template <class T>
+	BaseVector<T>::BaseVector(const BaseVector& vec) {
+
+		data = new T[vec.coordsNumber];
+		coordsNumber = vec.coordsNumber;
+		data[0] = vec.getValue(0);
+		data[1] = vec.getValue(1);
+	}*/
+
 	template <class T>
 	BaseVector<T>::BaseVector(const T& x, const T& y, int numCoords) {
 
+		coordsNumber = numCoords;
 		data = new T[numCoords];
 		data[0] = x;
 		data[1] = y;
@@ -197,9 +213,9 @@ namespace bndr {
 		// copy constructor
 		Vec3(const Vec3<T>& vec);
 		// move constructor
-		Vec3(Vec3&& vec) = delete;
+		Vec3(Vec3&& vec);
 		// assignment operator
-		void operator=(const Vec3<T>& vec);
+		Vec3<T>& operator=(const Vec3<T>& vec);
 
 		// vector operations
 
@@ -284,11 +300,18 @@ namespace bndr {
 	}
 
 	template <class T>
-	void Vec3<T>::operator=(const Vec3<T>& vec) {
+	Vec3<T>::Vec3(Vec3<T>&& vec) : base(vec.getValue(0), vec.getValue(1), 3) {
+
+		(*this)[2] = vec.getValue(2);
+	}
+
+	template <class T>
+	Vec3<T>& Vec3<T>::operator=(const Vec3<T>& vec) {
 
 		(*this)[0] = vec.getValue(0);
 		(*this)[1] = vec.getValue(1);
 		(*this)[2] = vec.getValue(2);
+		return *this;
 	}
 
 	template <class T>

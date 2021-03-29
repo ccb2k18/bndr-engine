@@ -42,7 +42,7 @@ namespace bndr {
 	// bndr::VertexBuffer
 	// Description: The VertexBuffer class is used as an abstraction above OpenGL vertex buffers. All OpenGL operations are
 	// meant to be done only by the class so that the programmer can just use the BNDR API.
-	class BNDR_API VertexBuffer {
+	class VertexBuffer {
 
 		uint bufferID;
 		// the number of vertices we want to draw

@@ -36,7 +36,7 @@ namespace bndr {
 		LINES = GL_LINES,
 	};
 
-	class BNDR_API VertexArray {
+	class VertexArray {
 	
 		// unique id for OpenGL
 		uint arrayID;

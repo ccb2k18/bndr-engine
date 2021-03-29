@@ -76,6 +76,8 @@ namespace bndr {
 	AnimationRect::AnimationRect(float x, float y, float width, float height,
 		AnimationInitializerList&& animationCycleList, std::vector<RGBAData>&& colors,
 		uint styleFlags) :
+		// we pass in a pseudo address so the texture shader program knows to be selected
+		// once we enter the AnimationRect constructor we change the pointer to a valid address
 		FrameRect(x, y, width, height, std::move(colors), (Texture*)0xcccc, styleFlags),
 		animationIndex(0), animationFrame(0), elapsedTime(0.0f), shouldAnimate(true) {
 	

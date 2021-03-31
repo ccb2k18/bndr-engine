@@ -341,7 +341,10 @@ namespace bndr {
 	}
 
 	TexturedRect::TexturedRect(const TexturedRect& texRect) :
-		ColorfulRect((*texRect.pos)[0], (*texRect.pos)[1], (*texRect.size)[0], (*texRect.size)[1],
+		ColorfulRect(convertCoordFromGLSpaceToScreenSpace((*texRect.pos)[0], true),
+			convertCoordFromGLSpaceToScreenSpace((*texRect.pos)[1], false),
+			convertSizeFrom0And2ToScreenSpace((*texRect.size)[0], true),
+			convertSizeFrom0And2ToScreenSpace((*texRect.size)[1], false),
 			{}, 16, true) {
 
 		// transformations
@@ -359,7 +362,11 @@ namespace bndr {
 		};
 		defineColors(colors);
 
-		tex = texRect.tex;
+		if (texRect.tex != nullptr) {
+			tex = new Texture();
+			*tex = *texRect.tex;
+		}
+		
 	}
 
 	void TexturedRect::updateColorData() {

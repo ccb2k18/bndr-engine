@@ -76,9 +76,9 @@ namespace bndr {
 			uint textureTWrapping = TEXTURE_REPEAT, uint textureMinFiltering = TEXTURE_NEAREST,
 			uint textureMagFiltering = TEXTURE_NEAREST);
 		// bind the texture
-		inline void bind() { glActiveTexture(textureSlot); glBindTexture(GL_TEXTURE_2D, textureID); }
+		inline void bind() { glActiveTexture(textureSlot); GL_DEBUG_FUNC(glBindTexture(GL_TEXTURE_2D, textureID)); }
 		// unbind the texture
-		inline void unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
+		inline void unbind() { GL_DEBUG_FUNC(glBindTexture(GL_TEXTURE_2D, 0)); }
 		// get the id of the texture
 		inline int getID() { return (int)textureID; }
 		// get the slot of the texture

@@ -146,7 +146,7 @@ namespace bndr {
 
 	// bndr::PolySurface
 	// Description: base class for all PolySurfaces (rectangles, triangles, and ellipses/circles)
-	class PolySurface : public PixelSurface {
+	class BNDR_API PolySurface : public PixelSurface {
 
 	protected:
 
@@ -206,6 +206,20 @@ namespace bndr {
 			return newCoordinate;
 		}
 
+		// convert from normalized coordinates to pixels
+		inline float convertCoordFromGLSpaceToScreenSpace(float dimension, bool isX) {
+
+			Vec2<float> screenSize = PixelSurface::windowInitialSize;
+			return (dimension + 1.0f) * (((isX) ? screenSize[0] : screenSize[1]) / 2.0f);
+		}
+
+		// convert from normalized size to pixels
+		inline float convertSizeFrom0And2ToScreenSpace(float dimension, bool isWidth) {
+
+			Vec2<float> screenSize = PixelSurface::windowInitialSize;
+			return (dimension) * (((isWidth) ? screenSize[0] : screenSize[1]) / 2.0f);
+		}
+
 	public:
 
 		// reset the translation matrix
@@ -230,7 +244,7 @@ namespace bndr {
 	};
 
 	// parent class of GraphicsRect and GraphicsTriangle
-	class GraphicsEntity {
+	class BNDR_API GraphicsEntity {
 
 	protected:
 
@@ -246,7 +260,7 @@ namespace bndr {
 
 
 	// treated as an interface for BasicRect, ColorfulRect, and TexturedRect
-	class GraphicsRect : public GraphicsEntity {
+	class BNDR_API GraphicsRect : public GraphicsEntity {
 
 	protected:
 		// 0: x, 1: y
@@ -265,7 +279,7 @@ namespace bndr {
 	};
 
 	// treated as an interface for BasicTriangle, ColorfulTriangle, and TexturedTriangle
-	class GraphicsTriangle : public GraphicsEntity {
+	class BNDR_API GraphicsTriangle : public GraphicsEntity {
 
 	protected:
 
@@ -286,7 +300,7 @@ namespace bndr {
 
 	// bndr::BasicRect
 	// Description: This is a basic rectangle that you may specify a single color for
-	class BasicRect : public GraphicsRect, public PolySurface {
+	class BNDR_API BasicRect : public GraphicsRect, public PolySurface {
 
 	protected:
 
@@ -307,7 +321,7 @@ namespace bndr {
 
 	// bndr::BasicTriangle
 	// Description: This is a basic triangle that you may specify a single color for
-	class BasicTriangle : public GraphicsTriangle, public PolySurface {
+	class BNDR_API BasicTriangle : public GraphicsTriangle, public PolySurface {
 
 	protected:
 
@@ -325,7 +339,7 @@ namespace bndr {
 
 	// bndr::ColorfulRect
 	// Description: This is a rectangle that can have a color for every vertex
-	class ColorfulRect : public BasicRect {
+	class BNDR_API ColorfulRect : public BasicRect {
 
 	protected:
 
@@ -350,7 +364,7 @@ namespace bndr {
 
 	// bndr::ColorfulTriangle
 	// Description: This is a triangle that can have a color for every vertex
-	class ColorfulTriangle : public BasicTriangle {
+	class BNDR_API ColorfulTriangle : public BasicTriangle {
 
 	protected:
 
@@ -379,7 +393,7 @@ namespace bndr {
 	protected:
 
 		// texture to store the texture of the rect
-		Texture* tex;
+		Texture* tex = nullptr;
 		// textured rect will specify additional values as opposed to colorful rect
 		virtual VertexArray* generateVertexArray() override;
 		// update the color data in the vertex buffer of va

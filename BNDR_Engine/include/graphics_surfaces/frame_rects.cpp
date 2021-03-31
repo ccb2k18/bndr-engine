@@ -30,30 +30,32 @@ namespace bndr {
 		// get the initial window size so we can convert coordinates from percents to pixels if we need to
 		Vec2<float> initialSize = PixelSurface::getWindowInitialSize();
 
-		if (styleFlags & UIRECT_X_COORD_IS_PERCENT) {
+		if (styleFlags & FRAME_X_COORD_IS_PERCENT) {
 
 			x = (x / 100.0f) * initialSize[0];
 		}
-		if (styleFlags & UIRECT_Y_COORD_IS_PERCENT) {
+		if (styleFlags & FRAME_Y_COORD_IS_PERCENT) {
 
 			y = (y / 100.0f) * initialSize[1];
 		}
-		if (styleFlags & UIRECT_WIDTH_IS_PERCENT) {
+		if (styleFlags & FRAME_WIDTH_IS_PERCENT) {
 
 			width = (width / 100.0f) * initialSize[0];
 		}
-		if (styleFlags & UIRECT_HEIGHT_IS_PERCENT) {
+		if (styleFlags & FRAME_HEIGHT_IS_PERCENT) {
 
 			height = (height / 100.0f) * initialSize[1];
 		}
 
 		// now adjust it so that it is anchored to the center if required
-		if (styleFlags & UIRECT_ANCHOR_TO_CENTER) {
+		if (styleFlags & FRAME_ANCHOR_TO_CENTER) {
 
 			x -= width / 2.0f;
 			y -= height / 2.0f;
 		}
 
+		flags = styleFlags;
+		flags = flags | FRAME_IS_FRAME_RECT;
 		// we need to convert the y coordinate so that 0 is at the top of the screen
 		y = (initialSize[1] - y) - height;
 
@@ -65,7 +67,7 @@ namespace bndr {
 
 		// set the texture of texRect to be a nullptr so we don't get a double free error
 		// only do this when we are changing the texture of texRect dynamically (i.e. it isn't a FrameRect base class)
-		if (!isFrameRect) {
+		if ((flags & FRAME_IS_FRAME_RECT) == 0) {
 			texRect->changeTexture(nullptr);
 		}
 		delete texRect;
@@ -82,7 +84,8 @@ namespace bndr {
 		animationIndex(0), animationFrame(0), elapsedTime(0.0f), shouldAnimate(true) {
 	
 		// this is an animation rect so we do not want texRect to delete the texture pointer it has
-		isFrameRect = false;
+		// therefore we will not add FRAME_IS_FRAME_RECT to the flags, but instead its negation
+		flags = flags & ~FRAME_IS_FRAME_RECT;
 
 		// raise an exception if there are zero animation cycles
 		if (animationCycleList.size() == 0) {

@@ -66,8 +66,8 @@ namespace bndr {
 	void PolySurface::setScale(float xScale, float yScale) {
 
 		// update the scale matrix in RAM
-		(*scale)[0] = xScale;
-		(*scale)[1] = yScale;
+		(*scale)[0] = std::max<float>(xScale, 0.0f);
+		(*scale)[1] = std::max<float>(yScale, 0.0f);
 		updateScaleUniform();
 
 	}
@@ -97,6 +97,8 @@ namespace bndr {
 		// update the scale matrix in RAM
 		(*scale)[0] += xScale;
 		(*scale)[1] += yScale;
+		(*scale)[0] = std::max<float>((*scale)[0], 0.0f);
+		(*scale)[1] = std::max<float>((*scale)[1], 0.0f);
 		updateScaleUniform();
 
 	}

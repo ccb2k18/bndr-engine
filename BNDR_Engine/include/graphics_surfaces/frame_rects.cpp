@@ -63,6 +63,38 @@ namespace bndr {
 		texRect = new TexturedRect(x, y, width, height, std::move(colors), newTex);
 	}
 
+	void FrameRect::translate(float x, float y) {
+
+		Vec2<float> trans = PolySurface::convertScreenSpaceToGLSpace({ x, y });
+		texRect->setTranslation(trans[0], -trans[1]);
+		texRect->setPos(trans);
+	}
+
+	void FrameRect::addTranslation(float xChange, float yChange) {
+
+		Vec2<float> trans = PolySurface::convertScreenSpaceBetween0And2({ xChange, yChange });
+		texRect->changeTranslationBy(trans[0], -trans[1]);
+		texRect->addPos(trans);
+	}
+
+	std::vector<float> FrameRect::getRect() {
+
+		Vec2<float> pos = texRect->getPos();
+		Vec2<float> size = texRect->getSize();
+		return { PolySurface::convertCoordFromGLSpaceToScreenSpace(pos[0], true),
+			PolySurface::convertCoordFromGLSpaceToScreenSpace(pos[1], false),
+			PolySurface::convertSizeFrom0And2ToScreenSpace(size[0], true),
+			PolySurface::convertSizeFrom0And2ToScreenSpace(size[1], false)
+		};
+	}
+
+	Vec2<float> FrameRect::getCenter() {
+
+		Vec2<float> center = texRect->getPos() + (texRect->getSize() / 2.0f);
+		return { PolySurface::convertCoordFromGLSpaceToScreenSpace(center[0], true),
+			PolySurface::convertCoordFromGLSpaceToScreenSpace(center[1], false) };
+	}
+
 	FrameRect::~FrameRect() {
 
 		// set the texture of texRect to be a nullptr so we don't get a double free error

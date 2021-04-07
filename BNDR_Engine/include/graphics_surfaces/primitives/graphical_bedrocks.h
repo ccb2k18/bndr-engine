@@ -182,8 +182,10 @@ namespace bndr {
 			return nullptr;
 		}
 
+	public:
+
 		// converts screen space coordinates into OpenGL space coordinates
-		inline Vec2<float> convertScreenSpaceToGLSpace(Vec2<float>&& coordinate) {
+		static Vec2<float> convertScreenSpaceToGLSpace(Vec2<float>&& coordinate) {
 
 			Vec2<float> newCoordinate;
 			// retrieve window size
@@ -195,7 +197,7 @@ namespace bndr {
 		}
 
 		// use for size of rect
-		inline Vec2<float> convertScreenSpaceBetween0And2(Vec2<float>&& sizeCoordinate) {
+		static Vec2<float> convertScreenSpaceBetween0And2(Vec2<float>&& sizeCoordinate) {
 
 			Vec2<float> newCoordinate;
 			// retrieve window size
@@ -207,20 +209,18 @@ namespace bndr {
 		}
 
 		// convert from normalized coordinates to pixels
-		inline float convertCoordFromGLSpaceToScreenSpace(float dimension, bool isX) {
+		static float convertCoordFromGLSpaceToScreenSpace(float dimension, bool isX) {
 
 			Vec2<float> screenSize = PixelSurface::windowInitialSize;
 			return (dimension + 1.0f) * (((isX) ? screenSize[0] : screenSize[1]) / 2.0f);
 		}
 
 		// convert from normalized size to pixels
-		inline float convertSizeFrom0And2ToScreenSpace(float dimension, bool isWidth) {
+		static float convertSizeFrom0And2ToScreenSpace(float dimension, bool isWidth) {
 
 			Vec2<float> screenSize = PixelSurface::windowInitialSize;
 			return (dimension) * (((isWidth) ? screenSize[0] : screenSize[1]) / 2.0f);
 		}
-
-	public:
 
 		// reset the translation matrix
 		virtual void setTranslation(float xTrans, float yTrans) override;
@@ -275,6 +275,10 @@ namespace bndr {
 			(*center)[1] = (*pos)[1];
 		}
 	public:
+		inline Vec2<float> getPos() { return Vec2<float>(*pos); }
+		inline void setPos(const Vec2<float>& vec) { (*pos) = vec; }
+		inline void addPos(const Vec2<float>& vec) { (*pos) += vec; }
+		inline Vec2<float> getSize() { return Vec2<float>(*size); }
 		~GraphicsRect() { delete pos; delete size; }
 	};
 

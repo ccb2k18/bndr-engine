@@ -59,6 +59,7 @@ namespace bndr {
 		// get the rectangle of the frame in this format: {topLeftX, topLeftY, width, height}
 		virtual std::vector<float> getRect() = 0;
 		// get the center of the rectangle
+		virtual Vec2<float> getCenter() = 0;
 
 
 	};
@@ -83,7 +84,7 @@ namespace bndr {
 
 
 	// an optimal class for a graphics component with only a single graphics frame
-	class BNDR_API FrameRect {
+	class BNDR_API FrameRect : public Frame {
 
 	protected:
 		// this TexturedRect will manage all the lower level drawing stuff for us
@@ -93,10 +94,37 @@ namespace bndr {
 	public:
 		FrameRect(float x, float y, float width, float height, std::vector<RGBAData>&& colors = { bndr::WHITE }, Texture* newTex = nullptr, uint styleFlags = 0);
 		FrameRect(const FrameRect& frameRect) : texRect(new TexturedRect(*frameRect.texRect)), flags(frameRect.flags) {}
+		inline void processEvents(const Window& window) { return; }
 		// move constructor and assignment operator are not allowed
 		FrameRect(FrameRect&&) = delete;
 		FrameRect& operator=(const FrameRect&) = delete;
 		inline void render() { texRect->render(); }
+		inline virtual void update(float deltaTime) { return; }
+		// redefines the translation of the frame
+		virtual void translate(float x, float y);
+		// adds to the current translation
+		virtual void addTranslation(float xChange, float yChange);
+		// rotate the frame by an angle in radians (default is counter-clockwise)
+		inline virtual void rotate(float theta) { texRect->setRotation(theta); }
+		// add to the current rotation
+		inline virtual void addRotation(float thetaChange) { texRect->changeRotationBy(thetaChange); }
+		// redefines the scale of the frame
+		// the scale is the factor you want the frame's dimensions to increase by (i.e. 0.5 makes it half the size and 2.0 makes it double)
+		// scale both x and y separately
+		inline virtual void scale(float xScale, float yScale) {
+			texRect->setScale(xScale, yScale);
+		}
+		// scale both x and y together
+		inline virtual void scale(float _scale) { scale(_scale, _scale); }
+		// add to the current scale
+		// separately
+		inline virtual void addScale(float xScaleChange, float yScaleChange) { texRect->changeScaleBy(xScaleChange, yScaleChange); }
+		// together
+		inline virtual void addScale(float scaleChange) { addScale(scaleChange, scaleChange); }
+		// get the rectangle of the frame in this format: {topLeftX, topLeftY, width, height}
+		virtual std::vector<float> getRect();
+		// get the center of the rectangle
+		virtual Vec2<float> getCenter();
 		~FrameRect();
 	};
 
@@ -151,7 +179,11 @@ namespace bndr {
 			animationFrame = 0;
 			elapsedTime = 0.0f;
 			shouldAnimate = true;
+			// change the texture rendered to the first frame of the new animation cycle
+			texRect->changeTexture(&(*animationCycles)[animationIndex].frames[animationFrame]);
 		}
+		// get the current animation cycle
+		inline int getCurrentCycle() { return animationIndex; }
 		void update(float deltaTime);
 
 		~AnimationRect() {

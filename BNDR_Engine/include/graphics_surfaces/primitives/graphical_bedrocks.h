@@ -81,14 +81,16 @@ namespace bndr {
 		// every descendant of PixelSurface will be able to access the bndr::Window instance so that it is rendered correctly
 		static Window* windowInstance;
 		static Vec2<float> windowInitialSize;
+		static float windowAspect;
 		// matrices for transformations of the surface
 		Vec3<float>* translation;
-		Vec3<float>* rotation;
+		//Vec3<float>* rotation;
+		float rotation;
 		Vec3<float>* scale;
 		// this constructor will be called for every child of PixelSurface
 		// by default the color buffer has a size of 4 for 1 rgba entry
 		// this can be changed by calling the constructor below and passing in a color buffer size
-		PixelSurface() : translation(new Vec3<float>()), rotation(new Vec3<float>()),
+		PixelSurface() : translation(new Vec3<float>(0.0f, 0.0f, 0.0f)), rotation(0.0f),
 			scale(new Vec3<float>(1.0f, 1.0f, 0.0f)), program(nullptr), colorBuffer(nullptr), va(nullptr) {
 		
 			// ensure that a window instance has been defined
@@ -139,6 +141,7 @@ namespace bndr {
 			windowInstance = window;
 			std::pair<float, float> windowSize = window->getSize();
 			windowInitialSize = Vec2<float>(windowSize.first, windowSize.second);
+			windowAspect = windowSize.second / windowSize.first;
 
 		}
 		~PixelSurface();
@@ -153,7 +156,7 @@ namespace bndr {
 		// update the translation uniform in the program
 		inline virtual void updateTranslationUniform() override { program->setFloatUniformValue("translation", translation->getData(), VEC3); }
 		// update the rotation uniform in the program
-		inline virtual void updateRotationUniform() override { program->setFloatUniformValue("rotation", rotation->getData(), VEC3); }
+		inline virtual void updateRotationUniform() override { program->setFloatUniformValue("theta", &rotation, FLOAT); }
 		// update the scale uniform in the program
 		inline virtual void updateScaleUniform() override { program->setFloatUniformValue("scale", scale->getData(), VEC3); }
 		// update the color uniform in the program
@@ -165,6 +168,8 @@ namespace bndr {
 
 			// generate the program for the polysurface
 			program = generateShaderProgram(hasTex ? 1 : 0);
+			// define the aspect ratio in the program
+			program->setFloatUniformValue("aspect", &windowAspect, FLOAT);
 			// load the color buffer with the correct number of colors
 			loadColorBuffer(colorBufferSize);
 			// load the vertex array data
@@ -190,7 +195,7 @@ namespace bndr {
 			Vec2<float> newCoordinate;
 			// retrieve window size
 			Vec2<float> size = PixelSurface::windowInstance->getSize();
-			newCoordinate[0] = ((coordinate[0] / size[0]) * 2.0f) - 1.0f;
+			newCoordinate[0] = ((coordinate[0] / size[1]) * 2.0f) - 1.0f;
 			// y coordinate is multiplied by the aspect ratio
 			newCoordinate[1] = ((coordinate[1] / size[1]) * 2.0f) - 1.0f;
 			return newCoordinate;
@@ -202,7 +207,7 @@ namespace bndr {
 			Vec2<float> newCoordinate;
 			// retrieve window size
 			Vec2<float> size = PixelSurface::windowInitialSize;//PixelSurface::windowInstance->getSize();
-			newCoordinate[0] = (sizeCoordinate[0] / size[0]) * 2.0f;
+			newCoordinate[0] = (sizeCoordinate[0] / size[1]) * 2.0f;
 			// y sizeCoordinate is multiplied by the aspect ratio
 			newCoordinate[1] = (sizeCoordinate[1] / size[1]) * 2.0f;
 			return newCoordinate;
@@ -271,8 +276,8 @@ namespace bndr {
 		GraphicsRect(Vec2<float>&& newPos, Vec2<float>&& newSize) : GraphicsEntity(), pos(new Vec2<float>(newPos[0], newPos[1])),
 			size(new Vec2<float>(newSize[0], newSize[1])) {
 		
-			(*center)[0] = (*pos)[0];
-			(*center)[1] = (*pos)[1];
+			(*center)[0] = (*pos)[0] + (*size)[0]/2.0f;
+			(*center)[1] = (*pos)[1] + (*size)[1]/2.0f;
 		}
 	public:
 		inline Vec2<float> getPos() { return Vec2<float>(*pos); }

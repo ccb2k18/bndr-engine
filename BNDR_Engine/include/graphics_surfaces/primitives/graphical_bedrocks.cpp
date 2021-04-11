@@ -31,6 +31,8 @@ namespace bndr {
 	Window* PixelSurface::windowInstance = nullptr;
 	// the window's size upon initialization
 	Vec2<float> PixelSurface::windowInitialSize;
+	// the window's aspect ratio
+	float PixelSurface::windowAspect;
 
 	PixelSurface::~PixelSurface() {
 
@@ -39,7 +41,7 @@ namespace bndr {
 		delete va;
 		delete colorBuffer;
 		delete translation;
-		delete rotation;
+		//delete rotation;
 		delete scale;
 	}
 
@@ -55,10 +57,8 @@ namespace bndr {
 	void PolySurface::setRotation(float theta) {
 
 		// convert theta to radians
-		float rad = theta * (BNDR_PI / 180.0f);
-		// update the rotation matrix in RAM
-		(*rotation)[0] = cosf(rad);
-		(*rotation)[1] = sinf(rad);
+		rotation = theta * (BNDR_PI / 180.0f);
+		// update the rotation
 		updateRotationUniform();
 
 	}
@@ -85,9 +85,8 @@ namespace bndr {
 
 		// convert theta to radians
 		float rad = theta * (BNDR_PI / 180.0f);
-		// update the rotation matrix in RAM
-		(*rotation)[0] += cosf(rad);
-		(*rotation)[1] += sinf(rad);
+		// update the rotation
+		rotation += rad;
 		updateRotationUniform();
 
 	}
@@ -351,7 +350,7 @@ namespace bndr {
 
 		// transformations
 		(*translation) = (*texRect.translation);
-		(*rotation) = (*texRect.rotation);
+		(rotation) = (texRect.rotation);
 		(*scale) = (*texRect.scale);
 
 		init(16, (texRect.tex != nullptr) ? true : false);

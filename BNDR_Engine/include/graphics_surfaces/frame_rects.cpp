@@ -32,7 +32,7 @@ namespace bndr {
 
 		if (styleFlags & FRAME_X_COORD_IS_PERCENT) {
 
-			x = (x / 100.0f) * initialSize[0];
+			x = (x / 100.0f) * initialSize[1];
 		}
 		if (styleFlags & FRAME_Y_COORD_IS_PERCENT) {
 
@@ -40,7 +40,7 @@ namespace bndr {
 		}
 		if (styleFlags & FRAME_WIDTH_IS_PERCENT) {
 
-			width = (width / 100.0f) * initialSize[0];
+			width = (width / 100.0f) * initialSize[1];
 		}
 		if (styleFlags & FRAME_HEIGHT_IS_PERCENT) {
 

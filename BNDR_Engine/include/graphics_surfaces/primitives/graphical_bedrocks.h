@@ -189,7 +189,7 @@ namespace bndr {
 
 			Vec2<float> newCoordinate;
 			// retrieve window size
-			Vec2<float> size = PixelSurface::windowInitialSize;
+			Vec2<float> size = PixelSurface::windowInstance->getSize();
 			newCoordinate[0] = ((coordinate[0] / size[0]) * 2.0f) - 1.0f;
 			// y coordinate is multiplied by the aspect ratio
 			newCoordinate[1] = ((coordinate[1] / size[1]) * 2.0f) - 1.0f;
@@ -201,7 +201,7 @@ namespace bndr {
 
 			Vec2<float> newCoordinate;
 			// retrieve window size
-			Vec2<float> size = PixelSurface::windowInitialSize;
+			Vec2<float> size = PixelSurface::windowInitialSize;//PixelSurface::windowInstance->getSize();
 			newCoordinate[0] = (sizeCoordinate[0] / size[0]) * 2.0f;
 			// y sizeCoordinate is multiplied by the aspect ratio
 			newCoordinate[1] = (sizeCoordinate[1] / size[1]) * 2.0f;
@@ -211,14 +211,14 @@ namespace bndr {
 		// convert from normalized coordinates to pixels
 		static float convertCoordFromGLSpaceToScreenSpace(float dimension, bool isX) {
 
-			Vec2<float> screenSize = PixelSurface::windowInitialSize;
+			Vec2<float> screenSize = PixelSurface::windowInstance->getSize();
 			return (dimension + 1.0f) * (((isX) ? screenSize[0] : screenSize[1]) / 2.0f);
 		}
 
 		// convert from normalized size to pixels
 		static float convertSizeFrom0And2ToScreenSpace(float dimension, bool isWidth) {
 
-			Vec2<float> screenSize = PixelSurface::windowInitialSize;
+			Vec2<float> screenSize = PixelSurface::windowInstance->getSize();
 			return (dimension) * (((isWidth) ? screenSize[0] : screenSize[1]) / 2.0f);
 		}
 

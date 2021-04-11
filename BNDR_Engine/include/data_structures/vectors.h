@@ -127,6 +127,8 @@ namespace bndr {
 		Vec2(const T& x, const T& y, int numCoords = 2) : base(x, y, numCoords) {}
 		// constructor with initializer list
 		Vec2(std::initializer_list<T>&& coords) : base(*(coords.begin()), *(coords.begin() + 1), 2) {}
+		// constructor with std::pair
+		Vec2(const std::pair<T,T>& pair) : base(pair.first, pair.second, 2) {}
 		// copy constructor
 		Vec2(const Vec2<T>& vec) : base(vec.getValue(0), vec.getValue(1)) {}
 		// move constructor

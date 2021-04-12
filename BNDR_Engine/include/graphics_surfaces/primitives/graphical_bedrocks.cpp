@@ -392,5 +392,6 @@ namespace bndr {
 		program->unuse();
 
 		if (tex != nullptr) { tex->unbind(); }
+
 	}
 }

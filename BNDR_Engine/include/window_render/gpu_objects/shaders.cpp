@@ -131,6 +131,28 @@ namespace bndr {
 		Program::linkProgram(programID, vShader, fShader);
 	}
 
+	std::vector<float> Program::getFloatUniformValue(const char* uniformName, int numFloats) const {
+
+		use();
+		try {
+
+			int uniformLocation = glGetUniformLocation(programID, uniformName);
+			if (uniformLocation == -1) {
+				std::string message = "Cannot locate uniform '" + std::string(uniformName) + "' in shader program";
+				BNDR_EXCEPTION(message.c_str());
+			}
+			std::vector<float> data(numFloats);
+			glGetUniformfv(programID, uniformLocation, &data[0]);
+			return data;
+			
+		}
+		catch (std::runtime_error& e) {
+
+			std::cout << e.what() << "\n";
+		}
+		unuse();
+	}
+
 	void Program::setFloatUniformValue(const char* uniformName, const float* data, uint dataType) const {
 
 		use();
@@ -138,8 +160,8 @@ namespace bndr {
 
 			int uniformLocation = glGetUniformLocation(programID, uniformName);
 			if (uniformLocation == -1) {
-				std::string data = "Cannot locate uniform '" + std::string(uniformName) + "' in shader program";
-				BNDR_EXCEPTION(data.c_str());
+				std::string message = "Cannot locate uniform '" + std::string(uniformName) + "' in shader program";
+				BNDR_EXCEPTION(message.c_str());
 			}
 			switch (dataType) {
 

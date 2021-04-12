@@ -83,15 +83,15 @@ namespace bndr {
 		static Vec2<float> windowInitialSize;
 		static float windowAspect;
 		// matrices for transformations of the surface
-		Vec3<float>* translation;
+		Vec2<float>* translation;
 		//Vec3<float>* rotation;
 		float rotation;
-		Vec3<float>* scale;
+		Vec2<float>* scale;
 		// this constructor will be called for every child of PixelSurface
 		// by default the color buffer has a size of 4 for 1 rgba entry
 		// this can be changed by calling the constructor below and passing in a color buffer size
-		PixelSurface() : translation(new Vec3<float>(0.0f, 0.0f, 0.0f)), rotation(0.0f),
-			scale(new Vec3<float>(1.0f, 1.0f, 0.0f)), program(nullptr), colorBuffer(nullptr), va(nullptr) {
+		PixelSurface() : translation(new Vec2<float>(0.0f, 0.0f)), rotation(0.0f),
+			scale(new Vec2<float>(1.0f, 1.0f)), program(nullptr), colorBuffer(nullptr), va(nullptr) {
 		
 			// ensure that a window instance has been defined
 			if (windowInstance == nullptr) {
@@ -154,11 +154,11 @@ namespace bndr {
 	protected:
 
 		// update the translation uniform in the program
-		inline virtual void updateTranslationUniform() override { program->setFloatUniformValue("translation", translation->getData(), VEC3); }
+		inline virtual void updateTranslationUniform() override { program->setFloatUniformValue("translation", translation->getData(), VEC2); }
 		// update the rotation uniform in the program
 		inline virtual void updateRotationUniform() override { program->setFloatUniformValue("theta", &rotation, FLOAT); }
 		// update the scale uniform in the program
-		inline virtual void updateScaleUniform() override { program->setFloatUniformValue("scale", scale->getData(), VEC3); }
+		inline virtual void updateScaleUniform() override { program->setFloatUniformValue("scale", scale->getData(), VEC2); }
 		// update the color uniform in the program
 		inline virtual void updateColorData() override { program->setFloatUniformValue("color", colorBuffer, VEC4); }
 		// default constructor
@@ -227,6 +227,37 @@ namespace bndr {
 			return (dimension) * (((isWidth) ? screenSize[0] : screenSize[1]) / 2.0f);
 		}
 
+		// convert from percent to GL space
+		static Vec2<float> convertCoordFromPercentToGLSpace(Vec2<float>&& coordinate) {
+
+			return ((coordinate / 100.0f) * 2.0f) - 1.0f;
+		}
+
+		// convert from GL space to percent
+		// (percent is in terms of screen height)
+		static Vec2<float> convertCoordFromGLSpaceToPercent(Vec2<float>&& coordinate) {
+
+			coordinate = ((coordinate + 1.0f) / 2.0f) * 100.0f;
+			coordinate[0] *= PixelSurface::windowAspect;
+			return coordinate;
+		}
+
+		// convert from 0 to 2 to percent
+		// (percent is in terms of screen height)
+		static Vec2<float> convertCoordFrom0and2ToPercent(Vec2<float>&& coordinate) {
+
+			coordinate = ((coordinate) / 2.0f) * 100.0f;
+			coordinate[0] *= PixelSurface::windowAspect;
+			return coordinate;
+		}
+
+		// convert percent to between 0 and 2
+		static Vec2<float> convertCoordFromPercentTo0and2(Vec2<float>&& coordinate) {
+
+			return ((coordinate / 100.0f) * 2.0f);
+		}
+
+
 		// reset the translation matrix
 		virtual void setTranslation(float xTrans, float yTrans) override;
 		// reset the rotation matrix in degrees
@@ -276,14 +307,20 @@ namespace bndr {
 		GraphicsRect(Vec2<float>&& newPos, Vec2<float>&& newSize) : GraphicsEntity(), pos(new Vec2<float>(newPos[0], newPos[1])),
 			size(new Vec2<float>(newSize[0], newSize[1])) {
 		
-			(*center)[0] = (*pos)[0] + (*size)[0]/2.0f;
-			(*center)[1] = (*pos)[1] + (*size)[1]/2.0f;
+			(*center) = (*pos) + (*size) / 2.0f;
 		}
 	public:
-		inline Vec2<float> getPos() { return Vec2<float>(*pos); }
-		inline void setPos(const Vec2<float>& vec) { (*pos) = vec; }
+		inline virtual Vec2<float> getPos() { return Vec2<float>(*pos); }
+		inline void setPos(const Vec2<float>& vec) {
+			(*pos) = vec;
+		}
+		inline virtual void updateCenter() {
+			// update the center of the shape based on position and size
+			(*center) = (*pos) + (*size) / 2.0f;
+		}
 		inline void addPos(const Vec2<float>& vec) { (*pos) += vec; }
-		inline Vec2<float> getSize() { return Vec2<float>(*size); }
+		inline Vec2<float> virtual getSize() { return Vec2<float>(*size); }
+		inline Vec2<float> virtual getCenter() { return Vec2<float>(*center); }
 		~GraphicsRect() { delete pos; delete size; }
 	};
 
@@ -325,6 +362,28 @@ namespace bndr {
 		// using setRotationAboutPoint(float x, float y)
 		inline void setRotationAboutCenter() { updateCenterUniform(program); }
 		inline void setRotationAboutPoint(const Vec2<float>& point) { updateCenterUniform(program, point); }
+		// get the rendered size of the rect taking into account scale
+		inline Vec2<float> getSize() override { return Vec2<float>((*size)[0] * (*scale)[0], (*size)[1] * (*scale)[1]); }
+		// update the rendered center of the rect taking into account the rendered position and size
+		inline void updateCenter() override { (*center) = (*pos) + getSize() / 2.0f; }
+		// get the rendered position of the shape in GL coordinates (calling this repeatedly on many surfaces will slow down performance)
+		Vec2<float> getPos() override {
+
+			Vec2<float> newPos = (*pos);
+			// first scale the position with the size
+			newPos[0] *= (*scale)[0];
+			newPos[1] *= (*scale)[1];
+			// then apply the rotation
+			Vec2<float> unitRotation(cosf(rotation), sinf(rotation));
+			newPos -= *center;
+			newPos = Vec2<float>(newPos[0] * unitRotation[0] - newPos[1] * unitRotation[1], newPos[1] * unitRotation[0] + newPos[0] * unitRotation[1]);
+			newPos += *center;
+			// apply the translation
+			newPos += *translation;
+			// return the position
+			return newPos;
+		}
+
 	};
 
 

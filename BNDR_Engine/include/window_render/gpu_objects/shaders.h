@@ -109,6 +109,8 @@ namespace bndr {
 		inline void use() const { glUseProgram(programID); }
 		// stop using the program
 		inline void unuse() const { glUseProgram(0); }
+		// get back a float uniform value
+		std::vector<float> getFloatUniformValue(const char* uniformName, int numFloats) const;
 		// modify a uniform value that whose primitive attribute(s) is/are of type float
 		void setFloatUniformValue(const char* uniformName, const float* data, uint dataType) const;
 		// modify a uniform value that is an array of type float
@@ -156,9 +158,9 @@ namespace bndr {
 				"layout (location = 0) in vec3 position;\n"
 				"uniform float aspect;\n"
 				"uniform vec2 center;\n"
-				"uniform vec3 translation;\n"
+				"uniform vec2 translation;\n"
 				"uniform float theta;\n"
-				"uniform vec3 scale;\n"
+				"uniform vec2 scale;\n"
 				"uniform vec4 color;\n"
 				"out vec4 fragColor;\n"
 				"void main() {\n"
@@ -170,7 +172,7 @@ namespace bndr {
 				"newPos -= rotCenter;\n"
 				"vec3 rotPos = vec3(newPos.x * rotation.x - newPos.y * rotation.y, newPos.y * rotation.x + newPos.x * rotation.y, 0.0);\n"
 				"newPos = rotPos + rotCenter;\n"
-				"newPos += translation;\n"
+				"newPos += vec3(translation, 0.0);\n"
 				"newPos.z = 0.0;\n"
 				"gl_Position = vec4(newPos.x*aspect, newPos.y, 0.0f, 1.0);\n"
 				"fragColor = color;\n"
@@ -192,9 +194,9 @@ namespace bndr {
 				"layout (location = 1) in vec4 color;\n"
 				"uniform float aspect;\n"
 				"uniform vec2 center;\n"
-				"uniform vec3 translation;\n"
+				"uniform vec2 translation;\n"
 				"uniform float theta;\n"
-				"uniform vec3 scale;\n"
+				"uniform vec2 scale;\n"
 				"out vec4 fragColor;\n"
 				"void main() {\n"
 				"vec3 newPos = position;\n"
@@ -205,7 +207,7 @@ namespace bndr {
 				"newPos -= rotCenter;\n"
 				"vec3 rotPos = vec3(newPos.x * rotation.x - newPos.y * rotation.y, newPos.y * rotation.x + newPos.x * rotation.y, 0.0);\n"
 				"newPos = rotPos + rotCenter;\n"
-				"newPos += translation;\n"
+				"newPos += vec3(translation, 0.0);\n"
 				"newPos.z = 0.0;\n"
 				"gl_Position = vec4(newPos.x*aspect, newPos.y, 0.0f, 1.0);\n"
 				"fragColor = color;\n"
@@ -228,9 +230,9 @@ namespace bndr {
 				"layout (location = 2) in vec2 texCoords;\n"
 				"uniform float aspect;\n"
 				"uniform vec2 center;\n"
-				"uniform vec3 translation;\n"
+				"uniform vec2 translation;\n"
 				"uniform float theta;\n"
-				"uniform vec3 scale;\n"
+				"uniform vec2 scale;\n"
 				"out vec4 fragColor;\n"
 				"out vec2 fragTexCoords;\n"
 				"void main() {\n"
@@ -242,7 +244,7 @@ namespace bndr {
 				"newPos -= rotCenter;\n"
 				"vec3 rotPos = vec3(newPos.x * rotation.x - newPos.y * rotation.y, newPos.y * rotation.x + newPos.x * rotation.y, 0.0);\n"
 				"newPos = rotPos + rotCenter;\n"
-				"newPos += translation;\n"
+				"newPos += vec3(translation, 0.0);\n"
 				"newPos.z = 0.0;\n"
 				"gl_Position = vec4(newPos.x*aspect, newPos.y, 0.0f, 1.0);\n"
 				"fragColor = color;\n"

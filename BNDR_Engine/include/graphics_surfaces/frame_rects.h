@@ -24,6 +24,8 @@ SOFTWARE.*/
 #include <pch.h>
 #include "include/graphics_surfaces/primitives/graphical_bedrocks.h";
 
+BNDR_API std::ostream& operator<<(std::ostream& out, const std::vector<float>& vec);
+
 namespace bndr {
 
 	// interface for frame instances
@@ -60,8 +62,10 @@ namespace bndr {
 		virtual std::vector<float> getRect() = 0;
 		// get the center of the rectangle
 		virtual Vec2<float> getCenter() = 0;
-
-
+		// sets the rotation about the center
+		virtual void setRotationAboutCenter() = 0;
+		// sets the rotation about an arbitrary point
+		virtual void setRotationAboutPoint(Vec2<float>&& point, bool asPercent = false) = 0;
 	};
 
 
@@ -82,7 +86,6 @@ namespace bndr {
 		FRAME_IS_FRAME_RECT = 256
 	};
 
-
 	// an optimal class for a graphics component with only a single graphics frame
 	class BNDR_API FrameRect : public Frame {
 
@@ -99,7 +102,7 @@ namespace bndr {
 		FrameRect(FrameRect&&) = delete;
 		FrameRect& operator=(const FrameRect&) = delete;
 		inline void render() { texRect->render(); }
-		inline virtual void update(float deltaTime) { return; }
+		virtual void update(float deltaTime);
 		// redefines the translation of the frame
 		virtual void translate(float x, float y);
 		// adds to the current translation
@@ -121,10 +124,22 @@ namespace bndr {
 		inline virtual void addScale(float xScaleChange, float yScaleChange) { texRect->changeScaleBy(xScaleChange, yScaleChange); }
 		// together
 		inline virtual void addScale(float scaleChange) { addScale(scaleChange, scaleChange); }
-		// get the rectangle of the frame in this format: {topLeftX, topLeftY, width, height}
+		// get the rectangle of the frame in this format: {topLeftX, topLeftY, width, height} (units are in percent screen width)
 		virtual std::vector<float> getRect();
 		// get the center of the rectangle
 		virtual Vec2<float> getCenter();
+		// sets the rotation about the center
+		inline virtual void setRotationAboutCenter() { texRect->setRotationAboutCenter(); }
+		// sets the rotation about an arbitrary point
+		virtual void setRotationAboutPoint(Vec2<float>&& point, bool asPercent = false) {
+			if (asPercent) {
+				// get the initial window size so we can convert coordinates from percents to pixels if we need to
+				Vec2<float> initialSize = PixelSurface::getWindowInitialSize();
+				point[0] = (point[0] / 100.0f) * initialSize[1];
+				point[1] = (point[1] / 100.0f) * initialSize[1];
+			}
+			texRect->setRotationAboutPoint(PolySurface::convertScreenSpaceToGLSpace(std::move(point)));
+		}
 		~FrameRect();
 	};
 

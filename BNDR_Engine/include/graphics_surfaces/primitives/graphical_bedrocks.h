@@ -131,6 +131,8 @@ namespace bndr {
 		virtual void render() = 0;
 		// get the initial size of the window
 		static Vec2<float> getWindowInitialSize() { return windowInitialSize; }
+		// get the window aspect ratio
+		static float getWindowAspect() { return PixelSurface::windowAspect; }
 		// define the window instance for all pixel surfaces (if you don't do this nothing will draw and you will get an exception)
 		static void setWindowInstance(Window* window) {
 
@@ -196,7 +198,7 @@ namespace bndr {
 			// retrieve window size
 			Vec2<float> size = PixelSurface::windowInstance->getSize();
 			newCoordinate[0] = ((coordinate[0] / size[1]) * 2.0f) - 1.0f;
-			// y coordinate is multiplied by the aspect ratio
+			//newCoordinate[0] /= PixelSurface::windowAspect;
 			newCoordinate[1] = ((coordinate[1] / size[1]) * 2.0f) - 1.0f;
 			return newCoordinate;
 		}
@@ -208,7 +210,7 @@ namespace bndr {
 			// retrieve window size
 			Vec2<float> size = PixelSurface::windowInitialSize;//PixelSurface::windowInstance->getSize();
 			newCoordinate[0] = (sizeCoordinate[0] / size[1]) * 2.0f;
-			// y sizeCoordinate is multiplied by the aspect ratio
+			//newCoordinate[0] /= PixelSurface::windowAspect;
 			newCoordinate[1] = (sizeCoordinate[1] / size[1]) * 2.0f;
 			return newCoordinate;
 		}
@@ -230,31 +232,27 @@ namespace bndr {
 		// convert from percent to GL space
 		static Vec2<float> convertCoordFromPercentToGLSpace(Vec2<float>&& coordinate) {
 
-			return ((coordinate / 100.0f) * 2.0f) - 1.0f;
+			return (((coordinate / 100.0f) * 2.0f) - 1.0f);
 		}
 
 		// convert from GL space to percent
 		// (percent is in terms of screen height)
 		static Vec2<float> convertCoordFromGLSpaceToPercent(Vec2<float>&& coordinate) {
 
-			coordinate = ((coordinate + 1.0f) / 2.0f) * 100.0f;
-			coordinate[0] *= PixelSurface::windowAspect;
-			return coordinate;
+			return ((coordinate + 1.0f) / 2.0f) * 100.0f;
 		}
 
 		// convert from 0 to 2 to percent
 		// (percent is in terms of screen height)
 		static Vec2<float> convertCoordFrom0and2ToPercent(Vec2<float>&& coordinate) {
 
-			coordinate = ((coordinate) / 2.0f) * 100.0f;
-			coordinate[0] *= PixelSurface::windowAspect;
-			return coordinate;
+			return ((coordinate) / 2.0f) * 100.0f;
 		}
 
 		// convert percent to between 0 and 2
 		static Vec2<float> convertCoordFromPercentTo0and2(Vec2<float>&& coordinate) {
 
-			return ((coordinate / 100.0f) * 2.0f);
+			return (((coordinate / 100.0f) * 2.0f));
 		}
 
 
@@ -320,7 +318,9 @@ namespace bndr {
 		}
 		inline void addPos(const Vec2<float>& vec) { (*pos) += vec; }
 		inline Vec2<float> virtual getSize() { return Vec2<float>(*size); }
-		inline Vec2<float> virtual getCenter() { return Vec2<float>(*center); }
+		inline Vec2<float> virtual getCenter() {
+			return Vec2<float>(*center);
+		}
 		~GraphicsRect() { delete pos; delete size; }
 	};
 
@@ -383,6 +383,8 @@ namespace bndr {
 			// return the position
 			return newPos;
 		}
+		// get the rendered center position of the shape in GL coordinates
+		inline Vec2<float> getCenter() override { return getPos() + getSize() / 2.0f; }
 
 	};
 

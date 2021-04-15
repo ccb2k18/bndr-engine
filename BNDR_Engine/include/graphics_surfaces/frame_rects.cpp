@@ -65,6 +65,7 @@ namespace bndr {
 
 		flags = styleFlags;
 		flags = flags | FRAME_IS_FRAME_RECT;
+
 		// we need to convert the y coordinate so that 0 is at the top of the screen
 		y = (initialSize[1] - y) - height;
 
@@ -90,14 +91,13 @@ namespace bndr {
 
 		Vec2<float> pos = PolySurface::convertCoordFromGLSpaceToPercent(texRect->getPos());
 		Vec2<float> size = texRect->PolySurface::convertCoordFrom0and2ToPercent(texRect->getSize());
-		return {pos[0], 100.0f - pos[1], size[0], size[1]};
+		return {pos[0], 100.0f - (pos[1] + size[1]), size[0], size[1]};
 	}
 
 	Vec2<float> FrameRect::getCenter() {
 
 		Vec2<float> center = texRect->getCenter();
-		return { PolySurface::convertCoordFromGLSpaceToScreenSpace(center[0], true),
-			PolySurface::convertCoordFromGLSpaceToScreenSpace(center[1], false) };
+		return PolySurface::convertCoordFromGLSpaceToPercent(std::move(center));
 	}
 
 	void FrameRect::update(float deltaTime) {

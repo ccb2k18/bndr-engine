@@ -246,7 +246,9 @@ namespace bndr {
 				"newPos = rotPos + rotCenter;\n"
 				"newPos += vec3(translation, 0.0);\n"
 				"newPos.z = 0.0;\n"
+				"float xTransFix = (-1.0*aspect) + 1.0;\n"
 				"gl_Position = vec4(newPos.x*aspect, newPos.y, 0.0f, 1.0);\n"
+				"gl_Position.x -= xTransFix;\n"
 				"fragColor = color;\n"
 				"fragTexCoords = texCoords;\n"
 				"}\0";

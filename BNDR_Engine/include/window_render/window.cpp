@@ -52,8 +52,8 @@ namespace bndr {
 		glfwSetErrorCallback(errorCallback);
 
 		// window hints/flags for the window
-
-		windowFlags = flags;
+		// the window will always maintain its aspect ratio
+		windowFlags = flags | bndr::MAINTAIN_ASPECT_RATIO;
 
 		// single buffering for max fps
 		glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);

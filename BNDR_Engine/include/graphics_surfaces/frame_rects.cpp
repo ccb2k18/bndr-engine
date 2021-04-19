@@ -73,14 +73,14 @@ namespace bndr {
 		texRect = new TexturedRect(x, y, width, height, std::move(colors), newTex);
 	}
 
-	// translations are all in percent heights
+	// translations are all in percent
 	void FrameRect::translate(float x, float y) {
 
 		Vec2<float> trans = PolySurface::convertCoordFromPercentToGLSpace({ x, y });
 		texRect->setTranslation(trans[0], -trans[1]);
 	}
 
-	// translations are all in percent heights
+	// translations are all in percent
 	void FrameRect::addTranslation(float xChange, float yChange) {
 
 		Vec2<float> trans = PolySurface::convertCoordFromPercentTo0and2({ xChange, yChange });

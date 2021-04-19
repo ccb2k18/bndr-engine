@@ -105,6 +105,11 @@ namespace bndr {
 		// sets the icon of the window
 		// the method expects a 24-bit bitmap image in Blue-Green-Red format
 		void setIcon(const char* bitMapFile);
+		// get the aspect ratio
+		inline float getAspectRatio() {
+			std::pair<float, float> size = getSize();
+			return size.first / size.second;
+		}
 
 		// event queues and event callbacks
 

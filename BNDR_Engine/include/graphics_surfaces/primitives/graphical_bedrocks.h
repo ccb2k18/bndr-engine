@@ -243,7 +243,6 @@ namespace bndr {
 		}
 
 		// convert from 0 to 2 to percent
-		// (percent is in terms of screen height)
 		static Vec2<float> convertCoordFrom0and2ToPercent(Vec2<float>&& coordinate) {
 
 			return ((coordinate) / 2.0f) * 100.0f;
@@ -283,12 +282,14 @@ namespace bndr {
 	protected:
 
 		Vec2<float>* center;
+		// whether the rotation is about the center
+		mutable bool aboutCenter = false;
 		GraphicsEntity() : center(new Vec2<float>()) {}
 	public:
 		// update the center of rotation of the entity
-		inline void updateCenterUniform(Program* program) const { program->setFloatUniformValue("center", center->getData(), VEC2); }
+		inline void updateCenterUniform(Program* program) const { program->setFloatUniformValue("center", center->getData(), VEC2); aboutCenter = true; }
 		// update the center of rotation of the entity with a custom point
-		inline void updateCenterUniform(Program* program, const Vec2<float>& point) const { program->setFloatUniformValue("center", point.getData(), VEC2); }
+		inline void updateCenterUniform(Program* program, const Vec2<float>& point) const { program->setFloatUniformValue("center", point.getData(), VEC2); aboutCenter = false; }
 		~GraphicsEntity() { delete center; }
 	};
 
@@ -373,11 +374,14 @@ namespace bndr {
 			// first scale the position with the size
 			newPos[0] *= (*scale)[0];
 			newPos[1] *= (*scale)[1];
-			// then apply the rotation
-			Vec2<float> unitRotation(cosf(rotation), sinf(rotation));
-			newPos -= *center;
-			newPos = Vec2<float>(newPos[0] * unitRotation[0] - newPos[1] * unitRotation[1], newPos[1] * unitRotation[0] + newPos[0] * unitRotation[1]);
-			newPos += *center;
+			// then apply the rotation only if it is not rotating about its center
+			if (!aboutCenter) {
+
+				Vec2<float> unitRotation(cosf(rotation), sinf(rotation));
+				newPos -= *center;
+				newPos = Vec2<float>(newPos[0] * unitRotation[0] - newPos[1] * unitRotation[1], newPos[1] * unitRotation[0] + newPos[0] * unitRotation[1]);
+				newPos += *center;
+			}
 			// apply the translation
 			newPos += *translation;
 			// return the position

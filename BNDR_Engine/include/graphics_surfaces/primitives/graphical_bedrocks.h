@@ -486,7 +486,7 @@ namespace bndr {
 		// change the texture that the textured rect will render
 		inline void changeTexture(Texture* newTex) { tex = newTex; }
 		// get the texture of the TexturedRect
-		// WARNING: Do not use this method! This is meant to be used by automated classes only!
+		// WARNING: Do not use this method! This is meant to be used by classes only!
 		inline Texture* getTexture() { return tex; }
 		~TexturedRect() { if (tex != nullptr) { delete tex; } }
 	};

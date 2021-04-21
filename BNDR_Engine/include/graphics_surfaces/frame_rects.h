@@ -65,7 +65,7 @@ namespace bndr {
 		// sets the rotation about the center
 		virtual void setRotationAboutCenter() = 0;
 		// sets the rotation about an arbitrary point
-		virtual void setRotationAboutPoint(Vec2<float>&& point, bool asPercent = false) = 0;
+		virtual void setRotationAboutPoint(const Vec2<float>& point, bool asPercent = false) = 0;
 	};
 
 
@@ -131,14 +131,16 @@ namespace bndr {
 		// sets the rotation about the center
 		inline virtual void setRotationAboutCenter() { texRect->setRotationAboutCenter(); }
 		// sets the rotation about an arbitrary point
-		virtual void setRotationAboutPoint(Vec2<float>&& point, bool asPercent = false) {
+		virtual void setRotationAboutPoint(const Vec2<float>& point, bool asPercent = true) {
+			
+			Vec2<float> pointCpy = point;
 			if (asPercent) {
 				// get the initial window size so we can convert coordinates from percents to pixels if we need to
 				Vec2<float> initialSize = PixelSurface::getWindowInitialSize();
-				point[0] = (point[0] / 100.0f) * initialSize[1];
-				point[1] = (point[1] / 100.0f) * initialSize[1];
+				pointCpy[0] = (pointCpy[0] / 100.0f) * initialSize[1];
+				pointCpy[1] = (pointCpy[1] / 100.0f) * initialSize[1];
 			}
-			texRect->setRotationAboutPoint(PolySurface::convertScreenSpaceToGLSpace(std::move(point)));
+			texRect->setRotationAboutPoint(PolySurface::convertScreenSpaceToGLSpace(std::move(pointCpy)));
 		}
 		~FrameRect();
 	};
@@ -199,6 +201,12 @@ namespace bndr {
 		}
 		// get the current animation cycle
 		inline int getCurrentCycle() { return animationIndex; }
+		// pause the animation
+		inline void pause() { shouldAnimate = false; }
+		// play the animation
+		inline void play() { shouldAnimate = true; }
+		// check if the animation is playing
+		inline bool isPlaying() { return shouldAnimate; }
 		void update(float deltaTime);
 
 		~AnimationRect() {

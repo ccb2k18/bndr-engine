@@ -263,7 +263,13 @@ namespace bndr {
 					"uniform sampler2D tex0;\n"
 					"out vec4 finalColor;\n"
 					"void main(){\n"
-					"finalColor = texture(tex0, fragTexCoords) * fragColor;\n"
+					"vec4 white = vec4(1.0, 1.0, 1.0, 1.0);\n"
+					"vec4 texColor = texture(tex0, fragTexCoords);\n"
+					"if (texColor == white) {\n"
+					"finalColor = vec4(0.0, 0.0, 0.0, 0.0);\n"
+					"} else {\n"
+					"finalColor = texColor * fragColor;\n"
+					"}\n"
 					"}\0";
 				break;
 			case 2:

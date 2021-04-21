@@ -97,7 +97,9 @@ namespace bndr {
 	Vec2<float> FrameRect::getCenter() {
 
 		Vec2<float> center = texRect->getCenter();
-		return PolySurface::convertCoordFromGLSpaceToPercent(std::move(center));
+		Vec2<float> newCenter = PolySurface::convertCoordFromGLSpaceToPercent(std::move(center));
+		newCenter[1] = 100.0f - newCenter[1];
+		return newCenter;
 	}
 
 	void FrameRect::update(float deltaTime) {
